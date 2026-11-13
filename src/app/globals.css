@@ -1,0 +1,75 @@
+@import "tailwindcss";
+@source "../**";
+@source "../../src";
+
+
+:root {
+  --background: #0a0a0a;
+  --foreground: #ffffff;
+  --card: #141414;
+  --card-border: #262626;
+  --accent-yellow: #e8ff00;
+  --accent-red: #ff3b3b;
+  --accent-cyan: #00e5ff;
+}
+
+body {
+  background-color: #0a0a0a;
+  color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #262626;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #e8ff00;
+}
+
+/* Cyber & Streetwear Accent Utilities */
+.neon-glow-yellow {
+  box-shadow: 0 0 25px rgba(232, 255, 0, 0.25);
+}
+
+.neon-glow-red {
+  box-shadow: 0 0 25px rgba(255, 59, 59, 0.25);
+}
+
+.neon-glow-cyan {
+  box-shadow: 0 0 25px rgba(0, 229, 255, 0.25);
+}
+
+.glass-nav {
+  background: rgba(10, 10, 10, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Marquee keyframe animation */
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: 200%;
+  animation: marquee 25s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
