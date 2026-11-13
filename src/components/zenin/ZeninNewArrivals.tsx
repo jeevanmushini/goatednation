@@ -243,10 +243,10 @@ const ProductCard: React.FC<{
             </span>
           </div>
 
-          {/* Hover Quick Add overlay button */}
+          {/* Quick Add overlay button (Always accessible on mobile, hover-revealed on desktop) */}
           <button
             onClick={(e) => onQuickAdd(product, e)}
-            className="absolute bottom-2 right-2 z-10 px-3 py-1 bg-black/85 hover:bg-black text-white text-[10px] font-mono uppercase tracking-wider rounded opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-md"
+            className="absolute bottom-2 right-2 z-10 px-2.5 py-1 bg-black/90 hover:bg-black text-white text-[9px] sm:text-[10px] font-mono uppercase tracking-wider rounded opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-all duration-200 shadow-md active:scale-95"
           >
             + Quick Add
           </button>

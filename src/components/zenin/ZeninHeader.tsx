@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useSyncExternalStore, useMemo } fro
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Search, User, ShoppingBag, ChevronDown, Menu, X, Shield, LogOut, Truck } from 'lucide-react';
 import { useCartStore } from '../../stores/cartStore';
 import { useAuthStore } from '../../stores/authStore';
@@ -313,116 +314,124 @@ export const ZeninHeader: React.FC = () => {
           </div>
         </div>
 
-        {/* Mobile Menu Slide-out */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden bg-white border-b border-[#E5E5E5] px-5 py-4 space-y-3 font-mono text-xs">
-            <Link
-              href="/"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="block py-2 text-black font-bold uppercase"
+        {/* Mobile Menu Animated Slide-down */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.24, ease: 'easeInOut' }}
+              className="md:hidden bg-white border-b border-[#E5E5E5] px-5 py-4 space-y-3 font-mono text-xs overflow-hidden"
             >
-              Home
-            </Link>
-            <Link
-              href="/collections"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="block py-2 text-[#444444] uppercase"
-            >
-              All Products
-            </Link>
-            <div className="py-2">
-              <span className="text-[10px] text-[#888888] uppercase tracking-wider block mb-2">
-                Categories
-              </span>
-              <div className="grid grid-cols-2 gap-2 pl-2">
-                {categoriesList.map((cat) => (
-                  <Link
-                    key={cat.slug}
-                    href={`/collections/${cat.slug}`}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="py-1 text-[#555555] hover:text-black text-[11px]"
-                  >
-                    {cat.name}
-                  </Link>
-                ))}
-              </div>
-            </div>
-            <Link
-              href="/track"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="block py-2 text-[#444444] uppercase"
-            >
-              Order Tracking
-            </Link>
-            <Link
-              href="/about"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="block py-2 text-[#444444] uppercase"
-            >
-              Contact
-            </Link>
-
-            {/* Mobile Auth / Role Links */}
-            <div className="pt-3 border-t border-[#EAEAEA] space-y-2">
-              {mounted && isAuthenticated && user ? (
-                <>
-                  <div className="flex items-center justify-between py-1">
-                    <span className="text-[11px] font-bold text-black uppercase">{user.name}</span>
-                    <span
-                      className={`text-[9px] px-2 py-0.5 rounded font-bold uppercase ${
-                        isAdmin ? 'bg-[#FF4D00] text-white' : 'bg-black text-white'
-                      }`}
-                    >
-                      {user.role}
-                    </span>
-                  </div>
-                  <Link
-                    href="/account"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="block py-1.5 text-[#555555] hover:text-black"
-                  >
-                    My Account Profile
-                  </Link>
-                  {isAdmin && (
+              <Link
+                href="/"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block py-2 text-black font-bold uppercase"
+              >
+                Home
+              </Link>
+              <Link
+                href="/collections"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block py-2 text-[#444444] uppercase"
+              >
+                All Products
+              </Link>
+              <div className="py-2">
+                <span className="text-[10px] text-[#888888] uppercase tracking-wider block mb-2">
+                  Categories
+                </span>
+                <div className="grid grid-cols-2 gap-2 pl-2">
+                  {categoriesList.map((cat) => (
                     <Link
-                      href="/admin"
+                      key={cat.slug}
+                      href={`/collections/${cat.slug}`}
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="block py-1.5 text-[#FF4D00] font-bold uppercase"
+                      className="py-1 text-[#555555] hover:text-black text-[11px]"
                     >
-                      Admin Portal &rarr;
+                      {cat.name}
                     </Link>
-                  )}
-                  <button
-                    onClick={async () => {
-                      setIsMobileMenuOpen(false);
-                      await logout();
-                    }}
-                    className="block py-1.5 text-red-600 font-bold"
-                  >
-                    Sign Out
-                  </button>
-                </>
-              ) : (
-                <div className="flex items-center space-x-4 pt-1">
-                  <Link
-                    href="/login"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex-1 py-2 text-center rounded border border-black bg-black text-white uppercase font-bold"
-                  >
-                    Sign In
-                  </Link>
-                  <Link
-                    href="/register"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex-1 py-2 text-center rounded border border-[#CCCCCC] text-black uppercase font-bold"
-                  >
-                    Register
-                  </Link>
+                  ))}
                 </div>
-              )}
-            </div>
-          </div>
-        )}
+              </div>
+              <Link
+                href="/track"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block py-2 text-[#444444] uppercase"
+              >
+                Order Tracking
+              </Link>
+              <Link
+                href="/about"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block py-2 text-[#444444] uppercase"
+              >
+                Contact
+              </Link>
+
+              {/* Mobile Auth / Role Links */}
+              <div className="pt-3 border-t border-[#EAEAEA] space-y-2">
+                {mounted && isAuthenticated && user ? (
+                  <>
+                    <div className="flex items-center justify-between py-1">
+                      <span className="text-[11px] font-bold text-black uppercase">{user.name}</span>
+                      <span
+                        className={`text-[9px] px-2 py-0.5 rounded font-bold uppercase ${
+                          isAdmin ? 'bg-[#FF4D00] text-white' : 'bg-black text-white'
+                        }`}
+                      >
+                        {user.role}
+                      </span>
+                    </div>
+                    <Link
+                      href="/account"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="block py-1.5 text-[#555555] hover:text-black"
+                    >
+                      My Account Profile
+                    </Link>
+                    {isAdmin && (
+                      <Link
+                        href="/admin"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="block py-1.5 text-[#FF4D00] font-bold uppercase"
+                      >
+                        Admin Portal &rarr;
+                      </Link>
+                    )}
+                    <button
+                      onClick={async () => {
+                        setIsMobileMenuOpen(false);
+                        await logout();
+                      }}
+                      className="block py-1.5 text-red-600 font-bold cursor-pointer"
+                    >
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <div className="flex items-center space-x-4 pt-1">
+                    <Link
+                      href="/login"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex-1 py-2 text-center rounded border border-black bg-black text-white uppercase font-bold"
+                    >
+                      Sign In
+                    </Link>
+                    <Link
+                      href="/register"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex-1 py-2 text-center rounded border border-[#CCCCCC] text-black uppercase font-bold"
+                    >
+                      Register
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
       {/* Global Search Modal */}

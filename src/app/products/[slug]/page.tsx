@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState, use } from 'react';
+import React, { useState, use, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Heart,
   Star,
@@ -11,9 +12,11 @@ import {
   Ruler,
   Share2,
   ChevronRight,
+  ChevronLeft,
   Plus,
   Minus,
   Sparkles,
+  MoveHorizontal,
 } from 'lucide-react';
 
 import { PRODUCTS } from '../../../data/products';
@@ -44,12 +47,77 @@ export default function ProductDetailPage({
   }
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [slideDirection, setSlideDirection] = useState(1);
   const [selectedSize, setSelectedSize] = useState<ProductSize>(product.sizes[0] || 'M');
   const [selectedColor, setSelectedColor] = useState(product.colors[0]?.name || 'Standard');
   const [quantity, setQuantity] = useState(1);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+
+  const isPointerDown = useRef(false);
+  const startX = useRef(0);
+  const startY = useRef(0);
+  const isHorizontalDrag = useRef(false);
+  const isVerticalScroll = useRef(false);
+
+  const totalImages = product.images.length;
+
+  const slideNext = useCallback(() => {
+    setSlideDirection(1);
+    setSelectedImageIndex((prev) => (prev + 1) % totalImages);
+  }, [totalImages]);
+
+  const slidePrev = useCallback(() => {
+    setSlideDirection(-1);
+    setSelectedImageIndex((prev) => (prev - 1 + totalImages) % totalImages);
+  }, [totalImages]);
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    isPointerDown.current = true;
+    startX.current = e.clientX;
+    startY.current = e.clientY;
+    isHorizontalDrag.current = false;
+    isVerticalScroll.current = false;
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!isPointerDown.current || isVerticalScroll.current) return;
+    const dx = e.clientX - startX.current;
+    const dy = e.clientY - startY.current;
+
+    if (!isHorizontalDrag.current && !isVerticalScroll.current) {
+      if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 7) {
+        isVerticalScroll.current = true;
+        return;
+      }
+      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 7) {
+        isHorizontalDrag.current = true;
+      }
+    }
+  };
+
+  const handlePointerUp = (e: React.PointerEvent) => {
+    if (!isPointerDown.current) return;
+    isPointerDown.current = false;
+
+    if (isHorizontalDrag.current) {
+      const dx = e.clientX - startX.current;
+      if (dx < -30) {
+        slideNext();
+      } else if (dx > 30) {
+        slidePrev();
+      }
+    }
+    isHorizontalDrag.current = false;
+    isVerticalScroll.current = false;
+  };
+
+  const handlePointerCancel = () => {
+    isPointerDown.current = false;
+    isHorizontalDrag.current = false;
+    isVerticalScroll.current = false;
+  };
 
   const addItem = useCartStore((state) => state.addItem);
   const openDrawer = useCartStore((state) => state.openDrawer);
@@ -160,16 +228,75 @@ export default function ProductDetailPage({
               ))}
             </div>
 
-            {/* Main Stage Image */}
-            <div className="relative flex-1 aspect-[3/4] rounded-lg overflow-hidden bg-[#F4F4F4] border border-[#EAEAEA] group">
-              <Image
-                src={product.images[selectedImageIndex] || product.images[0]}
-                alt={product.title}
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 60vw"
-                className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-              />
+            {/* Main Stage Image with Horizontal Slide Animation & Arrow Navigation */}
+            <div
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerUp}
+              onPointerCancel={handlePointerCancel}
+              style={{ touchAction: 'pan-y' }}
+              className="relative flex-1 aspect-[3/4] rounded-lg overflow-hidden bg-[#F4F4F4] border border-[#EAEAEA] select-none group cursor-grab active:cursor-grabbing"
+            >
+              <AnimatePresence initial={false} custom={slideDirection} mode="popLayout">
+                <motion.div
+                  key={selectedImageIndex}
+                  custom={slideDirection}
+                  initial={{ x: slideDirection > 0 ? '100%' : '-100%', opacity: 0.6 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  exit={{ x: slideDirection > 0 ? '-100%' : '100%', opacity: 0.6 }}
+                  transition={{ type: 'spring', stiffness: 320, damping: 32 }}
+                  className="absolute inset-0 w-full h-full"
+                >
+                  <Image
+                    src={product.images[selectedImageIndex] || product.images[0]}
+                    alt={`${product.title} slide ${selectedImageIndex + 1}`}
+                    fill
+                    priority
+                    sizes="(max-width: 1024px) 100vw, 60vw"
+                    className="object-cover pointer-events-none group-hover:scale-105 transition-transform duration-500 ease-out"
+                  />
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Prev / Next Slide Arrow Buttons */}
+              {totalImages > 1 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      slidePrev();
+                    }}
+                    className="absolute left-2.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/90 hover:bg-black text-black hover:text-white border border-[#D5D5D5] flex items-center justify-center transition-all duration-200 shadow-md hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-sm opacity-90 sm:opacity-0 sm:group-hover:opacity-100"
+                    aria-label="Previous Image"
+                  >
+                    <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      slideNext();
+                    }}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/90 hover:bg-black text-black hover:text-white border border-[#D5D5D5] flex items-center justify-center transition-all duration-200 shadow-md hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-sm opacity-90 sm:opacity-0 sm:group-hover:opacity-100"
+                    aria-label="Next Image"
+                  >
+                    <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                  </button>
+                </>
+              )}
+
+              {/* Mobile Slide Gesture Hint & Counter Badge */}
+              <div className="absolute top-4 left-4 z-20 flex items-center space-x-2">
+                <span className="bg-black/75 backdrop-blur-sm text-white text-[10px] font-mono px-2.5 py-0.5 rounded-full tracking-wider">
+                  {selectedImageIndex + 1} / {totalImages}
+                </span>
+                <span className="hidden sm:inline-flex items-center space-x-1 bg-white/80 backdrop-blur-sm text-black text-[9px] font-mono px-2 py-0.5 rounded-full">
+                  <MoveHorizontal className="w-2.5 h-2.5" />
+                  <span>SWIPE</span>
+                </span>
+              </div>
 
               {/* Crimson discount badge */}
               {discountPercent > 0 && (
@@ -203,7 +330,7 @@ export default function ProductDetailPage({
               </div>
 
               {copiedLink && (
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-black text-white rounded-full text-xs font-mono shadow-xl">
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-black text-white rounded-full text-xs font-mono shadow-xl z-20">
                   Link copied to clipboard!
                 </div>
               )}

@@ -106,7 +106,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             className={`absolute top-2.5 right-2.5 p-1.5 rounded-full backdrop-blur-sm transition-all z-10 ${
               isSaved
                 ? 'bg-[#8A1616] text-white'
-                : 'bg-white/80 hover:bg-white text-black/60 hover:text-black opacity-0 group-hover:opacity-100'
+                : 'bg-white/80 hover:bg-white text-black/60 hover:text-black opacity-100 sm:opacity-0 sm:group-hover:opacity-100'
             }`}
           >
             <Heart className={`w-3.5 h-3.5 ${isSaved ? 'fill-current' : ''}`} />
