@@ -241,7 +241,10 @@ export async function testShiprocketConnection(): Promise<ConnectionTestResponse
     }
 
     // Ping courier serviceability to verify live token access
-    const pickupPincode = process.env.SHIPROCKET_PICKUP_PINCODE || '560054';
+    const pickupPincode =
+      process.env.NEXT_PUBLIC_SHIPROCKET_PICKUP_PINCODE ||
+      process.env.SHIPROCKET_PICKUP_PINCODE ||
+      '560054';
     try {
       const res = await shiprocketFetch(
         `${BASE}/courier/serviceability/?pickup_postcode=${pickupPincode}&delivery_postcode=110001&weight=0.5&cod=1`
@@ -276,7 +279,9 @@ export async function testShiprocketConnection(): Promise<ConnectionTestResponse
  */
 export async function checkPincodeServiceability(
   deliveryPincode: string,
-  pickupPincode = process.env.SHIPROCKET_PICKUP_PINCODE || '400001',
+  pickupPincode = process.env.NEXT_PUBLIC_SHIPROCKET_PICKUP_PINCODE ||
+    process.env.SHIPROCKET_PICKUP_PINCODE ||
+    '560054',
   cod = 1,
   weight = '0.5'
 ): Promise<ServiceabilityResponse> {
@@ -348,7 +353,9 @@ export async function checkPincodeServiceability(
  */
 export async function getShipmentRates(
   deliveryPincode: string,
-  pickupPincode = process.env.SHIPROCKET_PICKUP_PINCODE || '400001',
+  pickupPincode = process.env.NEXT_PUBLIC_SHIPROCKET_PICKUP_PINCODE ||
+    process.env.SHIPROCKET_PICKUP_PINCODE ||
+    '560054',
   weight = 0.5,
   cod = 1
 ): Promise<ShipmentRatesResponse> {
