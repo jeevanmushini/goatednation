@@ -58,18 +58,29 @@ export async function POST(req: NextRequest) {
     const timestamp = Date.now();
     const safeFileName = `${timestamp}-${baseName}${ext}`.toLowerCase();
 
-    // --- Ensure uploads directory exists ---
-    const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
-    if (!existsSync(uploadsDir)) {
-      await mkdir(uploadsDir, { recursive: true });
+    // --- Prepare buffer and determine storage strategy ---
+    const buffer = Buffer.from(await file.arrayBuffer());
+    let publicUrl = '';
+
+    try {
+      // 1. Attempt writing to public/uploads (local development or writable disk)
+      const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
+      if (!existsSync(uploadsDir)) {
+        await mkdir(uploadsDir, { recursive: true });
+      }
+
+      const filePath = path.join(uploadsDir, safeFileName);
+      await writeFile(filePath, buffer);
+      publicUrl = `/uploads/${safeFileName}`;
+    } catch (diskError) {
+      // 2. Fallback to inline Base64 Data URL for serverless/read-only runtimes (e.g. Vercel)
+      console.warn(
+        '[Media Upload] Local filesystem read-only or unwritable. Falling back to base64 Data URL:',
+        diskError
+      );
+      publicUrl = `data:${file.type};base64,${buffer.toString('base64')}`;
     }
 
-    // --- Write file to disk ---
-    const filePath = path.join(uploadsDir, safeFileName);
-    const buffer = Buffer.from(await file.arrayBuffer());
-    await writeFile(filePath, buffer);
-
-    const publicUrl = `/uploads/${safeFileName}`;
     const sizeKb = (file.size / 1024).toFixed(0);
     const sizeLabel = file.size > 1024 * 1024
       ? `${(file.size / 1024 / 1024).toFixed(1)} MB`
@@ -87,7 +98,10 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error('[Media Upload] Error:', error);
     return NextResponse.json(
-      { success: false, error: 'Internal server error while uploading file.' },
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Internal server error while uploading file.',
+      },
       { status: 500 }
     );
   }

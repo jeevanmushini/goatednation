@@ -16,18 +16,26 @@ export async function GET(req: NextRequest) {
     }
 
     if (!token) {
-      return NextResponse.json(
-        { success: false, error: 'Not authenticated. No token provided.' },
-        { status: 401 }
-      );
+      return NextResponse.json({
+        success: false,
+        user: null,
+        isAuthenticated: false,
+        role: 'GUEST',
+        isAdmin: false,
+        message: 'No active session token provided.',
+      });
     }
 
     const payload = verifyJwt(token);
     if (!payload) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid or expired token.' },
-        { status: 401 }
-      );
+      return NextResponse.json({
+        success: false,
+        user: null,
+        isAuthenticated: false,
+        role: 'GUEST',
+        isAdmin: false,
+        message: 'Invalid or expired session token.',
+      });
     }
 
     const userRecord = findUserById(payload.id);
