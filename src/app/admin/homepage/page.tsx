@@ -16,6 +16,7 @@ import {
   Sparkles,
   Plus,
   Trash2,
+  Wand2,
 } from 'lucide-react';
 import { useCmsStore } from '../../../lib/cms/cmsStore';
 import ImageInputWithUpload from '../../../components/admin/ImageInputWithUpload';
@@ -298,6 +299,13 @@ export default function AdminHomepageCmsPage() {
                   onChange={(val) => updateHeroBottom(currentBottom.id, { image: val })}
                   category="products"
                 />
+
+                <p className="text-[11px] font-mono text-[#555555] bg-[#F7F7F7] p-2.5 rounded-lg border border-[#E5E5E5] flex items-start space-x-2">
+                  <Wand2 className="w-4 h-4 text-[#FF4D00] shrink-0 mt-0.5" />
+                  <span>
+                    <strong>Floating 3D Silhouette Tip:</strong> These pants float in 3D over the hero banner. Click <strong>Cutout (Remove BG)</strong> above to make solid white backdrops transparent, or use free AI tools like <a href="https://www.remove.bg" target="_blank" rel="noreferrer" className="underline font-bold text-black hover:text-[#FF4D00]">remove.bg</a> for room/model photos.
+                  </span>
+                </p>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>

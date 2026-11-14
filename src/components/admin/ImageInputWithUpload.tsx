@@ -10,9 +10,12 @@ import {
   Loader2,
   CheckCircle,
   AlertCircle,
+  Wand2,
+  Sparkles,
 } from 'lucide-react';
 import { useCmsStore } from '../../lib/cms/cmsStore';
 import { compressImage } from '../../lib/utils/imageCompressor';
+import { removeImageBackground } from '../../lib/utils/backgroundRemover';
 
 interface ImageInputWithUploadProps {
   label: string;
@@ -38,8 +41,41 @@ export default function ImageInputWithUpload({
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isRemovingBg, setIsRemovingBg] = useState(false);
+  const [bgRemovedNotice, setBgRemovedNotice] = useState<string | null>(null);
+  const [autoRemoveBg, setAutoRemoveBg] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleRemoveBackground = async () => {
+    if (!value) return;
+    setIsRemovingBg(true);
+    setUploadError(null);
+    try {
+      const result = await removeImageBackground(value, { tolerance: 38 });
+      onChange(result.dataUrl);
+
+      // Register the cutout in CMS media store
+      addMedia({
+        name: 'cutout-silhouette.png',
+        url: result.dataUrl,
+        category,
+        size: `${Math.round(result.blob.size / 1024)} KB`,
+      });
+
+      setBgRemovedNotice(
+        `Background removed! (${result.pixelsCleared.toLocaleString()} pixels cleared)`
+      );
+      setTimeout(() => setBgRemovedNotice(null), 4000);
+    } catch (err) {
+      console.error('[BackgroundRemover] Error:', err);
+      setUploadError(
+        'Failed to auto-remove background. Ensure image has a solid/white studio backdrop, or upload a transparent PNG from remove.bg.'
+      );
+    } finally {
+      setIsRemovingBg(false);
+    }
+  };
 
   const handleFileUpload = async (file: File) => {
     // Validate
@@ -70,6 +106,29 @@ export default function ImageInputWithUpload({
         setUploadProgress(35);
       } catch (compErr) {
         console.warn('[ImageInputWithUpload] Compression skipped, using original:', compErr);
+      }
+
+      // 2. Optional Auto Background Removal on Upload (Solid/Studio Backdrops)
+      if (autoRemoveBg) {
+        try {
+          setUploadProgress(45);
+          const cutout = await removeImageBackground(uploadTargetFile, { tolerance: 38 });
+          fallbackDataUrl = cutout.dataUrl;
+          uploadTargetFile = new File(
+            [cutout.blob],
+            uploadTargetFile.name.replace(/\.[^.]+$/, '.png'),
+            {
+              type: 'image/png',
+              lastModified: Date.now(),
+            }
+          );
+          setBgRemovedNotice(
+            `Background removed! (${cutout.pixelsCleared.toLocaleString()} pixels cleared)`
+          );
+          setTimeout(() => setBgRemovedNotice(null), 4000);
+        } catch (bgErr) {
+          console.warn('[ImageInputWithUpload] Auto background removal skipped:', bgErr);
+        }
       }
 
       const formData = new FormData();
@@ -209,38 +268,90 @@ export default function ImageInputWithUpload({
 
       {/* Selected Image Preview (if value exists) */}
       {value && (
-        <div className="flex items-center space-x-3 p-2 bg-[#FAFAFA] border border-[#E5E5E5] rounded-xl">
-          <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-[#EEEEEE] shrink-0 border border-[#E0E0E0]">
-            <Image
-              src={value}
-              alt="Preview"
-              fill
-              sizes="48px"
-              className="object-cover"
-              unoptimized={value.startsWith('/uploads/') || value.startsWith('data:')}
-            />
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="text-[11px] font-mono text-black truncate font-medium">{value}</div>
-            <div className="text-[9px] font-mono text-[#16A34A] flex items-center space-x-1 mt-0.5 font-bold">
-              <CheckCircle className="w-2.5 h-2.5" />
-              <span>Image Active</span>
+        <div className="space-y-2">
+          <div className="flex items-center space-x-3 p-2 bg-[#FAFAFA] border border-[#E5E5E5] rounded-xl">
+            {/* Checkerboard container to clearly visualize transparent background */}
+            <div
+              className="relative w-14 h-14 rounded-lg overflow-hidden shrink-0 border border-[#E0E0E0]"
+              style={{
+                backgroundImage:
+                  'linear-gradient(45deg, #EAEAEA 25%, transparent 25%), linear-gradient(-45deg, #EAEAEA 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #EAEAEA 75%), linear-gradient(-45deg, transparent 75%, #EAEAEA 75%)',
+                backgroundSize: '8px 8px',
+                backgroundPosition: '0 0, 0 4px, 4px -4px, -4px 0px',
+                backgroundColor: '#FFFFFF',
+              }}
+            >
+              <Image
+                src={value}
+                alt="Preview"
+                fill
+                sizes="56px"
+                className="object-contain"
+                unoptimized={value.startsWith('/uploads/') || value.startsWith('data:')}
+              />
             </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-[11px] font-mono text-black truncate font-medium">{value}</div>
+              <div className="text-[9px] font-mono text-[#16A34A] flex items-center space-x-1 mt-0.5 font-bold">
+                <CheckCircle className="w-2.5 h-2.5" />
+                <span>Image Active</span>
+              </div>
+            </div>
+
+            {/* Remove Background Button */}
+            <button
+              type="button"
+              onClick={handleRemoveBackground}
+              disabled={isRemovingBg}
+              className="px-2.5 py-1.5 rounded-lg bg-black hover:bg-neutral-800 text-white font-mono text-[10px] font-bold uppercase flex items-center space-x-1.5 transition-all shadow-sm active:scale-95 disabled:opacity-50 shrink-0"
+              title="Make White or Solid Background Transparent"
+            >
+              {isRemovingBg ? (
+                <Loader2 className="w-3 h-3 animate-spin text-white" />
+              ) : (
+                <Wand2 className="w-3 h-3 text-[#FF4D00]" />
+              )}
+              <span>{isRemovingBg ? 'Clearing...' : 'Cutout (Remove BG)'}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => onChange('')}
+              className="p-1 rounded-md text-[#888888] hover:text-[#DC2626] transition-colors"
+              title="Clear Image"
+            >
+              <X className="w-4 h-4" />
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={() => onChange('')}
-            className="p-1 rounded-md text-[#888888] hover:text-[#DC2626] transition-colors"
-            title="Clear Image"
-          >
-            <X className="w-4 h-4" />
-          </button>
+
+          {bgRemovedNotice && (
+            <div className="p-2 rounded-lg bg-[#16A34A]/10 border border-[#16A34A]/30 text-[#16A34A] text-[11px] font-mono flex items-center space-x-1.5 animate-fadeIn">
+              <Sparkles className="w-3.5 h-3.5 shrink-0" />
+              <span>{bgRemovedNotice}</span>
+            </div>
+          )}
         </div>
       )}
 
       {/* Mode: LAPTOP FILE UPLOAD */}
       {mode === 'upload' && (
-        <div>
+        <div className="space-y-2">
+          {/* Quick toggle for auto-removing white studio background on upload */}
+          <div className="flex items-center justify-between px-1">
+            <label className="flex items-center space-x-2 text-[10px] sm:text-[11px] font-mono text-[#444444] cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={autoRemoveBg}
+                onChange={(e) => setAutoRemoveBg(e.target.checked)}
+                className="rounded border-[#CCCCCC] text-black focus:ring-0 accent-black cursor-pointer"
+              />
+              <span className="flex items-center space-x-1 font-medium">
+                <Wand2 className="w-3 h-3 text-[#FF4D00]" />
+                <span>Auto-remove white background on upload (Cutout)</span>
+              </span>
+            </label>
+            <span className="text-[9px] font-mono text-[#888888]">Studio/Solid backdrops</span>
+          </div>
           <input
             ref={fileInputRef}
             type="file"
