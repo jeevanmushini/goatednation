@@ -368,15 +368,22 @@ export const ZeninHeroFloatingPants: React.FC = () => {
                       transition: { duration: 0.25, ease: 'easeOut' },
                     }}
                   >
-                    <Image
-                      src={item.image}
-                      alt={item.name}
-                      fill
-                      sizes="(max-width: 640px) 140px, (max-width: 1024px) 240px, 280px"
-                      className="object-contain pointer-events-none transition-all duration-300 [filter:drop-shadow(0_6px_8px_rgba(0,0,0,0.18))_drop-shadow(0_18px_24px_rgba(0,0,0,0.16))_drop-shadow(0_32px_42px_rgba(0,0,0,0.10))] group-hover:[filter:drop-shadow(0_10px_12px_rgba(0,0,0,0.22))_drop-shadow(0_26px_34px_rgba(0,0,0,0.18))_drop-shadow(0_45px_55px_rgba(0,0,0,0.12))]"
-                      priority={isCenter}
-                      draggable={false}
-                    />
+                    {item.image ? (
+                      <Image
+                        src={item.image}
+                        alt={item.name}
+                        fill
+                        sizes="(max-width: 640px) 140px, (max-width: 1024px) 240px, 280px"
+                        className="object-contain pointer-events-none transition-all duration-300 [filter:drop-shadow(0_6px_8px_rgba(0,0,0,0.18))_drop-shadow(0_18px_24px_rgba(0,0,0,0.16))_drop-shadow(0_32px_42px_rgba(0,0,0,0.10))] group-hover:[filter:drop-shadow(0_10px_12px_rgba(0,0,0,0.22))_drop-shadow(0_26px_34px_rgba(0,0,0,0.18))_drop-shadow(0_45px_55px_rgba(0,0,0,0.12))]"
+                        priority={isCenter}
+                        draggable={false}
+                        unoptimized={item.image.startsWith('data:') || item.image.startsWith('/uploads/')}
+                      />
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center bg-black/5 rounded-2xl border border-dashed border-[#CCCCCC] text-[#888888] font-mono text-xs">
+                        <span>Drop Image Here</span>
+                      </div>
+                    )}
                   </motion.div>
 
                   {/* Dynamic Studio Ground Shadow Ellipse anchored beneath each pant */}
