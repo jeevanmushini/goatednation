@@ -106,6 +106,7 @@ interface CmsState {
   // Publishing & Reset
   publishChanges: () => void;
   resetToDefaults: () => void;
+  syncFromServer: () => Promise<void>;
 }
 
 const memoryFallbackMap = new Map<string, string>();
@@ -458,6 +459,44 @@ const createCmsStore = () =>
           lastPublishedAt: new Date().toISOString(),
         });
       },
+
+      syncFromServer: async () => {
+        if (typeof window === 'undefined' || !window.location?.origin) return;
+        try {
+          const res = await fetch('/api/cms', { cache: 'no-store' });
+          if (res.ok) {
+            const json = await res.json();
+            if (json.success && json.data) {
+              const serverData = json.data;
+              const localDraft = get().isDraft;
+              // If local user is currently editing a draft, do not clobber it
+              if (localDraft) return;
+
+              set((prev) => ({
+                ...prev,
+                heroSlides: serverData.heroSlides || prev.heroSlides,
+                categories: serverData.categories || prev.categories,
+                products: serverData.products || prev.products,
+                banners: serverData.banners || prev.banners,
+                brandStory: serverData.brandStory || prev.brandStory,
+                newsletter: serverData.newsletter || prev.newsletter,
+                sections: serverData.sections || prev.sections,
+                settings: serverData.settings || prev.settings,
+                navigation: serverData.navigation || prev.navigation,
+                media: serverData.media || prev.media,
+                heroBottoms: serverData.heroBottoms || prev.heroBottoms,
+                stackCards: serverData.stackCards || prev.stackCards,
+                editorialBanner: serverData.editorialBanner || prev.editorialBanner,
+                announcement: serverData.announcement || prev.announcement,
+                lastPublishedAt: serverData.lastPublishedAt || prev.lastPublishedAt,
+                isDraft: false,
+              }));
+            }
+          }
+        } catch (err) {
+          console.warn('[CMS Store] Background sync with server skipped:', err);
+        }
+      },
     }),
     {
       name: 'animestreet-cms-data',
@@ -514,6 +553,16 @@ globalForCms.__ANIMESTREET_CMS_STORE__ = useCmsStore;
 
 if (typeof window !== 'undefined') {
   (window as unknown as { __CMS_STORE__: CmsStoreType }).__CMS_STORE__ = useCmsStore;
+  // Automatically sync with published server CMS state on device load
+  if (window.location?.origin) {
+    setTimeout(() => {
+      try {
+        useCmsStore.getState().syncFromServer?.();
+      } catch {
+        // ignore
+      }
+    }, 50);
+  }
 }
 
 
