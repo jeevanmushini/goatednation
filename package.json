@@ -10,8 +10,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node scripts/test-cms-sync.mjs && node scripts/test-mobile-animations.mjs",
-    "test:mobile": "node scripts/test-mobile-animations.mjs"
+    "test": "node scripts/test-cms-sync.mjs && node scripts/test-mobile-animations.mjs && node scripts/test-full-system.mjs",
+    "test:mobile": "node scripts/test-mobile-animations.mjs",
+    "test:system": "node scripts/test-full-system.mjs"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.3.4",
