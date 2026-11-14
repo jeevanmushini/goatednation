@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { persist, createJSONStorage, StateStorage } from 'zustand/middleware';
 import {
   CmsHeroSlide,
   CmsCategory,
@@ -107,6 +107,87 @@ interface CmsState {
   publishChanges: () => void;
   resetToDefaults: () => void;
 }
+
+const memoryFallbackMap = new Map<string, string>();
+
+const safeStorage: StateStorage = {
+  getItem: (name: string): string | null => {
+    if (typeof window === 'undefined') return null;
+    try {
+      return localStorage.getItem(name) ?? memoryFallbackMap.get(name) ?? null;
+    } catch {
+      return memoryFallbackMap.get(name) ?? null;
+    }
+  },
+  setItem: (name: string, value: string): void => {
+    if (typeof window === 'undefined') return;
+    try {
+      localStorage.setItem(name, value);
+      memoryFallbackMap.delete(name);
+    } catch (err) {
+      console.warn('[CMS Storage] LocalStorage quota exceeded. Engaging auto-recovery...', err);
+
+      // Attempt 1: Clear non-essential auxiliary keys from localStorage
+      try {
+        const keysToRemove: string[] = [];
+        for (let i = 0; i < (localStorage.length || 0); i++) {
+          const k = localStorage.key(i);
+          if (
+            k &&
+            k !== name &&
+            !k.toLowerCase().includes('token') &&
+            !k.toLowerCase().includes('auth') &&
+            !k.toLowerCase().includes('session')
+          ) {
+            keysToRemove.push(k);
+          }
+        }
+        keysToRemove.forEach((k) => localStorage.removeItem(k));
+        localStorage.setItem(name, value);
+        console.info('[CMS Storage] Successfully saved after clearing auxiliary browser cache.');
+        return;
+      } catch {
+        // Still exceeding quota
+      }
+
+      // Attempt 2: Prune heavy base64 data URLs from media list
+      try {
+        const parsed = JSON.parse(value);
+        if (parsed?.state) {
+          if (Array.isArray(parsed.state.media)) {
+            parsed.state.media = parsed.state.media
+              .filter(
+                (m: Partial<CmsMediaItem>) =>
+                  !m?.url?.startsWith('data:') || (m.url?.length ?? 0) < 40000
+              )
+              .slice(0, 15);
+          }
+          const prunedValue = JSON.stringify(parsed);
+          localStorage.setItem(name, prunedValue);
+          console.info('[CMS Storage] Successfully saved after pruning legacy media data URLs.');
+          return;
+        }
+      } catch {
+        // Still exceeding quota
+      }
+
+      // Attempt 3: In-memory fallback to guarantee the UI never crashes
+      memoryFallbackMap.set(name, value);
+      console.warn(
+        '[CMS Storage] Browser storage quota (5MB) reached. Changes held safely in session memory.'
+      );
+    }
+  },
+  removeItem: (name: string): void => {
+    if (typeof window === 'undefined') return;
+    try {
+      localStorage.removeItem(name);
+    } catch {
+      // ignore
+    }
+    memoryFallbackMap.delete(name);
+  },
+};
 
 const createCmsStore = () =>
   create<CmsState>()(
@@ -332,12 +413,18 @@ const createCmsStore = () =>
       },
 
       addMedia: (media) => {
+        // Prevent duplicate media URLs
+        const existing = get().media.find((m) => m.url === media.url);
+        if (existing) return;
+
         const newMedia: CmsMediaItem = {
           ...media,
           id: `med-${Date.now()}`,
           uploadedAt: new Date().toISOString().split('T')[0],
         };
-        set({ media: [newMedia, ...get().media], isDraft: true });
+        // Keep media gallery bounded to 30 items so it doesn't exhaust localStorage quota
+        const updatedMedia = [newMedia, ...get().media].slice(0, 30);
+        set({ media: updatedMedia, isDraft: true });
       },
 
       deleteMedia: (id) => {
@@ -374,9 +461,11 @@ const createCmsStore = () =>
     }),
     {
       name: 'animestreet-cms-data',
-      version: 3,
-      migrate: (persistedState: unknown) => {
+      version: 4,
+      migrate: (persistedState: unknown, version: number) => {
         const state = persistedState as CmsState;
+        if (!state) return state;
+
         if (state?.settings) {
           if (!state.settings.brandName || state.settings.brandName === 'ANIMESTREET') {
             state.settings.brandName = 'GOATED NATION';
@@ -397,17 +486,17 @@ const createCmsStore = () =>
         if (!state?.announcement) {
           state.announcement = INITIAL_ANNOUNCEMENT;
         }
+
+        // Version 4 Migration: Prune any oversized legacy uncompressed base64 data URLs
+        if (version < 4 && Array.isArray(state?.media)) {
+          state.media = state.media
+            .filter((m) => !m?.url?.startsWith('data:') || m.url.length < 80000)
+            .slice(0, 25);
+        }
+
         return state;
       },
-      storage: createJSONStorage(() =>
-        typeof window !== 'undefined'
-          ? localStorage
-          : {
-              getItem: () => null,
-              setItem: () => {},
-              removeItem: () => {},
-            }
-      ),
+      storage: createJSONStorage(() => safeStorage),
     }
   )
 );

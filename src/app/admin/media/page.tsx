@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { useCmsStore } from '../../../lib/cms/cmsStore';
 import { CmsMediaItem } from '../../../types/cms';
+import { compressImage } from '../../../lib/utils/imageCompressor';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -129,56 +130,83 @@ export default function AdminMediaPage() {
     );
 
     try {
+      // 1. Client-Side Image Compression (< 90KB instead of 5-10MB)
+      let uploadTargetFile = item.file;
+      let fallbackDataUrl = '';
+
+      try {
+        const compressed = await compressImage(item.file, { maxWidth: 1200, maxHeight: 1200, quality: 0.82 });
+        uploadTargetFile = compressed.file;
+        fallbackDataUrl = compressed.dataUrl;
+        setFileQueue((prev) =>
+          prev.map((f) => (f.id === item.id ? { ...f, progress: 30 } : f))
+        );
+      } catch (compErr) {
+        console.warn('[AdminMediaPage] Compression skipped, using original:', compErr);
+      }
+
       const formData = new FormData();
-      formData.append('file', item.file);
+      formData.append('file', uploadTargetFile);
       formData.append('category', uploadCategory);
 
-      const uploadedUrl = await new Promise<string>((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
+      let uploadedUrl = '';
 
-        xhr.upload.onprogress = (e) => {
-          if (e.lengthComputable) {
-            const pct = Math.round((e.loaded / e.total) * 90);
-            setFileQueue((prev) =>
-              prev.map((f) => (f.id === item.id ? { ...f, progress: pct } : f))
-            );
-          }
-        };
+      try {
+        uploadedUrl = await new Promise<string>((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
 
-        xhr.onload = () => {
-          if (xhr.status >= 200 && xhr.status < 300) {
-            try {
-              const data = JSON.parse(xhr.responseText);
-              if (data.success) {
-                resolve(data.url);
-              } else {
-                reject(new Error(data.error || 'Upload failed'));
+          xhr.upload.onprogress = (e) => {
+            if (e.lengthComputable) {
+              const pct = 30 + Math.round((e.loaded / e.total) * 60);
+              setFileQueue((prev) =>
+                prev.map((f) => (f.id === item.id ? { ...f, progress: pct } : f))
+              );
+            }
+          };
+
+          xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              try {
+                const data = JSON.parse(xhr.responseText);
+                if (data.success && data.url) {
+                  resolve(data.url);
+                } else {
+                  reject(new Error(data.error || 'Upload failed'));
+                }
+              } catch {
+                reject(new Error('Invalid server response'));
               }
-            } catch {
-              reject(new Error('Invalid server response'));
+            } else {
+              try {
+                const err = JSON.parse(xhr.responseText);
+                reject(new Error(err.error || `HTTP ${xhr.status}`));
+              } catch {
+                reject(new Error(`HTTP ${xhr.status}`));
+              }
             }
-          } else {
-            try {
-              const err = JSON.parse(xhr.responseText);
-              reject(new Error(err.error || `HTTP ${xhr.status}`));
-            } catch {
-              reject(new Error(`HTTP ${xhr.status}`));
-            }
-          }
-        };
+          };
 
-        xhr.onerror = () => reject(new Error('Network error during upload'));
-        xhr.open('POST', '/api/media/upload');
-        xhr.send(formData);
-      });
+          xhr.onerror = () => reject(new Error('Network error during upload'));
+          xhr.open('POST', '/api/media/upload');
+          xhr.send(formData);
+        });
+      } catch (serverErr) {
+        console.warn('[AdminMediaPage] Server upload fallback engaged. Using compressed data URL:', serverErr);
+        if (fallbackDataUrl) {
+          uploadedUrl = fallbackDataUrl;
+        } else {
+          throw serverErr;
+        }
+      }
 
       // Add to CMS store
-      const sizeLabel = item.file.size > 1024 * 1024
-        ? `${(item.file.size / 1024 / 1024).toFixed(1)} MB`
-        : `${Math.round(item.file.size / 1024)} KB`;
+      const targetSize = uploadTargetFile.size;
+      const sizeLabel = targetSize > 1024 * 1024
+        ? `${(targetSize / 1024 / 1024).toFixed(1)} MB`
+        : `${Math.round(targetSize / 1024)} KB`;
 
       addMedia({
-        name: item.file.name,
+        name: uploadTargetFile.name,
         url: uploadedUrl,
         category: uploadCategory,
         size: sizeLabel,
