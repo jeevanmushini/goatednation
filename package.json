@@ -10,7 +10,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node scripts/test-cms-sync.mjs && node scripts/test-mobile-animations.mjs && node scripts/test-full-system.mjs && node scripts/test-quota-protection.mjs",
+    "test": "node scripts/test-cms-sync.mjs && node scripts/test-mobile-animations.mjs && node scripts/test-full-system.mjs && node scripts/test-quota-protection.mjs && node scripts/test-cloudinary.mjs",
     "test:mobile": "node scripts/test-mobile-animations.mjs",
     "test:system": "node scripts/test-full-system.mjs"
   },

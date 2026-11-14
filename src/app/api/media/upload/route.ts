@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { writeFile, mkdir } from 'fs/promises';
 import { existsSync } from 'fs';
 import path from 'path';
+import { uploadToCloudinary, isCloudinaryConfigured } from '../../../../lib/cloudinary';
 
 // Allowed MIME types and extensions
 const ALLOWED_TYPES = [
@@ -61,24 +62,41 @@ export async function POST(req: NextRequest) {
     // --- Prepare buffer and determine storage strategy ---
     const buffer = Buffer.from(await file.arrayBuffer());
     let publicUrl = '';
+    let storageProvider = 'local';
 
-    try {
-      // 1. Attempt writing to public/uploads (local development or writable disk)
-      const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
-      if (!existsSync(uploadsDir)) {
-        await mkdir(uploadsDir, { recursive: true });
+    // 1. Primary Cloud Strategy: Cloudinary Global CDN
+    if (isCloudinaryConfigured()) {
+      try {
+        const cloudResult = await uploadToCloudinary(buffer, file.type, category, safeFileName);
+        publicUrl = cloudResult.url;
+        storageProvider = 'cloudinary';
+      } catch (cloudErr) {
+        console.warn('[Media Upload] Cloudinary upload failed, falling back:', cloudErr);
       }
+    }
 
-      const filePath = path.join(uploadsDir, safeFileName);
-      await writeFile(filePath, buffer);
-      publicUrl = `/uploads/${safeFileName}`;
-    } catch (diskError) {
-      // 2. Fallback to inline Base64 Data URL for serverless/read-only runtimes (e.g. Vercel)
-      console.warn(
-        '[Media Upload] Local filesystem read-only or unwritable. Falling back to base64 Data URL:',
-        diskError
-      );
-      publicUrl = `data:${file.type};base64,${buffer.toString('base64')}`;
+    // 2. Secondary Strategy: Write to local disk if Cloudinary not configured or failed
+    if (!publicUrl) {
+      try {
+        // Attempt writing to public/uploads (local development or writable disk)
+        const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
+        if (!existsSync(uploadsDir)) {
+          await mkdir(uploadsDir, { recursive: true });
+        }
+
+        const filePath = path.join(uploadsDir, safeFileName);
+        await writeFile(filePath, buffer);
+        publicUrl = `/uploads/${safeFileName}`;
+        storageProvider = 'disk';
+      } catch (diskError) {
+        // 3. Fallback to inline Base64 Data URL for serverless/read-only runtimes
+        console.warn(
+          '[Media Upload] Local filesystem read-only. Falling back to base64 Data URL:',
+          diskError
+        );
+        publicUrl = `data:${file.type};base64,${buffer.toString('base64')}`;
+        storageProvider = 'data-url';
+      }
     }
 
     const sizeKb = (file.size / 1024).toFixed(0);
@@ -94,6 +112,7 @@ export async function POST(req: NextRequest) {
       size: sizeLabel,
       category,
       mimeType: file.type,
+      storageProvider,
     });
   } catch (error) {
     console.error('[Media Upload] Error:', error);
