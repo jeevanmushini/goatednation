@@ -3,6 +3,11 @@
 import React from 'react';
 import Image from 'next/image';
 import { useCmsStore } from '../../lib/cms/cmsStore';
+import { CmsEditorialBanner } from '../../types/cms';
+
+interface ZeninEditorialBannerProps {
+  initialBanner?: CmsEditorialBanner;
+}
 
 const FALLBACK_BANNER = {
   title: 'GOATED NATION STREET ARCHIVE',
@@ -12,9 +17,14 @@ const FALLBACK_BANNER = {
   ctaText: 'INSTAGRAM',
 };
 
-export const ZeninEditorialBanner: React.FC = () => {
+export const ZeninEditorialBanner: React.FC<ZeninEditorialBannerProps> = ({ initialBanner }) => {
   const cmsBanner = useCmsStore((state) => state.editorialBanner);
-  const banner = cmsBanner && cmsBanner.image ? cmsBanner : FALLBACK_BANNER;
+  const banner =
+    cmsBanner && cmsBanner.image
+      ? cmsBanner
+      : initialBanner && initialBanner.image
+      ? initialBanner
+      : FALLBACK_BANNER;
 
   return (
     <section className="relative w-full h-[450px] sm:h-[550px] lg:h-[650px] overflow-hidden select-none">

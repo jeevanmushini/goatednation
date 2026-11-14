@@ -468,6 +468,45 @@ const createCmsStore = () =>
             const json = await res.json();
             if (json.success && json.data) {
               const serverData = json.data;
+              const currentHeroBottoms = get().heroBottoms;
+
+              // Check if client has custom items (e.g. user uploaded hoodies or customized bottom images)
+              const hasCustomHero =
+                currentHeroBottoms &&
+                currentHeroBottoms.some(
+                  (b) => b.image && !b.image.includes('pant1s.png') && !b.image.includes('pant2.png')
+                );
+
+              if (json.source === 'default' && hasCustomHero) {
+                // Auto-seed server storage with client customizations for persistent zero-flicker SSR
+                try {
+                  const state = get();
+                  await fetch('/api/cms', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      heroSlides: state.heroSlides,
+                      categories: state.categories,
+                      products: state.products,
+                      banners: state.banners,
+                      brandStory: state.brandStory,
+                      newsletter: state.newsletter,
+                      sections: state.sections,
+                      settings: state.settings,
+                      navigation: state.navigation,
+                      media: state.media,
+                      heroBottoms: state.heroBottoms,
+                      stackCards: state.stackCards,
+                      editorialBanner: state.editorialBanner,
+                      announcement: state.announcement,
+                    }),
+                  });
+                } catch {
+                  // ignore
+                }
+                return;
+              }
+
               const localDraft = get().isDraft;
               // If local user is currently editing a draft, do not clobber it
               if (localDraft) return;

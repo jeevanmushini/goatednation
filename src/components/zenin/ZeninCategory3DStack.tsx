@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo, useSyncExternalStore } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, MoveHorizontal } from 'lucide-react';
 import { useCmsStore } from '../../lib/cms/cmsStore';
+import { CmsStackCardItem } from '../../types/cms';
 
 interface CardStackItem {
   id: string;
@@ -13,6 +14,10 @@ interface CardStackItem {
   subtitle: string;
   image: string;
   link: string;
+}
+
+interface ZeninCategory3DStackProps {
+  initialCards?: CmsStackCardItem[];
 }
 
 const STACK_ITEMS: CardStackItem[] = [
@@ -50,7 +55,12 @@ const STACK_ITEMS: CardStackItem[] = [
   },
 ];
 
-export const ZeninCategory3DStack: React.FC = () => {
+export const ZeninCategory3DStack: React.FC<ZeninCategory3DStackProps> = ({ initialCards }) => {
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
   const [activeIndex, setActiveIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -64,9 +74,6 @@ export const ZeninCategory3DStack: React.FC = () => {
   const hasMoved = useRef(false);
 
   const cmsStackCards = useCmsStore((state) => state.stackCards);
-  const items = cmsStackCards && cmsStackCards.length > 0 ? cmsStackCards : STACK_ITEMS;
-  const safeActiveIndex = Math.min(activeIndex, items.length - 1);
-  const current = items[safeActiveIndex] || items[0] || STACK_ITEMS[0];
 
   useEffect(() => {
     const checkMobile = () => {
@@ -76,6 +83,32 @@ export const ZeninCategory3DStack: React.FC = () => {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  const items: CardStackItem[] = useMemo(() => {
+    const rawList =
+      (mounted && cmsStackCards && cmsStackCards.length > 0)
+        ? cmsStackCards
+        : (initialCards && initialCards.length > 0)
+        ? initialCards
+        : (cmsStackCards && cmsStackCards.length > 0)
+        ? cmsStackCards
+        : STACK_ITEMS;
+
+    return rawList.map((c, idx) => {
+      const fb = STACK_ITEMS[idx] || STACK_ITEMS[0];
+      return {
+        id: c.id || fb.id || `s-${idx + 1}`,
+        category: c.category || fb.category,
+        title: c.title || fb.title,
+        subtitle: c.subtitle || fb.subtitle,
+        image: c.image || fb.image,
+        link: c.link || fb.link || '/collections',
+      };
+    });
+  }, [mounted, cmsStackCards, initialCards]);
+
+  const safeActiveIndex = Math.min(activeIndex, items.length - 1);
+  const current = items[safeActiveIndex] || items[0] || STACK_ITEMS[0];
 
   const handleNext = useCallback(() => {
     setActiveIndex((prev) => (prev + 1) % items.length);

@@ -3,16 +3,22 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useCmsStore } from '../../lib/cms/cmsStore';
+import { CmsAnnouncement } from '../../types/cms';
 
-export const ZeninAnnouncementBar: React.FC = () => {
+interface ZeninAnnouncementBarProps {
+  initialAnnouncement?: CmsAnnouncement;
+}
+
+export const ZeninAnnouncementBar: React.FC<ZeninAnnouncementBarProps> = ({ initialAnnouncement }) => {
   const cmsAnnouncement = useCmsStore((state) => state.announcement);
   const settings = useCmsStore((state) => state.settings);
 
-  const announcementText = cmsAnnouncement?.text || 'APPLIED AT CHECKOUT';
-  const highlightText = cmsAnnouncement?.highlightText || 'DIWALI 10% OFF';
-  const ctaText = cmsAnnouncement?.ctaText || 'SHOP NOW';
-  const ctaLink = cmsAnnouncement?.ctaLink || '/collections';
-  const countdownDays = cmsAnnouncement?.countdownDays || 2;
+  const activeAnn = cmsAnnouncement || initialAnnouncement;
+  const announcementText = activeAnn?.text || 'APPLIED AT CHECKOUT';
+  const highlightText = activeAnn?.highlightText || 'EXTRA 15% OFF ON PREPAID ORDERS';
+  const ctaText = activeAnn?.ctaText || 'SHOP NOW';
+  const ctaLink = activeAnn?.ctaLink || '/collections';
+  const countdownDays = activeAnn?.countdownDays || 2;
 
   const [secondsRemaining, setSecondsRemaining] = useState(
     countdownDays * 86400 + 14 * 3600 + 22 * 60 + 5

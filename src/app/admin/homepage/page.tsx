@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import {
   ArrowUp,
@@ -56,6 +56,54 @@ export default function AdminHomepageCmsPage() {
   const [selectedCardIndex, setSelectedCardIndex] = useState(0);
   const [activeLayoutSection, setActiveLayoutSection] = useState<string>('sec-hero');
   const [savedNotice, setSavedNotice] = useState(false);
+
+  // Background auto-save to /api/cms with 1.2s debounce to ensure SSR is always in sync with admin edits
+  const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+    autoSaveTimerRef.current = setTimeout(async () => {
+      try {
+        const state = useCmsStore.getState();
+        await fetch('/api/cms', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            heroSlides: state.heroSlides,
+            categories: state.categories,
+            products: state.products,
+            banners: state.banners,
+            brandStory: state.brandStory,
+            newsletter: state.newsletter,
+            sections: state.sections,
+            settings: state.settings,
+            navigation: state.navigation,
+            media: state.media,
+            heroBottoms: state.heroBottoms,
+            stackCards: state.stackCards,
+            editorialBanner: state.editorialBanner,
+            announcement: state.announcement,
+          }),
+        });
+      } catch {
+        // Safe failover
+      }
+    }, 1200);
+
+    return () => {
+      if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+    };
+  }, [
+    heroBottoms,
+    stackCards,
+    editorialBanner,
+    announcement,
+    heroSlides,
+    banners,
+    brandStory,
+    newsletter,
+    sections,
+  ]);
 
   const currentHero = heroSlides[0] || {};
   const currentBanner = banners[0] || {};

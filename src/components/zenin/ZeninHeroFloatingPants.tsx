@@ -1,11 +1,13 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef, useSyncExternalStore } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, MoveHorizontal, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useCmsStore } from '../../lib/cms/cmsStore';
+import { INITIAL_HERO_BOTTOMS } from '../../lib/cms/initialCmsData';
+import { CmsHeroBottomItem } from '../../types/cms';
 
 interface BottomHeroItem {
   id: string;
@@ -14,50 +16,16 @@ interface BottomHeroItem {
   link: string;
 }
 
-const DEFAULT_HERO_PANTS: BottomHeroItem[] = [
-  {
-    id: 'p-1',
-    name: 'STEALTH SHADOW / COMBAT PANTS',
-    image: 'https://zenin.co.in/cdn/shop/files/pant_7.png',
-    link: '/collections/trackpant',
-  },
-  {
-    id: 'p-2',
-    name: 'AKIRA REDLINE / PIPED SWEATPANTS',
-    image: 'https://zenin.co.in/cdn/shop/files/pant_8.png',
-    link: '/collections/trackpant',
-  },
-  {
-    id: 'p-3',
-    name: 'HEAVYWEIGHT HEATHER GREY / BARREL',
-    image: 'https://zenin.co.in/cdn/shop/files/pant2.png',
-    link: '/collections/trackpant',
-  },
-  {
-    id: 'p-4',
-    name: 'CHERRY BLOSSOM / BARREL SWEATPANTS',
-    image: 'https://zenin.co.in/cdn/shop/files/pant1s.png',
-    link: '/products/cherry-blossom-barrel-sweatpants',
-  },
-  {
-    id: 'p-5',
-    name: 'KANJI LOVE / CREAM SWEATPANTS',
-    image: 'https://zenin.co.in/cdn/shop/files/pant3ss.png',
-    link: '/products/sand-king-barrel-sweatpants',
-  },
-  {
-    id: 'p-6',
-    name: 'CYBERPUNK PURPLE / TECH SWEAT',
-    image: 'https://zenin.co.in/cdn/shop/files/pant5.png',
-    link: '/products/purple-curse-barrel-sweatpant',
-  },
-  {
-    id: 'p-7',
-    name: 'MECHA MONOCHROME / CONTRAST CARGO',
-    image: 'https://zenin.co.in/cdn/shop/files/pant6.png',
-    link: '/collections/trackpant',
-  },
-];
+interface ZeninHeroFloatingPantsProps {
+  initialBottoms?: CmsHeroBottomItem[];
+}
+
+const FALLBACK_HERO_BOTTOMS: BottomHeroItem[] = INITIAL_HERO_BOTTOMS.map((b, idx) => ({
+  id: b.id || `b-${idx + 1}`,
+  name: b.name,
+  image: b.image,
+  link: (b as { link?: string }).link || '/collections/trackpant',
+}));
 
 // Base position parameters based on relative offset from active center item (-3 to +3)
 const DESKTOP_POSITIONS: Record<number, { x: number; y: number; scale: number; rotate: number; zIndex: number; opacity: number }> = {
@@ -76,12 +44,24 @@ const MOBILE_POSITIONS: Record<number, { x: number; y: number; scale: number; ro
   [1]: { x: 56, y: 14, scale: 0.74, rotate: 8, zIndex: 16, opacity: 0.45 },
 };
 
-export const ZeninHeroFloatingPants: React.FC = () => {
+export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ initialBottoms }) => {
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
   const cmsBottoms = useCmsStore((state) => state.heroBottoms);
-  const [activeIndex, setActiveIndex] = useState(3); // Start with Cherry Blossom in center
   const [dragOffsetPx, setDragOffsetPx] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+
+  // Dynamic center index based on item count
+  const initialCenterIndex = useMemo(() => {
+    const count = (initialBottoms && initialBottoms.length) || (cmsBottoms && cmsBottoms.length) || 7;
+    return Math.floor(count / 2);
+  }, [initialBottoms, cmsBottoms]);
+
+  const [activeIndex, setActiveIndex] = useState(initialCenterIndex);
 
   const isPointerDown = useRef(false);
   const startX = useRef(0);
@@ -100,19 +80,31 @@ export const ZeninHeroFloatingPants: React.FC = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // If user updated bottoms from admin, map them
+  // Priority:
+  // 1. If mounted and cmsBottoms has items (supports live client preview/editing)
+  // 2. If initialBottoms passed from server SSR (guarantees zero-flicker on first paint)
+  // 3. cmsBottoms fallback
+  // 4. FALLBACK_HERO_BOTTOMS
   const items: BottomHeroItem[] = useMemo(() => {
-    if (!cmsBottoms || cmsBottoms.length === 0) return DEFAULT_HERO_PANTS;
-    return cmsBottoms.map((cmsItem, idx) => {
-      const def = DEFAULT_HERO_PANTS[idx] || DEFAULT_HERO_PANTS[0];
+    const rawList =
+      (mounted && cmsBottoms && cmsBottoms.length > 0)
+        ? cmsBottoms
+        : (initialBottoms && initialBottoms.length > 0)
+        ? initialBottoms
+        : (cmsBottoms && cmsBottoms.length > 0)
+        ? cmsBottoms
+        : FALLBACK_HERO_BOTTOMS;
+
+    return rawList.map((cmsItem, idx) => {
+      const fb = FALLBACK_HERO_BOTTOMS[idx] || FALLBACK_HERO_BOTTOMS[0];
       return {
-        id: cmsItem.id || `pant-${idx}`,
-        name: cmsItem.name || def.name,
-        image: cmsItem.image || def.image,
-        link: def.link || '/collections/trackpant',
+        id: cmsItem.id || fb.id || `b-${idx + 1}`,
+        name: cmsItem.name || fb.name,
+        image: cmsItem.image !== undefined ? cmsItem.image : fb.image,
+        link: (cmsItem as { link?: string }).link || fb.link || '/collections/trackpant',
       };
     });
-  }, [cmsBottoms]);
+  }, [mounted, cmsBottoms, initialBottoms]);
 
   const total = items.length;
 
@@ -226,7 +218,7 @@ export const ZeninHeroFloatingPants: React.FC = () => {
   }, []);
 
   const safeActiveIndex = Math.min(activeIndex, Math.max(0, items.length - 1));
-  const activeItem = items[safeActiveIndex] || items[0] || DEFAULT_HERO_PANTS[0];
+  const activeItem = items[safeActiveIndex] || items[0] || FALLBACK_HERO_BOTTOMS[0];
 
   // Convert pixel drag offset to a dynamic percentage shift across the arc (normalized to viewport standard)
   const dragPercentShift = isMobile
@@ -308,7 +300,7 @@ export const ZeninHeroFloatingPants: React.FC = () => {
             return (
               <motion.div
                 key={item.id}
-                layout
+                layout={mounted ? 'position' : false}
                 initial={false}
                 animate={{
                   left: `calc(50% + ${dynamicX}%)`,
@@ -415,7 +407,7 @@ export const ZeninHeroFloatingPants: React.FC = () => {
 
       {/* 3. Active Centered Pant Title & Action Link */}
       <div className="relative z-30 pt-2 pb-2 text-center pointer-events-auto">
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={activeItem.id}
             initial={{ opacity: 0, y: 6 }}
