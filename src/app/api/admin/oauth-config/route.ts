@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
         configured: !!(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET),
         clientId: process.env.GOOGLE_CLIENT_ID || '',
       },
-      callbackUrl: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/auth/oauth/callback`,
+      callbackUrl: `${process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/auth/oauth/callback`,
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Server error';

@@ -13,7 +13,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const pickupPincode = process.env.SHIPROCKET_PICKUP_PINCODE || '560054';
+    const pickupPincode =
+      process.env.PRIVATE_SHIPROCKET_PICKUP_PINCODE ||
+      process.env.NEXT_PUBLIC_SHIPROCKET_PICKUP_PINCODE ||
+      process.env.SHIPROCKET_PICKUP_PINCODE ||
+      '560054';
 
     const result = await checkPincodeServiceability(
       pincode.toString(),

@@ -10,7 +10,11 @@ const RAZORPAY_API_BASE = 'https://api.razorpay.com/v1';
 
 export function getRazorpayKeys() {
   return {
-    keyId: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || 'rzp_test_goatednation_demo',
+    keyId:
+      process.env.PRIVATE_RAZORPAY_KEY_ID ||
+      process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID ||
+      process.env.RAZORPAY_KEY_ID ||
+      'rzp_test_goatednation_demo',
     keySecret: process.env.RAZORPAY_KEY_SECRET || 'secret_goatednation_demo',
   };
 }

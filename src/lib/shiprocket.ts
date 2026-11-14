@@ -242,6 +242,7 @@ export async function testShiprocketConnection(): Promise<ConnectionTestResponse
 
     // Ping courier serviceability to verify live token access
     const pickupPincode =
+      process.env.PRIVATE_SHIPROCKET_PICKUP_PINCODE ||
       process.env.NEXT_PUBLIC_SHIPROCKET_PICKUP_PINCODE ||
       process.env.SHIPROCKET_PICKUP_PINCODE ||
       '560054';
@@ -279,7 +280,8 @@ export async function testShiprocketConnection(): Promise<ConnectionTestResponse
  */
 export async function checkPincodeServiceability(
   deliveryPincode: string,
-  pickupPincode = process.env.NEXT_PUBLIC_SHIPROCKET_PICKUP_PINCODE ||
+  pickupPincode = process.env.PRIVATE_SHIPROCKET_PICKUP_PINCODE ||
+    process.env.NEXT_PUBLIC_SHIPROCKET_PICKUP_PINCODE ||
     process.env.SHIPROCKET_PICKUP_PINCODE ||
     '560054',
   cod = 1,
@@ -353,7 +355,8 @@ export async function checkPincodeServiceability(
  */
 export async function getShipmentRates(
   deliveryPincode: string,
-  pickupPincode = process.env.NEXT_PUBLIC_SHIPROCKET_PICKUP_PINCODE ||
+  pickupPincode = process.env.PRIVATE_SHIPROCKET_PICKUP_PINCODE ||
+    process.env.NEXT_PUBLIC_SHIPROCKET_PICKUP_PINCODE ||
     process.env.SHIPROCKET_PICKUP_PINCODE ||
     '560054',
   weight = 0.5,

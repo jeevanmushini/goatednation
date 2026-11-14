@@ -458,7 +458,7 @@ export default function AdminShippingPage() {
         <div className="text-xs text-[#666666] leading-relaxed font-mono">
           <span className="text-black font-bold">Shiprocket Live Integration:</span>{' '}
           Connected with authorized JWT tokens and live courier serviceability.
-          Pickup warehouse pincode is set to <code className="text-black bg-[#EFEFEF] px-1 rounded font-bold">{process.env.NEXT_PUBLIC_SHIPROCKET_PICKUP_PINCODE || '560054'}</code>.
+          Pickup warehouse pincode is set to <code className="text-black bg-[#EFEFEF] px-1 rounded font-bold">{process.env.PRIVATE_SHIPROCKET_PICKUP_PINCODE || process.env.NEXT_PUBLIC_SHIPROCKET_PICKUP_PINCODE || '560054'}</code>.
           Real courier companies (Xpressbees, Blue Dart, Delhivery) are dynamically fetched with live rates.
         </div>
       </div>

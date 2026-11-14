@@ -9,7 +9,10 @@ export async function GET(
   const searchParams = req.nextUrl.searchParams;
   const targetRole = (searchParams.get('role') as UserRole) || 'CUSTOMER';
   const redirectTo = searchParams.get('redirect') || (targetRole === 'ADMIN' ? '/admin' : '/');
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  const siteUrl =
+    process.env.SITE_URL ||
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    'http://localhost:3000';
 
   if (provider !== 'google') {
     return NextResponse.redirect(`${siteUrl}/login?error=UnsupportedProvider`);

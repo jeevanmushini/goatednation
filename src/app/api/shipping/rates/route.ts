@@ -15,7 +15,10 @@ export async function POST(req: NextRequest) {
 
     const result = await getShipmentRates(
       pincode.toString(),
-      process.env.SHIPROCKET_PICKUP_PINCODE || '560054',
+      process.env.PRIVATE_SHIPROCKET_PICKUP_PINCODE ||
+        process.env.NEXT_PUBLIC_SHIPROCKET_PICKUP_PINCODE ||
+        process.env.SHIPROCKET_PICKUP_PINCODE ||
+        '560054',
       weight || 0.5,
       cod !== undefined ? (cod ? 1 : 0) : 1
     );
