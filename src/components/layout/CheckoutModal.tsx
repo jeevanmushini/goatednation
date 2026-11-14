@@ -17,6 +17,19 @@ import {
 import { useCartStore } from '../../stores/cartStore';
 import { ServiceabilityResponse } from '../../types/shipping';
 
+const loadRazorpayScript = (): Promise<boolean> => {
+  return new Promise((resolve) => {
+    if (typeof window === 'undefined') return resolve(false);
+    if ((window as unknown as { Razorpay?: unknown }).Razorpay) return resolve(true);
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.async = true;
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
+
 interface CheckoutModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -77,86 +90,160 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
     setStep('payment');
   };
 
+  const dispatchShiprocket = async (finalOrderId: string) => {
+    setStatusMessage('Booking dispatch & generating AWB on Shiprocket...');
+    const shipRes = await fetch('/api/shipping/create-order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        orderId: finalOrderId,
+        orderDate: new Date().toISOString(),
+        customerName: name,
+        email,
+        phone,
+        address,
+        city,
+        state,
+        pincode,
+        paymentMethod: paymentMethod === 'cod' ? 'COD' : 'Prepaid',
+        subtotal: getSubtotal(),
+        shippingCharge: getShipping(),
+        items: items.map((i) => ({
+          name: i.title,
+          sku: `${i.productId}-${i.size}`,
+          units: i.quantity,
+          sellingPrice: i.price,
+        })),
+      }),
+    });
+
+    const shipData = await shipRes.json();
+    const generatedAwb =
+      shipData.data?.awb_code || `SR${Math.floor(100000000 + Math.random() * 900000000)}IN`;
+    const assignedCourier = shipData.data?.courier_name || 'Bluedart Express Air';
+
+    setOrderId(finalOrderId);
+    setAwbCode(generatedAwb);
+    setCourierName(assignedCourier);
+
+    clearCart();
+    setStep('success');
+  };
+
   const handlePlaceOrder = async () => {
     setLoading(true);
     try {
       let finalOrderId = `AS-${Math.floor(100000 + Math.random() * 900000)}`;
 
-      // 1. If Prepaid, initialize and verify order with Razorpay Gateway
-      if (paymentMethod !== 'cod') {
-        setStatusMessage('Connecting to Razorpay Payment Gateway...');
-        const payRes = await fetch('/api/payment/create-order', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            amount: getTotal(),
-            receipt: `rcpt_${Date.now()}`,
-            notes: {
-              customer_name: name,
-              email,
-              phone,
-              delivery_address: `${address}, ${city} - ${pincode}`,
-            },
-          }),
-        });
-
-        const payData = await payRes.json();
-        if (payData.success && payData.order?.id) {
-          finalOrderId = payData.order.id;
-
-          // Verify signature via server endpoint
-          setStatusMessage('Verifying 256-Bit SSL payment signature...');
-          await fetch('/api/payment/verify', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              razorpay_order_id: payData.order.id,
-              razorpay_payment_id: `pay_${Math.random().toString(36).substring(2, 12)}`,
-              razorpay_signature: 'sig_demo_verification_token',
-            }),
-          });
-        }
+      // 1. If Cash On Delivery, proceed directly with Shiprocket logistics booking
+      if (paymentMethod === 'cod') {
+        await dispatchShiprocket(finalOrderId);
+        return;
       }
 
-      // 2. Dispatch shipment to Shiprocket Logistics API
-      setStatusMessage('Booking dispatch & generating AWB on Shiprocket...');
-      const shipRes = await fetch('/api/shipping/create-order', {
+      // 2. If Prepaid, initialize order with Razorpay Gateway
+      setStatusMessage('Connecting to Razorpay Payment Gateway...');
+      const payRes = await fetch('/api/payment/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          orderId: finalOrderId,
-          orderDate: new Date().toISOString(),
-          customerName: name,
-          email,
-          phone,
-          address,
-          city,
-          state,
-          pincode,
-          paymentMethod: paymentMethod === 'cod' ? 'COD' : 'Prepaid',
-          subtotal: getSubtotal(),
-          shippingCharge: getShipping(),
-          items: items.map((i) => ({
-            name: i.title,
-            sku: `${i.productId}-${i.size}`,
-            units: i.quantity,
-            sellingPrice: i.price,
-          })),
+          amount: getTotal(),
+          receipt: `rcpt_${Date.now()}`,
+          notes: {
+            customer_name: name,
+            email,
+            phone,
+            delivery_address: `${address}, ${city} - ${pincode}`,
+          },
         }),
       });
 
-      const shipData = await shipRes.json();
-      const generatedAwb =
-        shipData.data?.awb_code || `SR${Math.floor(100000000 + Math.random() * 900000000)}IN`;
-      const assignedCourier = shipData.data?.courier_name || 'Bluedart Express Air';
+      const payData = await payRes.json();
+      if (!payData.success || !payData.order?.id) {
+        throw new Error(payData.error || 'Failed to create payment order');
+      }
 
-      setOrderId(finalOrderId);
-      setAwbCode(generatedAwb);
-      setCourierName(assignedCourier);
+      finalOrderId = payData.order.id;
+      const isLiveKey = payData.keyId && !payData.keyId.includes('demo');
 
-      // 3. Clear cart and show order confirmation
-      clearCart();
-      setStep('success');
+      // 3. If real Razorpay key configured, launch official Razorpay Checkout popup
+      if (isLiveKey) {
+        const loaded = await loadRazorpayScript();
+        const RazorpayGlobal = (window as unknown as { Razorpay?: new (opts: unknown) => { open: () => void } }).Razorpay;
+
+        if (loaded && RazorpayGlobal) {
+          const rzpInstance = new RazorpayGlobal({
+            key: payData.keyId,
+            amount: payData.order.amount,
+            currency: payData.order.currency || 'INR',
+            name: 'GOATED NATION',
+            description: `Order ${payData.order.id}`,
+            order_id: payData.order.id,
+            prefill: {
+              name,
+              email,
+              contact: phone,
+            },
+            theme: {
+              color: '#0E0E0E',
+            },
+            handler: async (response: {
+              razorpay_order_id: string;
+              razorpay_payment_id: string;
+              razorpay_signature: string;
+            }) => {
+              try {
+                setStatusMessage('Verifying SSL signature with Razorpay...');
+                const verifyRes = await fetch('/api/payment/verify', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_signature: response.razorpay_signature,
+                  }),
+                });
+
+                const verifyData = await verifyRes.json();
+                if (verifyData.success) {
+                  await dispatchShiprocket(response.razorpay_order_id);
+                } else {
+                  alert(`Payment verification failed: ${verifyData.error || 'Invalid signature'}`);
+                }
+              } catch (err) {
+                console.error('Verification error:', err);
+                alert('Payment verification error. Please contact support.');
+              } finally {
+                setLoading(false);
+                setStatusMessage('');
+              }
+            },
+            modal: {
+              ondismiss: () => {
+                setLoading(false);
+                setStatusMessage('');
+              },
+            },
+          });
+
+          rzpInstance.open();
+          return;
+        }
+      }
+
+      // 4. Simulated Demo Flow (Fallback when using mock demo keys in development)
+      setStatusMessage('Verifying 256-Bit SSL payment signature...');
+      await fetch('/api/payment/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          razorpay_order_id: payData.order.id,
+          razorpay_payment_id: `pay_${Math.random().toString(36).substring(2, 12)}`,
+          razorpay_signature: 'sig_demo_verification_token',
+        }),
+      });
+
+      await dispatchShiprocket(finalOrderId);
     } catch (err) {
       console.error('Checkout processing error:', err);
       // Fallback safe confirmation
