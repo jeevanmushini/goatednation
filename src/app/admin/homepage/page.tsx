@@ -292,7 +292,7 @@ export default function AdminHomepageCmsPage() {
                           }
                         }}
                         className="p-1.5 rounded text-[#999999] hover:text-[#8A1616] hover:bg-[#8A1616]/10 transition-colors"
-                        title="Delete bottom"
+                        title="Delete silhouette"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -320,7 +320,7 @@ export default function AdminHomepageCmsPage() {
 
                 {/* Upload Image Section */}
                 <ImageInputWithUpload
-                  label="Pant Image (Upload from Laptop or Enter URL)"
+                  label="Silhouette Image (Upload from Laptop or Enter URL)"
                   value={currentBottom.image}
                   onChange={(val) => updateHeroBottom(currentBottom.id, { image: val })}
                   category="products"

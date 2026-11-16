@@ -20,11 +20,22 @@ interface ZeninHeroFloatingPantsProps {
   initialBottoms?: CmsHeroBottomItem[];
 }
 
+const isLegacyTrackpant = (img?: string) =>
+  !img ||
+  img.trim() === '' ||
+  img.includes('pant1s.png') ||
+  img.includes('pant2.png') ||
+  img.includes('pant3ss.png') ||
+  img.includes('pant5.png') ||
+  img.includes('pant6.png') ||
+  img.includes('pant_7.png') ||
+  img.includes('pant_8.png');
+
 const FALLBACK_HERO_BOTTOMS: BottomHeroItem[] = INITIAL_HERO_BOTTOMS.map((b, idx) => ({
   id: b.id || `b-${idx + 1}`,
   name: b.name,
   image: b.image,
-  link: (b as { link?: string }).link || '/collections/trackpant',
+  link: (b as { link?: string }).link || '/collections/hoodies',
 }));
 
 // Base position parameters based on relative offset from active center item (-3 to +3)
@@ -57,9 +68,11 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
 
   // Dynamic center index based on item count
   const initialCenterIndex = useMemo(() => {
-    const count = (initialBottoms && initialBottoms.length) || (cmsBottoms && cmsBottoms.length) || 7;
+    const count = (!mounted && initialBottoms && initialBottoms.length)
+      ? initialBottoms.length
+      : (cmsBottoms && cmsBottoms.length) || (initialBottoms && initialBottoms.length) || 7;
     return Math.floor(count / 2);
-  }, [initialBottoms, cmsBottoms]);
+  }, [initialBottoms, cmsBottoms, mounted]);
 
   const [activeIndex, setActiveIndex] = useState(initialCenterIndex);
 
@@ -81,27 +94,29 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
   }, []);
 
   // Instant zero-flicker resolution:
-  // 1. Use cmsBottoms if present (client store has user edits)
-  // 2. Fall back to initialBottoms from server SSR
-  // 3. Fall back to FALLBACK_HERO_BOTTOMS
+  // 1. During SSR and initial hydration paint (!mounted), prioritize server-provided initialBottoms.
+  // 2. Once mounted, use cmsBottoms (client store user edits) if present, otherwise initialBottoms, then FALLBACK_HERO_BOTTOMS.
+  // 3. Purge any legacy track pant images automatically.
   const items: BottomHeroItem[] = useMemo(() => {
-    const rawList =
-      (cmsBottoms && cmsBottoms.length > 0)
-        ? cmsBottoms
-        : (initialBottoms && initialBottoms.length > 0)
-        ? initialBottoms
-        : FALLBACK_HERO_BOTTOMS;
+    const rawList = !mounted
+      ? (initialBottoms && initialBottoms.length > 0 ? initialBottoms : FALLBACK_HERO_BOTTOMS)
+      : (cmsBottoms && cmsBottoms.length > 0
+          ? cmsBottoms
+          : initialBottoms && initialBottoms.length > 0
+          ? initialBottoms
+          : FALLBACK_HERO_BOTTOMS);
 
     return rawList.map((cmsItem, idx) => {
       const fb = FALLBACK_HERO_BOTTOMS[idx] || FALLBACK_HERO_BOTTOMS[0];
+      const validImage = !isLegacyTrackpant(cmsItem.image) ? (cmsItem.image as string) : fb.image;
       return {
         id: cmsItem.id || fb.id || `b-${idx + 1}`,
         name: cmsItem.name || fb.name,
-        image: cmsItem.image !== undefined ? cmsItem.image : fb.image,
-        link: (cmsItem as { link?: string }).link || fb.link || '/collections/trackpant',
+        image: validImage,
+        link: (cmsItem as { link?: string }).link || fb.link || '/collections/hoodies',
       };
     });
-  }, [cmsBottoms, initialBottoms]);
+  }, [cmsBottoms, initialBottoms, mounted]);
 
   const total = items.length;
 

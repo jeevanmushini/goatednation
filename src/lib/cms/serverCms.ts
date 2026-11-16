@@ -102,6 +102,35 @@ export async function saveToKvStore(data: PublishedCmsData): Promise<boolean> {
   }
 }
 
+function sanitizePublishedCmsData(data: PublishedCmsData): PublishedCmsData {
+  if (!data.heroBottoms || data.heroBottoms.length === 0) {
+    data.heroBottoms = INITIAL_HERO_BOTTOMS;
+  } else {
+    data.heroBottoms = data.heroBottoms.map((b, idx) => {
+      const fb = INITIAL_HERO_BOTTOMS[idx] || INITIAL_HERO_BOTTOMS[0];
+      const hasLegacyPants =
+        !b.image ||
+        b.image.trim() === '' ||
+        b.image.includes('pant1s.png') ||
+        b.image.includes('pant2.png') ||
+        b.image.includes('pant3ss.png') ||
+        b.image.includes('pant5.png') ||
+        b.image.includes('pant6.png') ||
+        b.image.includes('pant_7.png') ||
+        b.image.includes('pant_8.png');
+
+      if (hasLegacyPants) {
+        return {
+          ...fb,
+          id: b.id || fb.id,
+        };
+      }
+      return b;
+    });
+  }
+  return data;
+}
+
 /**
  * Retrieves the published CMS data for Server-Side Rendering (SSR) and API routes.
  * Guarantees zero-flicker on first page paint.
@@ -110,7 +139,7 @@ export async function getPublishedCmsData(): Promise<{ data: PublishedCmsData; s
   // 1. Try Vercel KV / Upstash Redis
   const kvData = await getFromKvStore();
   if (kvData) {
-    return { data: { ...DEFAULT_STATE, ...kvData }, source: 'kv' };
+    return { data: sanitizePublishedCmsData({ ...DEFAULT_STATE, ...kvData }), source: 'kv' };
   }
 
   // 2. Try Local File Storage
@@ -119,7 +148,7 @@ export async function getPublishedCmsData(): Promise<{ data: PublishedCmsData; s
       const raw = fs.readFileSync(CMS_STORAGE_FILE, 'utf-8');
       const parsed = JSON.parse(raw);
       if (parsed && typeof parsed === 'object') {
-        return { data: { ...DEFAULT_STATE, ...parsed }, source: 'file' };
+        return { data: sanitizePublishedCmsData({ ...DEFAULT_STATE, ...parsed }), source: 'file' };
       }
     } catch (err) {
       console.warn('[CMS Server] Failed to read local CMS storage file:', err);
@@ -129,7 +158,7 @@ export async function getPublishedCmsData(): Promise<{ data: PublishedCmsData; s
   // 3. Try In-Memory Cache
   if (globalForCms.__SERVER_PUBLISHED_CMS__) {
     return {
-      data: { ...DEFAULT_STATE, ...globalForCms.__SERVER_PUBLISHED_CMS__ },
+      data: sanitizePublishedCmsData({ ...DEFAULT_STATE, ...globalForCms.__SERVER_PUBLISHED_CMS__ }),
       source: 'memory',
     };
   }
