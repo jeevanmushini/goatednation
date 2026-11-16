@@ -190,6 +190,30 @@ const safeStorage: StateStorage = {
   },
 };
 
+function triggerServerSync(state: Partial<CmsState>) {
+  if (typeof window === 'undefined' || !window.location?.origin) return;
+  fetch('/api/cms', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      heroSlides: state.heroSlides,
+      categories: state.categories,
+      products: state.products,
+      banners: state.banners,
+      brandStory: state.brandStory,
+      newsletter: state.newsletter,
+      sections: state.sections,
+      settings: state.settings,
+      navigation: state.navigation,
+      media: state.media,
+      heroBottoms: state.heroBottoms,
+      stackCards: state.stackCards,
+      editorialBanner: state.editorialBanner,
+      announcement: state.announcement,
+    }),
+  }).catch(() => {});
+}
+
 const createCmsStore = () =>
   create<CmsState>()(
     persist(
@@ -213,10 +237,12 @@ const createCmsStore = () =>
 
       // Zenin Hero Bottoms Implementations
       updateHeroBottom: (id, item) => {
+        const updated = get().heroBottoms.map((b) => (b.id === id ? { ...b, ...item } : b));
         set({
-          heroBottoms: get().heroBottoms.map((b) => (b.id === id ? { ...b, ...item } : b)),
+          heroBottoms: updated,
           isDraft: true,
         });
+        triggerServerSync({ ...get(), heroBottoms: updated });
       },
 
       addHeroBottom: (item) => {
@@ -224,22 +250,28 @@ const createCmsStore = () =>
           ...item,
           id: `b-${Date.now()}`,
         };
-        set({ heroBottoms: [...get().heroBottoms, newItem], isDraft: true });
+        const updated = [...get().heroBottoms, newItem];
+        set({ heroBottoms: updated, isDraft: true });
+        triggerServerSync({ ...get(), heroBottoms: updated });
       },
 
       deleteHeroBottom: (id) => {
+        const updated = get().heroBottoms.filter((b) => b.id !== id);
         set({
-          heroBottoms: get().heroBottoms.filter((b) => b.id !== id),
+          heroBottoms: updated,
           isDraft: true,
         });
+        triggerServerSync({ ...get(), heroBottoms: updated });
       },
 
       // Zenin 3D Stack Cards Implementations
       updateStackCard: (id, card) => {
+        const updated = get().stackCards.map((c) => (c.id === id ? { ...c, ...card } : c));
         set({
-          stackCards: get().stackCards.map((c) => (c.id === id ? { ...c, ...card } : c)),
+          stackCards: updated,
           isDraft: true,
         });
+        triggerServerSync({ ...get(), stackCards: updated });
       },
 
       addStackCard: (card) => {
@@ -247,29 +279,37 @@ const createCmsStore = () =>
           ...card,
           id: `s-${Date.now()}`,
         };
-        set({ stackCards: [...get().stackCards, newCard], isDraft: true });
+        const updated = [...get().stackCards, newCard];
+        set({ stackCards: updated, isDraft: true });
+        triggerServerSync({ ...get(), stackCards: updated });
       },
 
       deleteStackCard: (id) => {
+        const updated = get().stackCards.filter((c) => c.id !== id);
         set({
-          stackCards: get().stackCards.filter((c) => c.id !== id),
+          stackCards: updated,
           isDraft: true,
         });
+        triggerServerSync({ ...get(), stackCards: updated });
       },
 
       // Editorial Banner & Announcement Implementations
       updateEditorialBanner: (banner) => {
+        const updated = { ...get().editorialBanner, ...banner };
         set({
-          editorialBanner: { ...get().editorialBanner, ...banner },
+          editorialBanner: updated,
           isDraft: true,
         });
+        triggerServerSync({ ...get(), editorialBanner: updated });
       },
 
       updateAnnouncement: (announcement) => {
+        const updated = { ...get().announcement, ...announcement };
         set({
-          announcement: { ...get().announcement, ...announcement },
+          announcement: updated,
           isDraft: true,
         });
+        triggerServerSync({ ...get(), announcement: updated });
       },
 
       updateHeroSlide: (id, slide) => {
@@ -437,10 +477,11 @@ const createCmsStore = () =>
           isDraft: false,
           lastPublishedAt: new Date().toISOString(),
         });
+        triggerServerSync({ ...get(), isDraft: false });
       },
 
       resetToDefaults: () => {
-        set({
+        const defaultState = {
           heroSlides: INITIAL_HERO_SLIDES,
           categories: INITIAL_CATEGORIES,
           products: PRODUCTS,
@@ -457,7 +498,9 @@ const createCmsStore = () =>
           announcement: INITIAL_ANNOUNCEMENT,
           isDraft: false,
           lastPublishedAt: new Date().toISOString(),
-        });
+        };
+        set(defaultState);
+        triggerServerSync(defaultState);
       },
 
       syncFromServer: async () => {
@@ -470,15 +513,21 @@ const createCmsStore = () =>
               const serverData = json.data;
               const currentHeroBottoms = get().heroBottoms;
 
-              // Check if client has custom items (e.g. user uploaded hoodies or customized bottom images)
+              // Check if client has custom silhouettes (not the hardcoded default track pants)
               const hasCustomHero =
                 currentHeroBottoms &&
                 currentHeroBottoms.some(
                   (b) => b.image && !b.image.includes('pant1s.png') && !b.image.includes('pant2.png')
                 );
 
-              if (json.source === 'default' && hasCustomHero) {
-                // Auto-seed server storage with client customizations for persistent zero-flicker SSR
+              const serverHasDefaults =
+                !serverData.heroBottoms ||
+                serverData.heroBottoms.some(
+                  (b: CmsHeroBottomItem) => b.image && (b.image.includes('pant1s.png') || b.image.includes('pant2.png'))
+                );
+
+              // If client has custom silhouettes while server still holds defaults, update server immediately!
+              if (hasCustomHero && (json.source === 'default' || serverHasDefaults)) {
                 try {
                   const state = get();
                   await fetch('/api/cms', {
@@ -510,6 +559,9 @@ const createCmsStore = () =>
               const localDraft = get().isDraft;
               // If local user is currently editing a draft, do not clobber it
               if (localDraft) return;
+
+              // Don't clobber custom client silhouettes with server defaults
+              if (hasCustomHero && serverHasDefaults) return;
 
               set((prev) => ({
                 ...prev,

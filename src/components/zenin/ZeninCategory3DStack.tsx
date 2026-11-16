@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback, useMemo, useSyncExternalStore } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, MoveHorizontal } from 'lucide-react';
@@ -56,11 +56,6 @@ const STACK_ITEMS: CardStackItem[] = [
 ];
 
 export const ZeninCategory3DStack: React.FC<ZeninCategory3DStackProps> = ({ initialCards }) => {
-  const mounted = useSyncExternalStore(
-    () => () => {},
-    () => true,
-    () => false
-  );
   const [activeIndex, setActiveIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -86,12 +81,10 @@ export const ZeninCategory3DStack: React.FC<ZeninCategory3DStackProps> = ({ init
 
   const items: CardStackItem[] = useMemo(() => {
     const rawList =
-      (mounted && cmsStackCards && cmsStackCards.length > 0)
+      (cmsStackCards && cmsStackCards.length > 0)
         ? cmsStackCards
         : (initialCards && initialCards.length > 0)
         ? initialCards
-        : (cmsStackCards && cmsStackCards.length > 0)
-        ? cmsStackCards
         : STACK_ITEMS;
 
     return rawList.map((c, idx) => {
@@ -105,7 +98,7 @@ export const ZeninCategory3DStack: React.FC<ZeninCategory3DStackProps> = ({ init
         link: c.link || fb.link || '/collections',
       };
     });
-  }, [mounted, cmsStackCards, initialCards]);
+  }, [cmsStackCards, initialCards]);
 
   const safeActiveIndex = Math.min(activeIndex, items.length - 1);
   const current = items[safeActiveIndex] || items[0] || STACK_ITEMS[0];

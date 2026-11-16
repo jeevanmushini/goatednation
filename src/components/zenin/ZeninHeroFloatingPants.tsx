@@ -80,19 +80,16 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Priority:
-  // 1. If mounted and cmsBottoms has items (supports live client preview/editing)
-  // 2. If initialBottoms passed from server SSR (guarantees zero-flicker on first paint)
-  // 3. cmsBottoms fallback
-  // 4. FALLBACK_HERO_BOTTOMS
+  // Instant zero-flicker resolution:
+  // 1. Use cmsBottoms if present (client store has user edits)
+  // 2. Fall back to initialBottoms from server SSR
+  // 3. Fall back to FALLBACK_HERO_BOTTOMS
   const items: BottomHeroItem[] = useMemo(() => {
     const rawList =
-      (mounted && cmsBottoms && cmsBottoms.length > 0)
+      (cmsBottoms && cmsBottoms.length > 0)
         ? cmsBottoms
         : (initialBottoms && initialBottoms.length > 0)
         ? initialBottoms
-        : (cmsBottoms && cmsBottoms.length > 0)
-        ? cmsBottoms
         : FALLBACK_HERO_BOTTOMS;
 
     return rawList.map((cmsItem, idx) => {
@@ -104,7 +101,7 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
         link: (cmsItem as { link?: string }).link || fb.link || '/collections/trackpant',
       };
     });
-  }, [mounted, cmsBottoms, initialBottoms]);
+  }, [cmsBottoms, initialBottoms]);
 
   const total = items.length;
 
