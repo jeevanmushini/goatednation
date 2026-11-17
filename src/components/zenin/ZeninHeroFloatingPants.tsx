@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef, useSyncExternalStore } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -55,11 +55,14 @@ const MOBILE_POSITIONS: Record<number, { x: number; y: number; scale: number; ro
   [1]: { x: 56, y: 14, scale: 0.74, rotate: 8, zIndex: 16, opacity: 0.45 },
 };
 
+const emptySubscribe = () => () => {};
+
 export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ initialBottoms }) => {
   const cmsBottoms = useCmsStore((state) => state.heroBottoms);
   const [dragOffsetPx, setDragOffsetPx] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -70,10 +73,13 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Stable single source of truth: guarantees SSR HTML and hydrated DOM match on frame 1
+  // Stable single source of truth: guarantees SSR HTML and hydrated DOM match on frame 1,
+  // while immediately prioritizing client cmsStore edits once mounted!
   const items: BottomHeroItem[] = useMemo(() => {
     const rawList =
-      (initialBottoms && initialBottoms.length > 0)
+      (mounted && cmsBottoms && cmsBottoms.length > 0)
+        ? cmsBottoms
+        : (initialBottoms && initialBottoms.length > 0)
         ? initialBottoms
         : (cmsBottoms && cmsBottoms.length > 0)
         ? cmsBottoms
@@ -81,7 +87,10 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
 
     return rawList.map((cmsItem, idx) => {
       const fb = FALLBACK_HERO_BOTTOMS[idx] || FALLBACK_HERO_BOTTOMS[0];
-      const validImage = !isLegacyTrackpant(cmsItem.image) ? (cmsItem.image as string) : fb.image;
+      const validImage =
+        !isLegacyTrackpant(cmsItem.image) && cmsItem.image && cmsItem.image.trim() !== ''
+          ? (cmsItem.image as string)
+          : fb.image;
       return {
         id: cmsItem.id || fb.id || `b-${idx + 1}`,
         name: cmsItem.name || fb.name,
@@ -89,7 +98,7 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
         link: (cmsItem as { link?: string }).link || fb.link || '/collections',
       };
     });
-  }, [cmsBottoms, initialBottoms]);
+  }, [mounted, cmsBottoms, initialBottoms]);
 
   const total = items.length;
 

@@ -108,24 +108,24 @@ function sanitizePublishedCmsData(data: PublishedCmsData): PublishedCmsData {
   } else {
     data.heroBottoms = data.heroBottoms.map((b, idx) => {
       const fb = INITIAL_HERO_BOTTOMS[idx] || INITIAL_HERO_BOTTOMS[0];
-      const hasLegacyPants =
-        !b.image ||
-        b.image.trim() === '' ||
-        b.image.includes('pant1s.png') ||
-        b.image.includes('pant2.png') ||
-        b.image.includes('pant3ss.png') ||
-        b.image.includes('pant5.png') ||
-        b.image.includes('pant6.png') ||
-        b.image.includes('pant_7.png') ||
-        b.image.includes('pant_8.png');
+      const isLegacyPant =
+        b.image &&
+        (b.image.includes('pant1s.png') ||
+         b.image.includes('pant2.png') ||
+         b.image.includes('pant3ss.png') ||
+         b.image.includes('pant5.png') ||
+         b.image.includes('pant6.png') ||
+         b.image.includes('pant_7.png') ||
+         b.image.includes('pant_8.png'));
 
-      if (hasLegacyPants) {
-        return {
-          ...fb,
-          id: b.id || fb.id,
-        };
-      }
-      return b;
+      const validImage = !b.image || b.image.trim() === '' || isLegacyPant ? fb.image : b.image;
+
+      return {
+        ...fb,
+        ...b,
+        image: validImage,
+        name: b.name && b.name.trim() !== '' ? b.name : fb.name,
+      };
     });
   }
   return data;
@@ -171,11 +171,25 @@ export async function getPublishedCmsData(): Promise<{ data: PublishedCmsData; s
  * Persists published CMS data across memory, disk, and cloud KV.
  */
 export async function savePublishedCmsData(data: Partial<PublishedCmsData>): Promise<{ savedToKv: boolean; savedToFile: boolean }> {
-  const payload: PublishedCmsData = {
+  // Read existing published data first so partial updates don't clobber other sections
+  let existingData: Partial<PublishedCmsData> = {};
+  if (globalForCms.__SERVER_PUBLISHED_CMS__) {
+    existingData = globalForCms.__SERVER_PUBLISHED_CMS__;
+  } else if (fs.existsSync(CMS_STORAGE_FILE)) {
+    try {
+      const raw = fs.readFileSync(CMS_STORAGE_FILE, 'utf-8');
+      existingData = JSON.parse(raw) || {};
+    } catch {
+      // ignore
+    }
+  }
+
+  const payload: PublishedCmsData = sanitizePublishedCmsData({
     ...DEFAULT_STATE,
+    ...existingData,
     ...data,
     lastPublishedAt: new Date().toISOString(),
-  };
+  });
 
   // 1. Memory Cache
   globalForCms.__SERVER_PUBLISHED_CMS__ = payload;
@@ -183,13 +197,22 @@ export async function savePublishedCmsData(data: Partial<PublishedCmsData>): Pro
   // 2. KV Store
   const savedToKv = await saveToKvStore(payload);
 
-  // 3. Local File
+  // 3. Local File with atomic write & retry logic to prevent Windows EBUSY locking
   let savedToFile = false;
-  try {
-    fs.writeFileSync(CMS_STORAGE_FILE, JSON.stringify(payload, null, 2), 'utf-8');
-    savedToFile = true;
-  } catch {
-    // Read-only serverless environment ignores local write safely
+  const jsonContent = JSON.stringify(payload, null, 2);
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      fs.writeFileSync(CMS_STORAGE_FILE, jsonContent, 'utf-8');
+      savedToFile = true;
+      break;
+    } catch (err) {
+      if (attempt === 2) {
+        console.warn('[CMS Server] Failed to write CMS storage file after 3 attempts:', err);
+      }
+      // Brief synchronous wait before retry
+      const start = Date.now();
+      while (Date.now() - start < 35) {}
+    }
   }
 
   return { savedToKv, savedToFile };

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { getPublishedCmsData, savePublishedCmsData, PublishedCmsData } from '../../../lib/cms/serverCms';
 
 export async function GET() {
@@ -25,6 +26,13 @@ export async function POST(req: NextRequest) {
     }
 
     const { savedToKv, savedToFile } = await savePublishedCmsData(body);
+
+    try {
+      revalidatePath('/', 'page');
+      revalidatePath('/admin/homepage', 'page');
+    } catch {
+      // Revalidation warning ignored in test/isolated environments
+    }
 
     return NextResponse.json({
       success: true,

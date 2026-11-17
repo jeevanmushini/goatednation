@@ -190,28 +190,44 @@ const safeStorage: StateStorage = {
   },
 };
 
-function triggerServerSync(state: Partial<CmsState>) {
+let serverSyncTimer: ReturnType<typeof setTimeout> | null = null;
+
+function triggerServerSync(state: Partial<CmsState>, immediate = false) {
   if (typeof window === 'undefined' || !window.location?.origin) return;
-  fetch('/api/cms', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      heroSlides: state.heroSlides,
-      categories: state.categories,
-      products: state.products,
-      banners: state.banners,
-      brandStory: state.brandStory,
-      newsletter: state.newsletter,
-      sections: state.sections,
-      settings: state.settings,
-      navigation: state.navigation,
-      media: state.media,
-      heroBottoms: state.heroBottoms,
-      stackCards: state.stackCards,
-      editorialBanner: state.editorialBanner,
-      announcement: state.announcement,
-    }),
-  }).catch(() => {});
+
+  if (serverSyncTimer) {
+    clearTimeout(serverSyncTimer);
+    serverSyncTimer = null;
+  }
+
+  const sendPayload = () => {
+    fetch('/api/cms', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        heroSlides: state.heroSlides,
+        categories: state.categories,
+        products: state.products,
+        banners: state.banners,
+        brandStory: state.brandStory,
+        newsletter: state.newsletter,
+        sections: state.sections,
+        settings: state.settings,
+        navigation: state.navigation,
+        media: state.media,
+        heroBottoms: state.heroBottoms,
+        stackCards: state.stackCards,
+        editorialBanner: state.editorialBanner,
+        announcement: state.announcement,
+      }),
+    }).catch(() => {});
+  };
+
+  if (immediate) {
+    sendPayload();
+  } else {
+    serverSyncTimer = setTimeout(sendPayload, 250);
+  }
 }
 
 const createCmsStore = () =>
@@ -473,11 +489,12 @@ const createCmsStore = () =>
       },
 
       publishChanges: () => {
+        const publishedAt = new Date().toISOString();
         set({
           isDraft: false,
-          lastPublishedAt: new Date().toISOString(),
+          lastPublishedAt: publishedAt,
         });
-        triggerServerSync({ ...get(), isDraft: false });
+        triggerServerSync({ ...get(), isDraft: false, lastPublishedAt: publishedAt }, true);
       },
 
       resetToDefaults: () => {
@@ -500,7 +517,7 @@ const createCmsStore = () =>
           lastPublishedAt: new Date().toISOString(),
         };
         set(defaultState);
-        triggerServerSync(defaultState);
+        triggerServerSync(defaultState, true);
       },
 
       syncFromServer: async () => {
@@ -569,6 +586,17 @@ const createCmsStore = () =>
 
               // Don't clobber custom client silhouettes with server defaults
               if (hasCustomHero && serverHasDefaults) return;
+
+              // If client published newer state than server's lastPublishedAt, do not regress
+              const clientPublishedAt = get().lastPublishedAt;
+              const serverPublishedAt = serverData.lastPublishedAt;
+              if (
+                clientPublishedAt &&
+                serverPublishedAt &&
+                new Date(clientPublishedAt).getTime() > new Date(serverPublishedAt).getTime()
+              ) {
+                return;
+              }
 
               const sanitizedServerHeroBottoms =
                 Array.isArray(serverData.heroBottoms) && serverData.heroBottoms.length > 0

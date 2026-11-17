@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import {
   ArrowUp,
   ArrowDown,
@@ -47,6 +48,7 @@ export default function AdminHomepageCmsPage() {
     updateAnnouncement,
     publishChanges,
   } = useCmsStore();
+  const router = useRouter();
 
   const [activeMainTab, setActiveMainTab] = useState<
     'zenin-bottoms' | 'zenin-cards' | 'zenin-editorial' | 'zenin-announcement' | 'sections-layout'
@@ -79,7 +81,7 @@ export default function AdminHomepageCmsPage() {
 
     try {
       const state = useCmsStore.getState();
-      await fetch('/api/cms', {
+      const res = await fetch('/api/cms', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -97,8 +99,16 @@ export default function AdminHomepageCmsPage() {
           stackCards: state.stackCards,
           editorialBanner: state.editorialBanner,
           announcement: state.announcement,
+          lastPublishedAt: state.lastPublishedAt,
         }),
       });
+
+      if (res.ok) {
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new Event('cms-published'));
+        }
+        router.refresh();
+      }
     } catch (err) {
       console.warn('[Admin] Failed to sync CMS changes to server:', err);
     }
