@@ -108,17 +108,7 @@ function sanitizePublishedCmsData(data: PublishedCmsData): PublishedCmsData {
   } else {
     data.heroBottoms = data.heroBottoms.map((b, idx) => {
       const fb = INITIAL_HERO_BOTTOMS[idx] || INITIAL_HERO_BOTTOMS[0];
-      const isLegacyPant =
-        b.image &&
-        (b.image.includes('pant1s.png') ||
-         b.image.includes('pant2.png') ||
-         b.image.includes('pant3ss.png') ||
-         b.image.includes('pant5.png') ||
-         b.image.includes('pant6.png') ||
-         b.image.includes('pant_7.png') ||
-         b.image.includes('pant_8.png'));
-
-      const validImage = !b.image || b.image.trim() === '' || isLegacyPant ? fb.image : b.image;
+      const validImage = b.image && b.image.trim() !== '' ? b.image : fb.image;
 
       return {
         ...fb,

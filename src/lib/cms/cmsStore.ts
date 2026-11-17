@@ -526,84 +526,13 @@ const createCmsStore = () =>
             const json = await res.json();
             if (json.success && json.data) {
               const serverData = json.data;
-              const currentHeroBottoms = get().heroBottoms;
-
-              // Check if client has custom silhouettes (not the hardcoded default track pants)
-              const isLegacyPantImage = (img?: string) =>
-                !img ||
-                img.trim() === '' ||
-                img.includes('pant1s.png') ||
-                img.includes('pant2.png') ||
-                img.includes('pant3ss.png') ||
-                img.includes('pant5.png') ||
-                img.includes('pant6.png') ||
-                img.includes('pant_7.png') ||
-                img.includes('pant_8.png');
-
-              const hasCustomHero =
-                currentHeroBottoms &&
-                currentHeroBottoms.some((b) => b.image && !isLegacyPantImage(b.image));
-
-              const serverHasDefaults =
-                !serverData.heroBottoms ||
-                serverData.heroBottoms.some((b: CmsHeroBottomItem) => isLegacyPantImage(b.image));
-
-              // If client has custom silhouettes while server still holds defaults, update server immediately!
-              if (hasCustomHero && (json.source === 'default' || serverHasDefaults)) {
-                try {
-                  const state = get();
-                  await fetch('/api/cms', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                      heroSlides: state.heroSlides,
-                      categories: state.categories,
-                      products: state.products,
-                      banners: state.banners,
-                      brandStory: state.brandStory,
-                      newsletter: state.newsletter,
-                      sections: state.sections,
-                      settings: state.settings,
-                      navigation: state.navigation,
-                      media: state.media,
-                      heroBottoms: state.heroBottoms,
-                      stackCards: state.stackCards,
-                      editorialBanner: state.editorialBanner,
-                      announcement: state.announcement,
-                    }),
-                  });
-                } catch {
-                  // ignore
-                }
-                return;
-              }
-
-              const localDraft = get().isDraft;
-              // If local user is currently editing a draft, do not clobber it
-              if (localDraft) return;
-
-              // Don't clobber custom client silhouettes with server defaults
-              if (hasCustomHero && serverHasDefaults) return;
-
-              // If client published newer state than server's lastPublishedAt, do not regress
-              const clientPublishedAt = get().lastPublishedAt;
-              const serverPublishedAt = serverData.lastPublishedAt;
-              if (
-                clientPublishedAt &&
-                serverPublishedAt &&
-                new Date(clientPublishedAt).getTime() > new Date(serverPublishedAt).getTime()
-              ) {
-                return;
-              }
 
               const sanitizedServerHeroBottoms =
                 Array.isArray(serverData.heroBottoms) && serverData.heroBottoms.length > 0
                   ? serverData.heroBottoms.map((b: CmsHeroBottomItem, idx: number) => {
                       const fb = INITIAL_HERO_BOTTOMS[idx] || INITIAL_HERO_BOTTOMS[0];
-                      if (isLegacyPantImage(b.image)) {
-                        return { ...fb, id: b.id || fb.id };
-                      }
-                      return b;
+                      const validImage = b.image && b.image.trim() !== '' ? b.image : fb.image;
+                      return { ...fb, ...b, image: validImage };
                     })
                   : get().heroBottoms;
 
@@ -647,7 +576,7 @@ const createCmsStore = () =>
     }),
     {
       name: 'animestreet-cms-data',
-      version: 5,
+      version: 6,
       migrate: (persistedState: unknown, version: number) => {
         const state = persistedState as CmsState;
         if (!state) return state;
@@ -673,30 +602,12 @@ const createCmsStore = () =>
           state.announcement = INITIAL_ANNOUNCEMENT;
         }
 
-        // Version 4 Migration: Prune any oversized legacy uncompressed base64 data URLs
-        if (version < 4 && Array.isArray(state?.media)) {
-          state.media = state.media
-            .filter((m) => !m?.url?.startsWith('data:') || m.url.length < 80000)
-            .slice(0, 25);
-        }
-
-        // Version 5 Migration: Purge any legacy track pant silhouettes from user's localStorage
-        if (version < 5 && Array.isArray(state?.heroBottoms)) {
-          const isLegacyPantImage = (img?: string) =>
-            !img ||
-            img.trim() === '' ||
-            img.includes('pant1s.png') ||
-            img.includes('pant2.png') ||
-            img.includes('pant3ss.png') ||
-            img.includes('pant5.png') ||
-            img.includes('pant6.png') ||
-            img.includes('pant_7.png') ||
-            img.includes('pant_8.png');
-
-          const hasLegacyPants = state.heroBottoms.some((b) => isLegacyPantImage(b.image));
-          if (hasLegacyPants) {
-            state.heroBottoms = INITIAL_HERO_BOTTOMS;
-          }
+        // Version 6 Migration: Purge any legacy track pants, dead links, or test data
+        if (version < 6) {
+          state.heroBottoms = INITIAL_HERO_BOTTOMS;
+          state.stackCards = INITIAL_STACK_ITEMS;
+          state.editorialBanner = INITIAL_EDITORIAL_BANNER;
+          state.announcement = INITIAL_ANNOUNCEMENT;
         }
 
         return state;

@@ -20,17 +20,6 @@ interface ZeninHeroFloatingPantsProps {
   initialBottoms?: CmsHeroBottomItem[];
 }
 
-const isLegacyTrackpant = (img?: string) =>
-  !img ||
-  img.trim() === '' ||
-  img.includes('pant1s.png') ||
-  img.includes('pant2.png') ||
-  img.includes('pant3ss.png') ||
-  img.includes('pant5.png') ||
-  img.includes('pant6.png') ||
-  img.includes('pant_7.png') ||
-  img.includes('pant_8.png');
-
 const FALLBACK_HERO_BOTTOMS: BottomHeroItem[] = INITIAL_HERO_BOTTOMS.map((b, idx) => ({
   id: b.id || `b-${idx + 1}`,
   name: b.name,
@@ -87,10 +76,7 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
 
     return rawList.map((cmsItem, idx) => {
       const fb = FALLBACK_HERO_BOTTOMS[idx] || FALLBACK_HERO_BOTTOMS[0];
-      const validImage =
-        !isLegacyTrackpant(cmsItem.image) && cmsItem.image && cmsItem.image.trim() !== ''
-          ? (cmsItem.image as string)
-          : fb.image;
+      const validImage = cmsItem.image && cmsItem.image.trim() !== '' ? cmsItem.image : fb.image;
       return {
         id: cmsItem.id || fb.id || `b-${idx + 1}`,
         name: cmsItem.name || fb.name,

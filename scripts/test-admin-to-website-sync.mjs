@@ -135,9 +135,20 @@ async function testAdminToWebsiteSync() {
     console.log('Admin Panel text & Cloudinary image edits update the live website immediately!');
   } else {
     console.error('>>> SOME STOREFRONT CHECKS FAILED! <<<');
-    process.exit(1);
   }
   console.log('================================================================\n');
+
+  console.log('--- Cleaning up: Restoring original CMS state so no test artifacts remain ---');
+  await fetch('http://localhost:3000/api/cms', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(initialJson.data),
+  });
+  console.log('Clean state restored successfully.');
+
+  if (!allPassed) {
+    process.exit(1);
+  }
 }
 
 testAdminToWebsiteSync().catch((e) => {

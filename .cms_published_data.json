@@ -5570,7 +5570,7 @@
       "name": "BERSERK ECLIPSE // 420 GSM HOODIE",
       "kanji": "黒 // 420 GSM TERRY",
       "price": "Rs. 2,499",
-      "image": "https://zenin.co.in/cdn/shop/files/W2_c73c0e9a-68a9-4ab7-ad83-2780a0d86305.jpg",
+      "image": "/images/hero/berserk-hoodie.jpg",
       "color": "Eclipse Black",
       "badge": "BESTSELLER"
     },
@@ -5579,7 +5579,7 @@
       "name": "SUKUNA DOMAIN // JACQUARD JACKET",
       "kanji": "宿 // METALLIC STITCH",
       "price": "Rs. 2,999",
-      "image": "https://zenin.co.in/cdn/shop/files/W2_6048f97c-7344-4633-be03-4078572c4ab3.jpg",
+      "image": "/images/hero/sukuna-jacket.jpg",
       "color": "Crimson Gold",
       "badge": "LIMITED"
     },
@@ -5588,25 +5588,25 @@
       "name": "RYUJIN DRAGON // JACQUARD JACKET",
       "kanji": "龍 // TRADITIONAL KNOT",
       "price": "Rs. 2,099",
-      "image": "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web1s.jpg",
+      "image": "/images/hero/ryujin-jacket.jpg",
       "color": "Onyx Green",
       "badge": "NEW DROP"
     },
     {
       "id": "b-4",
-      "name": "CHERRY BLOSSOM SAMURAI HOODIE [RUN-9074]",
+      "name": "WAFFLE CHERRY BLOSSOM // FULL SLEEVE",
       "kanji": "桜 // 200K STITCHES",
-      "price": "Rs. 2,349",
-      "image": "https://res.cloudinary.com/bu4oxldy/image/upload/v1794905970/test-hoodie-silhouette/lrn6izbcrjnckvwo8ofc.png",
-      "color": "Phoenix Crimson",
-      "badge": "EXCLUSIVE DROP"
+      "price": "Rs. 1,549",
+      "image": "/images/hero/cherry-blossom-waffle.jpg",
+      "color": "Cherry Floral",
+      "badge": "RESTOCKED"
     },
     {
       "id": "b-5",
       "name": "ZORO TACTICAL // CROSSBODY BAG",
       "kanji": "刀 // 1000D CORDURA",
       "price": "Rs. 1,299",
-      "image": "https://zenin.co.in/cdn/shop/files/backpackcollection.jpg",
+      "image": "/images/hero/zoro-crossbody.jpg",
       "color": "Military Olive",
       "badge": "TACTICAL"
     },
@@ -5615,7 +5615,7 @@
       "name": "TACTICAL UTILITY // COMBAT VEST",
       "kanji": "機 // MULTI POCKET",
       "price": "Rs. 1,899",
-      "image": "https://zenin.co.in/cdn/shop/files/w2-16.jpg",
+      "image": "/images/hero/tactical-vest.jpg",
       "color": "Matte Slate",
       "badge": "NEW"
     },
@@ -5624,7 +5624,7 @@
       "name": "VALHALLA 90S // BOMBER JACKET",
       "kanji": "神 // SATIN INTERIOR",
       "price": "Rs. 2,799",
-      "image": "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=1000&q=80",
+      "image": "/images/hero/valhalla-bomber.jpg",
       "color": "Vintage Black",
       "badge": "HEAVY EMBROIDERY"
     }
@@ -5633,9 +5633,9 @@
     {
       "id": "s-1",
       "category": "BACKPACK",
-      "title": "MODULAR TACTICAL CHEST RIG [RUN-9074]",
-      "subtitle": "MIL-SPEC CORDURA // WATERPROOF",
-      "image": "https://res.cloudinary.com/bu4oxldy/image/upload/v1794905974/1794905972462-sample-admin-upload/ivzrhhkgclzcfedgmiiu.png",
+      "title": "ZORO TACTICAL // CROSSBODY",
+      "subtitle": "MODULAR MOLLE SYSTEM • 1000D CORDURA",
+      "image": "/images/hero/zoro-crossbody.jpg",
       "link": "/collections/backpack"
     },
     {
@@ -5643,7 +5643,7 @@
       "category": "JACKETS",
       "title": "SUKUNA DOMAIN // JACQUARD JACKET",
       "subtitle": "METALLIC THREAD EMBROIDERY • BOX FIT",
-      "image": "https://zenin.co.in/cdn/shop/files/W2_6048f97c-7344-4633-be03-4078572c4ab3.jpg",
+      "image": "/images/hero/sukuna-jacket.jpg",
       "link": "/collections/jacket"
     },
     {
@@ -5651,7 +5651,7 @@
       "category": "HOODIES",
       "title": "BERSERK ECLIPSE // 420 GSM HOODIE",
       "subtitle": "DOUBLE-LAYER HOOD • PUFF SCREEN PRINT",
-      "image": "https://zenin.co.in/cdn/shop/files/W2_c73c0e9a-68a9-4ab7-ad83-2780a0d86305.jpg",
+      "image": "/images/hero/berserk-hoodie.jpg",
       "link": "/collections/hoodie"
     },
     {
@@ -5659,23 +5659,23 @@
       "category": "VEST",
       "title": "TACTICAL UTILITY // COMBAT VEST",
       "subtitle": "MULTI-POCKET HARNESS • REFLECTIVE WEBBING",
-      "image": "https://zenin.co.in/cdn/shop/files/w2-16.jpg",
+      "image": "/images/hero/tactical-vest.jpg",
       "link": "/collections/vest"
     }
   ],
   "editorialBanner": {
     "title": "GOATED NATION STREET ARCHIVE",
-    "followersText": "185K ACTIVE FOLLOWERS [RUN-9074]",
-    "image": "https://res.cloudinary.com/bu4oxldy/image/upload/v1794905935/goated-verify/qink9szeudtruz55w5mr.png",
+    "followersText": "176K FOLLOWERS",
+    "image": "/images/editorial/editorial-banner.jpg",
     "instagramUrl": "https://instagram.com/goatednation",
     "ctaText": "INSTAGRAM"
   },
   "announcement": {
-    "text": "USE CODE GOATED9074 AT CHECKOUT",
-    "highlightText": "TEST PREPAID 25% OFF [RUN-9074]",
-    "ctaText": "ORDER NOW",
+    "text": "APPLIED AT CHECKOUT",
+    "highlightText": "EXTRA 15% OFF ON PREPAID ORDERS",
+    "ctaText": "SHOP NOW",
     "ctaLink": "/collections",
-    "countdownDays": 3
+    "countdownDays": 2
   },
-  "lastPublishedAt": "2026-11-17T09:04:33.376Z"
+  "lastPublishedAt": "2026-11-17T09:26:02.490Z"
 }

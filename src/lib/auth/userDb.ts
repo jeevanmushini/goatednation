@@ -30,7 +30,7 @@ const SEED_USERS: UserRecord[] = [
     name: 'Tokyo Streetwear Collector',
     email: 'customer@goatednation.com',
     role: 'CUSTOMER',
-    avatar: 'https://zenin.co.in/cdn/shop/files/pant3ss.png',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
     provider: 'credentials',
     salt: CUSTOMER_SALT,
     passwordHash: CUSTOMER_HASH,

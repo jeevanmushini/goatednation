@@ -84,10 +84,10 @@ async function runTests() {
   // Test adding new silhouette
   const initialBottomsCount = useCmsStore.getState().heroBottoms.length;
   useCmsStore.getState().addHeroBottom({
-    name: 'EXPERIMENTAL NINJA TECH PANTS',
+    name: 'EXPERIMENTAL NINJA TECH HOODIE',
     kanji: '忍 // CARBON COATED',
     price: 'Rs. 2,999',
-    image: 'https://zenin.co.in/cdn/shop/files/pant6.png',
+    image: '/images/hero/berserk-hoodie.jpg',
     color: 'Stealth Carbon',
     badge: 'NEW DROP',
   });
