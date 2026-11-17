@@ -66,16 +66,26 @@ export async function uploadToCloudinary(
     // 1. Signed API Upload
     const timestamp = Math.floor(Date.now() / 1000);
     const folder = `goatednation/${category}`;
-    const paramsToSign = `folder=${folder}&timestamp=${timestamp}${apiSecret}`;
-    const signature = crypto.createHash('sha1').update(paramsToSign).digest('hex');
 
-    formData.append('timestamp', String(timestamp));
-    formData.append('folder', folder);
+    const params: Record<string, string> = {
+      folder,
+      timestamp: String(timestamp),
+    };
+
+    if (fileName) {
+      params.public_id_prefix = fileName.replace(/\.[^.]+$/, '');
+    }
+
+    // Sort parameters alphabetically per Cloudinary specification
+    const sortedKeys = Object.keys(params).sort();
+    const stringToSign = sortedKeys.map((k) => `${k}=${params[k]}`).join('&') + apiSecret;
+    const signature = crypto.createHash('sha1').update(stringToSign).digest('hex');
+
+    Object.entries(params).forEach(([k, v]) => {
+      formData.append(k, v);
+    });
     formData.append('api_key', apiKey);
     formData.append('signature', signature);
-    if (fileName) {
-      formData.append('public_id_prefix', fileName.replace(/\.[^.]+$/, ''));
-    }
   } else if (uploadPreset) {
     // 2. Unsigned Preset Upload
     formData.append('upload_preset', uploadPreset);

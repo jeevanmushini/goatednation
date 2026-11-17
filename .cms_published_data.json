@@ -5594,12 +5594,12 @@
     },
     {
       "id": "b-4",
-      "name": "CUSTOM PHOENIX // TACTICAL HOODIE",
+      "name": "CHERRY BLOSSOM SAMURAI HOODIE [RUN-9074]",
       "kanji": "桜 // 200K STITCHES",
-      "price": "Rs. 1,549",
-      "image": "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=1000&q=80",
+      "price": "Rs. 2,349",
+      "image": "https://res.cloudinary.com/bu4oxldy/image/upload/v1794905970/test-hoodie-silhouette/lrn6izbcrjnckvwo8ofc.png",
       "color": "Phoenix Crimson",
-      "badge": "EXCLUSIVE"
+      "badge": "EXCLUSIVE DROP"
     },
     {
       "id": "b-5",
@@ -5633,9 +5633,9 @@
     {
       "id": "s-1",
       "category": "BACKPACK",
-      "title": "ZORO TACTICAL // CROSSBODY",
-      "subtitle": "MODULAR MOLLE SYSTEM • 1000D CORDURA",
-      "image": "https://zenin.co.in/cdn/shop/files/backpackcollection.jpg",
+      "title": "MODULAR TACTICAL CHEST RIG [RUN-9074]",
+      "subtitle": "MIL-SPEC CORDURA // WATERPROOF",
+      "image": "https://res.cloudinary.com/bu4oxldy/image/upload/v1794905974/1794905972462-sample-admin-upload/ivzrhhkgclzcfedgmiiu.png",
       "link": "/collections/backpack"
     },
     {
@@ -5665,17 +5665,17 @@
   ],
   "editorialBanner": {
     "title": "GOATED NATION STREET ARCHIVE",
-    "followersText": "176K FOLLOWERS",
-    "image": "https://zenin.co.in/cdn/shop/files/ZENIN17.jpg",
+    "followersText": "185K ACTIVE FOLLOWERS [RUN-9074]",
+    "image": "https://res.cloudinary.com/bu4oxldy/image/upload/v1794905935/goated-verify/qink9szeudtruz55w5mr.png",
     "instagramUrl": "https://instagram.com/goatednation",
     "ctaText": "INSTAGRAM"
   },
   "announcement": {
-    "text": "APPLIED AT CHECKOUT",
-    "highlightText": "EXTRA 15% OFF ON PREPAID ORDERS",
-    "ctaText": "SHOP NOW",
+    "text": "USE CODE GOATED9074 AT CHECKOUT",
+    "highlightText": "TEST PREPAID 25% OFF [RUN-9074]",
+    "ctaText": "ORDER NOW",
     "ctaLink": "/collections",
-    "countdownDays": 2
+    "countdownDays": 3
   },
-  "lastPublishedAt": "2026-11-17T08:26:44.071Z"
+  "lastPublishedAt": "2026-11-17T09:04:33.376Z"
 }
