@@ -95,6 +95,15 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
 
   const [activeIndex, setActiveIndex] = useState(initialCenterIndex);
 
+  // Reset activeIndex to center when item count changes (e.g. after CMS hydration adds/removes items)
+  const prevTotalRef = useRef(total);
+  useEffect(() => {
+    if (prevTotalRef.current !== total) {
+      prevTotalRef.current = total;
+      setActiveIndex(Math.floor(total / 2));
+    }
+  }, [total]);
+
   const isPointerDown = useRef(false);
   const startX = useRef(0);
   const startY = useRef(0);

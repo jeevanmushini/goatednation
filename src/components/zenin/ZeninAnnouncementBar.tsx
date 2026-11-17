@@ -9,6 +9,10 @@ interface ZeninAnnouncementBarProps {
   initialAnnouncement?: CmsAnnouncement;
 }
 
+function computeInitialSeconds(countdownDays: number): number {
+  return countdownDays * 86400 + 14 * 3600 + 22 * 60 + 5;
+}
+
 export const ZeninAnnouncementBar: React.FC<ZeninAnnouncementBarProps> = ({ initialAnnouncement }) => {
   const cmsAnnouncement = useCmsStore((state) => state.announcement);
   const settings = useCmsStore((state) => state.settings);
@@ -20,13 +24,13 @@ export const ZeninAnnouncementBar: React.FC<ZeninAnnouncementBarProps> = ({ init
   const ctaLink = activeAnn?.ctaLink || '/collections';
   const countdownDays = activeAnn?.countdownDays || 2;
 
-  const [secondsRemaining, setSecondsRemaining] = useState(
-    countdownDays * 86400 + 14 * 3600 + 22 * 60 + 5
-  );
+  // Initialize from countdownDays so SSR has a consistent static value.
+  // The countdown ticks from this starting point once mounted.
+  const [secondsRemaining, setSecondsRemaining] = useState(() => computeInitialSeconds(countdownDays));
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setSecondsRemaining((prev) => (prev > 0 ? prev - 1 : countdownDays * 86400));
+      setSecondsRemaining((prev) => (prev <= 0 ? computeInitialSeconds(countdownDays) : prev - 1));
     }, 1000);
     return () => clearInterval(timer);
   }, [countdownDays]);
@@ -35,11 +39,12 @@ export const ZeninAnnouncementBar: React.FC<ZeninAnnouncementBarProps> = ({ init
     return null;
   }
 
+  const pad = (n: number) => String(n).padStart(2, '0');
+
   const days = Math.floor(secondsRemaining / 86400);
   const hours = Math.floor((secondsRemaining % 86400) / 3600);
   const minutes = Math.floor((secondsRemaining % 3600) / 60);
   const seconds = secondsRemaining % 60;
-  const pad = (n: number) => String(n).padStart(2, '0');
 
   return (
     <div className="bg-[#242424] text-white text-[11px] font-mono border-b border-[#2C2C2C] py-2 px-4 select-none">
@@ -85,4 +90,3 @@ export const ZeninAnnouncementBar: React.FC<ZeninAnnouncementBarProps> = ({ init
     </div>
   );
 };
-

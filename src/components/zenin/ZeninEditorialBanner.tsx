@@ -12,7 +12,7 @@ interface ZeninEditorialBannerProps {
 const FALLBACK_BANNER = {
   title: 'GOATED NATION STREET ARCHIVE',
   followersText: '176K FOLLOWERS',
-  image: 'https://zenin.co.in/cdn/shop/files/webwallpaperss.jpg',
+  image: '/images/editorial/editorial-banner.jpg',
   instagramUrl: 'https://instagram.com/goatednation',
   ctaText: 'INSTAGRAM',
 };
