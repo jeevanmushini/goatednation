@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback, useMemo, useSyncExternalStore } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, MoveHorizontal } from 'lucide-react';
@@ -56,11 +56,6 @@ const STACK_ITEMS: CardStackItem[] = [
 ];
 
 export const ZeninCategory3DStack: React.FC<ZeninCategory3DStackProps> = ({ initialCards }) => {
-  const mounted = useSyncExternalStore(
-    () => () => {},
-    () => true,
-    () => false
-  );
   const [activeIndex, setActiveIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -85,13 +80,12 @@ export const ZeninCategory3DStack: React.FC<ZeninCategory3DStackProps> = ({ init
   }, []);
 
   const items: CardStackItem[] = useMemo(() => {
-    const rawList = !mounted
-      ? (initialCards && initialCards.length > 0 ? initialCards : STACK_ITEMS)
-      : (cmsStackCards && cmsStackCards.length > 0
-          ? cmsStackCards
-          : initialCards && initialCards.length > 0
-          ? initialCards
-          : STACK_ITEMS);
+    const rawList =
+      (initialCards && initialCards.length > 0)
+        ? initialCards
+        : (cmsStackCards && cmsStackCards.length > 0)
+        ? cmsStackCards
+        : STACK_ITEMS;
 
     return rawList.map((c, idx) => {
       const fb = STACK_ITEMS[idx] || STACK_ITEMS[0];
@@ -104,7 +98,7 @@ export const ZeninCategory3DStack: React.FC<ZeninCategory3DStackProps> = ({ init
         link: c.link || fb.link || '/collections',
       };
     });
-  }, [cmsStackCards, initialCards, mounted]);
+  }, [cmsStackCards, initialCards]);
 
   const safeActiveIndex = Math.min(activeIndex, items.length - 1);
   const current = items[safeActiveIndex] || items[0] || STACK_ITEMS[0];
@@ -167,6 +161,9 @@ export const ZeninCategory3DStack: React.FC<ZeninCategory3DStackProps> = ({ init
     setDragOffsetPx(0);
     isHorizontalDrag.current = false;
     isVerticalScroll.current = false;
+    setTimeout(() => {
+      hasMoved.current = false;
+    }, 120);
   };
 
   const handlePointerCancel = () => {
@@ -175,6 +172,9 @@ export const ZeninCategory3DStack: React.FC<ZeninCategory3DStackProps> = ({ init
     setDragOffsetPx(0);
     isHorizontalDrag.current = false;
     isVerticalScroll.current = false;
+    setTimeout(() => {
+      hasMoved.current = false;
+    }, 120);
   };
 
   return (
@@ -256,7 +256,9 @@ export const ZeninCategory3DStack: React.FC<ZeninCategory3DStackProps> = ({ init
                     if (hasMoved.current) return;
                     setActiveIndex(index);
                   }}
-                  className="absolute inset-0 rounded-2xl overflow-hidden cursor-pointer bg-[#0A0A0A] border border-[#222222] shadow-[0_20px_40px_rgba(0,0,0,0.35)] transition-all duration-300 ease-out"
+                  className={`absolute inset-0 rounded-2xl overflow-hidden cursor-pointer bg-[#0A0A0A] border border-[#222222] shadow-[0_20px_40px_rgba(0,0,0,0.35)] ${
+                    isDragging ? 'transition-none' : 'transition-all duration-300 ease-out'
+                  }`}
                   style={{
                     zIndex,
                     opacity,

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useMemo, useRef, useSyncExternalStore } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -56,33 +56,10 @@ const MOBILE_POSITIONS: Record<number, { x: number; y: number; scale: number; ro
 };
 
 export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ initialBottoms }) => {
-  const mounted = useSyncExternalStore(
-    () => () => {},
-    () => true,
-    () => false
-  );
   const cmsBottoms = useCmsStore((state) => state.heroBottoms);
   const [dragOffsetPx, setDragOffsetPx] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-
-  // Dynamic center index based on item count
-  const initialCenterIndex = useMemo(() => {
-    const count = (!mounted && initialBottoms && initialBottoms.length)
-      ? initialBottoms.length
-      : (cmsBottoms && cmsBottoms.length) || (initialBottoms && initialBottoms.length) || 7;
-    return Math.floor(count / 2);
-  }, [initialBottoms, cmsBottoms, mounted]);
-
-  const [activeIndex, setActiveIndex] = useState(initialCenterIndex);
-
-  const isPointerDown = useRef(false);
-  const startX = useRef(0);
-  const startY = useRef(0);
-  const isHorizontalDrag = useRef(false);
-  const isVerticalScroll = useRef(false);
-  const hasMoved = useRef(false);
-  const lastWheelTime = useRef(0);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -93,18 +70,14 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Instant zero-flicker resolution:
-  // 1. During SSR and initial hydration paint (!mounted), prioritize server-provided initialBottoms.
-  // 2. Once mounted, use cmsBottoms (client store user edits) if present, otherwise initialBottoms, then FALLBACK_HERO_BOTTOMS.
-  // 3. Purge any legacy track pant images automatically.
+  // Stable single source of truth: guarantees SSR HTML and hydrated DOM match on frame 1
   const items: BottomHeroItem[] = useMemo(() => {
-    const rawList = !mounted
-      ? (initialBottoms && initialBottoms.length > 0 ? initialBottoms : FALLBACK_HERO_BOTTOMS)
-      : (cmsBottoms && cmsBottoms.length > 0
-          ? cmsBottoms
-          : initialBottoms && initialBottoms.length > 0
-          ? initialBottoms
-          : FALLBACK_HERO_BOTTOMS);
+    const rawList =
+      (initialBottoms && initialBottoms.length > 0)
+        ? initialBottoms
+        : (cmsBottoms && cmsBottoms.length > 0)
+        ? cmsBottoms
+        : FALLBACK_HERO_BOTTOMS;
 
     return rawList.map((cmsItem, idx) => {
       const fb = FALLBACK_HERO_BOTTOMS[idx] || FALLBACK_HERO_BOTTOMS[0];
@@ -113,12 +86,27 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
         id: cmsItem.id || fb.id || `b-${idx + 1}`,
         name: cmsItem.name || fb.name,
         image: validImage,
-        link: (cmsItem as { link?: string }).link || fb.link || '/collections/hoodies',
+        link: (cmsItem as { link?: string }).link || fb.link || '/collections',
       };
     });
-  }, [cmsBottoms, initialBottoms, mounted]);
+  }, [cmsBottoms, initialBottoms]);
 
   const total = items.length;
+
+  // Center index: middle item
+  const initialCenterIndex = useMemo(() => {
+    return Math.floor(total / 2);
+  }, [total]);
+
+  const [activeIndex, setActiveIndex] = useState(initialCenterIndex);
+
+  const isPointerDown = useRef(false);
+  const startX = useRef(0);
+  const startY = useRef(0);
+  const isHorizontalDrag = useRef(false);
+  const isVerticalScroll = useRef(false);
+  const hasMoved = useRef(false);
+  const lastWheelTime = useRef(0);
 
   const slideNext = useCallback(() => {
     setActiveIndex((prev) => (prev + 1) % total);
@@ -156,7 +144,7 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
     }
 
     if (isHorizontalDrag.current) {
-      if (Math.abs(dx) > 10) {
+      if (Math.abs(dx) > 8) {
         hasMoved.current = true;
       }
       setDragOffsetPx(dx);
@@ -169,7 +157,7 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
     setIsDragging(false);
 
     if (isHorizontalDrag.current) {
-      const threshold = isMobile ? 32 : 45;
+      const threshold = 35;
       if (dragOffsetPx < -threshold) {
         slideNext();
       } else if (dragOffsetPx > threshold) {
@@ -179,6 +167,10 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
     setDragOffsetPx(0);
     isHorizontalDrag.current = false;
     isVerticalScroll.current = false;
+    // Debounce resetting hasMoved so link onClick handlers can cleanly prevent default navigation
+    setTimeout(() => {
+      hasMoved.current = false;
+    }, 120);
   };
 
   const handlePointerCancel = () => {
@@ -187,6 +179,9 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
     setDragOffsetPx(0);
     isHorizontalDrag.current = false;
     isVerticalScroll.current = false;
+    setTimeout(() => {
+      hasMoved.current = false;
+    }, 120);
   };
 
   // Trackpad / Horizontal Mousewheel Swipe gesture
@@ -223,6 +218,9 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
         setDragOffsetPx(0);
         isHorizontalDrag.current = false;
         isVerticalScroll.current = false;
+        setTimeout(() => {
+          hasMoved.current = false;
+        }, 120);
       }
     };
     window.addEventListener('pointerup', onGlobalUp);
@@ -252,7 +250,7 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
       {/* 1. Centered Clean Top Label & Swipe Gesture Hint */}
       <div className="relative z-20 text-center pt-2 sm:pt-4 flex flex-col items-center space-y-1">
         <span className="text-[10px] sm:text-[11px] font-mono tracking-[0.35em] text-[#777777] uppercase select-none">
-          BOTTOMS
+          FEATURED SILHOUETTES // 3D LOOKBOOK
         </span>
         <div className="flex items-center space-x-1.5 text-[9px] font-mono tracking-widest text-[#AAAAAA] uppercase">
           <MoveHorizontal className="w-3 h-3 text-[#999999]" />
@@ -260,7 +258,7 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
         </div>
       </div>
 
-      {/* 2. Panoramic Arc of Sliding Floating Pants Stage */}
+      {/* 2. Panoramic Arc of Sliding Floating Stage */}
       <div className="relative z-20 w-full max-w-7xl mx-auto h-[360px] sm:h-[460px] lg:h-[520px] flex items-center justify-center">
         {/* Left & Right Slide Arrow Buttons */}
         <button
@@ -269,7 +267,7 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
             e.stopPropagation();
             slidePrev();
           }}
-          aria-label="Previous bottom"
+          aria-label="Previous silhouette"
           className="absolute left-2 sm:left-6 lg:left-12 top-1/2 -translate-y-1/2 z-35 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-white/95 hover:bg-black text-black hover:text-white border border-[#D5D5D5] flex items-center justify-center transition-all duration-200 shadow-md hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-sm"
         >
           <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -281,7 +279,7 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
             e.stopPropagation();
             slideNext();
           }}
-          aria-label="Next bottom"
+          aria-label="Next silhouette"
           className="absolute right-2 sm:right-6 lg:right-12 top-1/2 -translate-y-1/2 z-35 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-white/95 hover:bg-black text-black hover:text-white border border-[#D5D5D5] flex items-center justify-center transition-all duration-200 shadow-md hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-sm"
         >
           <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -295,24 +293,24 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
             if (rel < -Math.floor(total / 2)) rel += total;
 
             const basePos = isMobile
-              ? (MOBILE_POSITIONS[rel] ||
-                  (rel > 0
-                    ? { x: 120, y: 25, scale: 0.5, rotate: 12, zIndex: 2, opacity: 0 }
-                    : { x: -120, y: 25, scale: 0.5, rotate: -12, zIndex: 2, opacity: 0 }))
-              : (DESKTOP_POSITIONS[rel] ||
-                  (rel > 0
-                    ? { x: 55, y: 30, scale: 0.7, rotate: 15, zIndex: 5, opacity: 0 }
-                    : { x: -55, y: 30, scale: 0.7, rotate: -15, zIndex: 5, opacity: 0 }));
+              ? (MOBILE_POSITIONS[rel] || (rel > 0
+                  ? { x: 120, y: 25, scale: 0.5, rotate: 12, zIndex: 2, opacity: 0 }
+                  : { x: -120, y: 25, scale: 0.5, rotate: -12, zIndex: 2, opacity: 0 }))
+              : (DESKTOP_POSITIONS[rel] || (rel > 0
+                  ? { x: 55, y: 30, scale: 0.7, rotate: 15, zIndex: 5, opacity: 0 }
+                  : { x: -55, y: 30, scale: 0.7, rotate: -15, zIndex: 5, opacity: 0 }));
             const isCenter = rel === 0;
 
             // Fluid real-time drag calculation
             const dynamicX = basePos.x + dragPercentShift;
             const dynamicRotate = basePos.rotate + dragPercentShift * 0.25;
 
+            // CSS-based responsive visibility: Hide outer items on mobile phones directly in CSS without JS flip
+            const isOuter = Math.abs(rel) > 1;
+
             return (
               <motion.div
                 key={item.id}
-                layout={mounted ? 'position' : false}
                 initial={false}
                 animate={{
                   left: `calc(50% + ${dynamicX}%)`,
@@ -324,11 +322,13 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
                 }}
                 transition={{
                   type: 'spring',
-                  stiffness: isDragging ? 400 : 260,
-                  damping: isDragging ? 35 : 26,
-                  mass: 0.7,
+                  stiffness: isDragging ? 450 : 280,
+                  damping: isDragging ? 38 : 28,
+                  mass: 0.6,
                 }}
-                className="absolute -translate-x-1/2 -translate-y-1/2"
+                className={`absolute -translate-x-1/2 -translate-y-1/2 ${
+                  isOuter ? 'hidden md:block' : 'block'
+                }`}
                 onClick={() => {
                   if (hasMoved.current) return;
                   if (!isCenter) {
@@ -351,46 +351,42 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
                   }}
                   draggable={false}
                 >
-                  {/* Subtle float drifting animation */}
+                  {/* Subtle float drifting animation (GPU transform, no conflict with hover) */}
                   <motion.div
                     className="relative w-[140px] sm:w-[200px] md:w-[240px] lg:w-[280px] h-[260px] sm:h-[360px] md:h-[420px] lg:h-[480px]"
                     animate={{
-                      x: [0, 6, 3, 8, 0],
-                      y: [0, -10, -5, -12, 0],
-                      rotate: [0, 0.5, -0.3, 0.4, 0],
+                      y: [0, -8, 0],
+                      rotate: [0, 0.4, 0],
                     }}
                     transition={{
-                      duration: isCenter ? 4.5 : 5.2 + (Math.abs(rel) % 3) * 0.4,
+                      duration: isCenter ? 4.2 : 5.0 + (Math.abs(rel) % 3) * 0.4,
                       repeat: Infinity,
                       repeatType: 'reverse',
                       ease: 'easeInOut',
-                      delay: Math.abs(rel) * 0.25,
-                    }}
-                    whileHover={{
-                      scale: isCenter ? 1.05 : 1.02,
-                      y: -12,
-                      transition: { duration: 0.25, ease: 'easeOut' },
+                      delay: Math.abs(rel) * 0.2,
                     }}
                   >
-                    {item.image ? (
-                      <Image
-                        src={item.image}
-                        alt={item.name}
-                        fill
-                        sizes="(max-width: 640px) 140px, (max-width: 1024px) 240px, 280px"
-                        className="object-contain pointer-events-none transition-all duration-300 [filter:drop-shadow(0_6px_8px_rgba(0,0,0,0.18))_drop-shadow(0_18px_24px_rgba(0,0,0,0.16))_drop-shadow(0_32px_42px_rgba(0,0,0,0.10))] group-hover:[filter:drop-shadow(0_10px_12px_rgba(0,0,0,0.22))_drop-shadow(0_26px_34px_rgba(0,0,0,0.18))_drop-shadow(0_45px_55px_rgba(0,0,0,0.12))]"
-                        priority={isCenter}
-                        draggable={false}
-                        unoptimized={item.image.startsWith('data:') || item.image.startsWith('/uploads/')}
-                      />
-                    ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center bg-black/5 rounded-2xl border border-dashed border-[#CCCCCC] text-[#888888] font-mono text-xs">
-                        <span>Drop Image Here</span>
-                      </div>
-                    )}
+                    <div className="relative w-full h-full transition-transform duration-300 ease-out group-hover:scale-105 group-hover:-translate-y-2">
+                      {item.image ? (
+                        <Image
+                          src={item.image}
+                          alt={item.name}
+                          fill
+                          sizes="(max-width: 640px) 140px, (max-width: 1024px) 240px, 280px"
+                          className="object-contain pointer-events-none transition-all duration-300 [filter:drop-shadow(0_6px_8px_rgba(0,0,0,0.18))_drop-shadow(0_18px_24px_rgba(0,0,0,0.16))_drop-shadow(0_32px_42px_rgba(0,0,0,0.10))] group-hover:[filter:drop-shadow(0_10px_12px_rgba(0,0,0,0.22))_drop-shadow(0_26px_34px_rgba(0,0,0,0.18))_drop-shadow(0_45px_55px_rgba(0,0,0,0.12))]"
+                          priority={isCenter}
+                          draggable={false}
+                          unoptimized={item.image.startsWith('data:') || item.image.startsWith('/uploads/')}
+                        />
+                      ) : (
+                        <div className="w-full h-full flex flex-col items-center justify-center bg-black/5 rounded-2xl border border-dashed border-[#CCCCCC] text-[#888888] font-mono text-xs">
+                          <span>{item.name}</span>
+                        </div>
+                      )}
+                    </div>
                   </motion.div>
 
-                  {/* Dynamic Studio Ground Shadow Ellipse anchored beneath each pant */}
+                  {/* Dynamic Studio Ground Shadow Ellipse anchored beneath each silhouette */}
                   <motion.div
                     className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-[70%] h-4 rounded-[100%] pointer-events-none"
                     style={{
@@ -399,15 +395,15 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
                       filter: 'blur(3.5px)',
                     }}
                     animate={{
-                      scaleX: [1, 0.88, 0.94, 0.86, 1],
-                      opacity: [0.75, 0.5, 0.65, 0.45, 0.75],
+                      scaleX: [1, 0.88, 1],
+                      opacity: [0.75, 0.5, 0.75],
                     }}
                     transition={{
-                      duration: isCenter ? 4.5 : 5.2 + (Math.abs(rel) % 3) * 0.4,
+                      duration: isCenter ? 4.2 : 5.0 + (Math.abs(rel) % 3) * 0.4,
                       repeat: Infinity,
                       repeatType: 'reverse',
                       ease: 'easeInOut',
-                      delay: Math.abs(rel) * 0.25,
+                      delay: Math.abs(rel) * 0.2,
                     }}
                   />
                 </Link>
@@ -417,7 +413,7 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
         </div>
       </div>
 
-      {/* 3. Active Centered Pant Title & Action Link */}
+      {/* 3. Active Centered Silhouette Title & Action Link */}
       <div className="relative z-30 pt-2 pb-2 text-center pointer-events-auto">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
@@ -425,7 +421,7 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.22 }}
+            transition={{ duration: 0.18 }}
             className="flex flex-col items-center space-y-1.5"
           >
             <h3 className="text-xs sm:text-sm font-mono uppercase tracking-[0.2em] text-black font-semibold">
@@ -459,13 +455,13 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
         </div>
       </div>
 
-      {/* 4. Minimalist bottom archive link */}
+      {/* 4. Minimalist collection archive link */}
       <div className="relative z-20 pb-1 text-center">
         <Link
-          href="/collections/trackpant"
+          href="/collections"
           className="inline-block text-[9px] sm:text-[10px] font-mono tracking-[0.25em] text-[#999999] hover:text-black uppercase transition-colors"
         >
-          &bull; VIEW ALL BOTTOMS ARCHIVE &bull;
+          &bull; EXPLORE FULL STREETWEAR COLLECTION &bull;
         </Link>
       </div>
     </section>

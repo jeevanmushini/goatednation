@@ -227,7 +227,7 @@ const ProductCard: React.FC<{
 
           {/* Secondary Hover Image */}
           <Image
-            src={product.images[1]}
+            src={product.images[1] || product.images[0]}
             alt={`${product.title} alternate view`}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"

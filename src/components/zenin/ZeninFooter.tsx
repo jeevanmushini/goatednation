@@ -81,7 +81,7 @@ export const ZeninFooter: React.FC = () => {
         {/* Bottom Legal & Copyright Bar (Exact match to Screenshot 5) */}
         <div className="pt-8 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] font-mono text-[#666666] tracking-wider">
           <p>
-            &copy; {new Date().getFullYear()}, {settings?.brandName || 'GOATED NATION'} Powered by Shopify
+            &copy; {new Date().getFullYear()}, {settings?.brandName || 'GOATED NATION'}. ALL RIGHTS RESERVED.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">

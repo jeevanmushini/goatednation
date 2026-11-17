@@ -581,6 +581,18 @@ const createCmsStore = () =>
                     })
                   : get().heroBottoms;
 
+              // Check if server data actually differs from current state.
+              // If identical, do NOT call set() to prevent spurious re-renders of the storefront.
+              const current = get();
+              const isIdentical =
+                JSON.stringify(current.heroBottoms) === JSON.stringify(sanitizedServerHeroBottoms) &&
+                JSON.stringify(current.stackCards) === JSON.stringify(serverData.stackCards || current.stackCards) &&
+                JSON.stringify(current.editorialBanner) === JSON.stringify(serverData.editorialBanner || current.editorialBanner) &&
+                JSON.stringify(current.announcement) === JSON.stringify(serverData.announcement || current.announcement) &&
+                JSON.stringify(current.settings) === JSON.stringify(serverData.settings || current.settings);
+
+              if (isIdentical) return;
+
               set((prev) => ({
                 ...prev,
                 heroSlides: serverData.heroSlides || prev.heroSlides,
