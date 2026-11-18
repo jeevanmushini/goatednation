@@ -1,6 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 
+if (process.env.NODE_ENV === 'production') {
+  console.error('[SECURITY] test-admin-to-website-sync.mjs cannot be run in production.');
+  process.exit(1);
+}
+
 async function testAdminToWebsiteSync() {
   console.log('================================================================');
   console.log('   E2E TEST: ADMIN PANEL CHANGES REFLECTING ON LIVE STOREFRONT   ');
@@ -68,10 +73,25 @@ async function testAdminToWebsiteSync() {
     },
   };
 
-  console.log('Publishing updated CMS state via POST /api/cms ...');
-  const publishRes = await fetch('http://localhost:3000/api/cms', {
+  console.log('Authenticating as admin to obtain session clearance...');
+  const loginRes = await fetch('http://localhost:3000/api/auth/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: 'admin@goatednation.com', password: 'Admin@123' }),
+  });
+  const loginJson = await loginRes.json();
+  const token = loginJson.token;
+  if (!token) {
+    throw new Error('Admin login failed for sync test: ' + JSON.stringify(loginJson));
+  }
+
+  console.log('Publishing updated CMS state via authenticated POST /api/cms ...');
+  const publishRes = await fetch('http://localhost:3000/api/cms', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
     body: JSON.stringify(payload),
   });
   const publishJson = await publishRes.json();

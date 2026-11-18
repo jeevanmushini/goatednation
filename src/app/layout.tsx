@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./tailwind.css";
 
-export const dynamic = "force-dynamic";
-
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,

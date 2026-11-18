@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 import { getPublishedCmsData, savePublishedCmsData, PublishedCmsData } from '../../../lib/cms/serverCms';
+import { verifyJwt } from '../../../lib/auth/jwt';
 
 export async function GET() {
   try {
@@ -17,6 +18,17 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
+    // Enforce Administrator Authorization (Cookie or Bearer Token)
+    const token = req.cookies.get('auth_token')?.value || req.headers.get('authorization')?.replace(/^Bearer\s+/i, '');
+    const payload = token ? verifyJwt(token) : null;
+
+    if (!payload || payload.role !== 'ADMIN') {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized: Administrator clearance required to publish CMS data.' },
+        { status: 401 }
+      );
+    }
+
     const body = (await req.json()) as Partial<PublishedCmsData>;
     if (!body || typeof body !== 'object') {
       return NextResponse.json(

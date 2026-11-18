@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
@@ -58,6 +58,10 @@ export default function AdminHomepageCmsPage() {
   const [selectedCardIndex, setSelectedCardIndex] = useState(0);
   const [activeLayoutSection, setActiveLayoutSection] = useState<string>('sec-hero');
   const [savedNotice, setSavedNotice] = useState(false);
+
+  useEffect(() => {
+    useCmsStore.getState().syncFromServer();
+  }, []);
 
   const currentHero = heroSlides[0] || {};
   const currentBanner = banners[0] || {};
@@ -124,6 +128,7 @@ export default function AdminHomepageCmsPage() {
       image: '',
       color: 'Custom Color',
       badge: 'NEW DROP',
+      link: '/collections',
     });
     setSelectedBottomIndex(heroBottoms.length);
   };
@@ -390,6 +395,18 @@ export default function AdminHomepageCmsPage() {
                       className="w-full bg-[#FAFAFA] border border-[#D5D5D5] rounded px-3 py-2 text-xs text-black font-mono outline-none focus:border-black uppercase"
                     />
                   </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono text-[#666666] mb-1">Link / Destination URL</label>
+                  <input
+                    type="text"
+                    value={currentBottom.link || ''}
+                    onChange={(e) => updateHeroBottom(currentBottom.id, { link: e.target.value })}
+                    placeholder="/collections/hoodie"
+                    className="w-full bg-[#FAFAFA] border border-[#D5D5D5] rounded px-3 py-2 text-xs text-black outline-none focus:border-black font-mono"
+                  />
+                  <p className="text-[10px] font-mono text-[#AAAAAA] mt-1">e.g. /collections/hoodie · /collections/jacket · /products/slug</p>
                 </div>
               </div>
             )}

@@ -1,7 +1,10 @@
 import crypto from 'crypto';
 import { JwtPayload, UserRole, AuthProvider } from '../../types/auth';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'goated-nation-tokyo-jwt-super-secret-key-2026-secure';
+const JWT_SECRET = process.env.JWT_SECRET || (process.env.NODE_ENV === 'production' ? '' : 'goated-nation-tokyo-jwt-super-secret-key-2026-secure');
+if (process.env.NODE_ENV === 'production' && (!JWT_SECRET || JWT_SECRET.length < 32)) {
+  throw new Error('JWT_SECRET environment variable is missing or insufficiently secure for production.');
+}
 
 function base64UrlEncode(str: string): string {
   return Buffer.from(str)

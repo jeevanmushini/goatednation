@@ -105,18 +105,6 @@ export async function saveToKvStore(data: PublishedCmsData): Promise<boolean> {
 function sanitizePublishedCmsData(data: PublishedCmsData): PublishedCmsData {
   if (!data.heroBottoms || data.heroBottoms.length === 0) {
     data.heroBottoms = INITIAL_HERO_BOTTOMS;
-  } else {
-    data.heroBottoms = data.heroBottoms.map((b, idx) => {
-      const fb = INITIAL_HERO_BOTTOMS[idx] || INITIAL_HERO_BOTTOMS[0];
-      const validImage = b.image && b.image.trim() !== '' ? b.image : fb.image;
-
-      return {
-        ...fb,
-        ...b,
-        image: validImage,
-        name: b.name && b.name.trim() !== '' ? b.name : fb.name,
-      };
-    });
   }
   return data;
 }

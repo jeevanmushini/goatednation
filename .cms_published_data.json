@@ -5572,7 +5572,8 @@
       "price": "Rs. 2,499",
       "image": "/images/hero/berserk-hoodie.jpg",
       "color": "Eclipse Black",
-      "badge": "BESTSELLER"
+      "badge": "BESTSELLER",
+      "link": "/collections/hoodie"
     },
     {
       "id": "b-2",
@@ -5581,7 +5582,8 @@
       "price": "Rs. 2,999",
       "image": "/images/hero/sukuna-jacket.jpg",
       "color": "Crimson Gold",
-      "badge": "LIMITED"
+      "badge": "LIMITED",
+      "link": "/collections/jacket"
     },
     {
       "id": "b-3",
@@ -5590,7 +5592,8 @@
       "price": "Rs. 2,099",
       "image": "/images/hero/ryujin-jacket.jpg",
       "color": "Onyx Green",
-      "badge": "NEW DROP"
+      "badge": "NEW DROP",
+      "link": "/collections/jacket"
     },
     {
       "id": "b-4",
@@ -5599,7 +5602,8 @@
       "price": "Rs. 1,549",
       "image": "/images/hero/cherry-blossom-waffle.jpg",
       "color": "Cherry Floral",
-      "badge": "RESTOCKED"
+      "badge": "RESTOCKED",
+      "link": "/collections/tees"
     },
     {
       "id": "b-5",
@@ -5608,7 +5612,8 @@
       "price": "Rs. 1,299",
       "image": "/images/hero/zoro-crossbody.jpg",
       "color": "Military Olive",
-      "badge": "TACTICAL"
+      "badge": "TACTICAL",
+      "link": "/collections/backpack"
     },
     {
       "id": "b-6",
@@ -5617,7 +5622,8 @@
       "price": "Rs. 1,899",
       "image": "/images/hero/tactical-vest.jpg",
       "color": "Matte Slate",
-      "badge": "NEW"
+      "badge": "NEW",
+      "link": "/collections/vest"
     },
     {
       "id": "b-7",
@@ -5626,7 +5632,8 @@
       "price": "Rs. 2,799",
       "image": "/images/hero/valhalla-bomber.jpg",
       "color": "Vintage Black",
-      "badge": "HEAVY EMBROIDERY"
+      "badge": "HEAVY EMBROIDERY",
+      "link": "/collections/jacket"
     }
   ],
   "stackCards": [

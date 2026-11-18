@@ -20,10 +20,10 @@ const FALLBACK_BANNER = {
 export const ZeninEditorialBanner: React.FC<ZeninEditorialBannerProps> = ({ initialBanner }) => {
   const cmsBanner = useCmsStore((state) => state.editorialBanner);
   const banner =
-    cmsBanner && cmsBanner.image
-      ? cmsBanner
-      : initialBanner && initialBanner.image
+    initialBanner && initialBanner.image
       ? initialBanner
+      : cmsBanner && cmsBanner.image
+      ? cmsBanner
       : FALLBACK_BANNER;
 
   return (

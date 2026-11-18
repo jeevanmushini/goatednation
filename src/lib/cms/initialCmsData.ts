@@ -178,6 +178,7 @@ export const INITIAL_HERO_BOTTOMS: CmsHeroBottomItem[] = [
     image: '/images/hero/berserk-hoodie.jpg',
     color: 'Eclipse Black',
     badge: 'BESTSELLER',
+    link: '/collections/hoodie',
   },
   {
     id: 'b-2',
@@ -187,6 +188,7 @@ export const INITIAL_HERO_BOTTOMS: CmsHeroBottomItem[] = [
     image: '/images/hero/sukuna-jacket.jpg',
     color: 'Crimson Gold',
     badge: 'LIMITED',
+    link: '/collections/jacket',
   },
   {
     id: 'b-3',
@@ -196,6 +198,7 @@ export const INITIAL_HERO_BOTTOMS: CmsHeroBottomItem[] = [
     image: '/images/hero/ryujin-jacket.jpg',
     color: 'Onyx Green',
     badge: 'NEW DROP',
+    link: '/collections/jacket',
   },
   {
     id: 'b-4',
@@ -205,6 +208,7 @@ export const INITIAL_HERO_BOTTOMS: CmsHeroBottomItem[] = [
     image: '/images/hero/cherry-blossom-waffle.jpg',
     color: 'Cherry Floral',
     badge: 'RESTOCKED',
+    link: '/collections/tees',
   },
   {
     id: 'b-5',
@@ -214,6 +218,7 @@ export const INITIAL_HERO_BOTTOMS: CmsHeroBottomItem[] = [
     image: '/images/hero/zoro-crossbody.jpg',
     color: 'Military Olive',
     badge: 'TACTICAL',
+    link: '/collections/backpack',
   },
   {
     id: 'b-6',
@@ -223,6 +228,7 @@ export const INITIAL_HERO_BOTTOMS: CmsHeroBottomItem[] = [
     image: '/images/hero/tactical-vest.jpg',
     color: 'Matte Slate',
     badge: 'NEW',
+    link: '/collections/vest',
   },
   {
     id: 'b-7',
@@ -232,6 +238,7 @@ export const INITIAL_HERO_BOTTOMS: CmsHeroBottomItem[] = [
     image: '/images/hero/valhalla-bomber.jpg',
     color: 'Vintage Black',
     badge: 'HEAVY EMBROIDERY',
+    link: '/collections/jacket',
   },
 ];
 

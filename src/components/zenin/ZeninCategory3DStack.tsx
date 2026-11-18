@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback, useMemo, useSyncExternalStore } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, MoveHorizontal } from 'lucide-react';
@@ -55,14 +55,11 @@ const STACK_ITEMS: CardStackItem[] = [
   },
 ];
 
-const emptySubscribe = () => () => {};
-
 export const ZeninCategory3DStack: React.FC<ZeninCategory3DStackProps> = ({ initialCards }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffsetPx, setDragOffsetPx] = useState(0);
-  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
 
   const isPointerDown = useRef(false);
   const startX = useRef(0);
@@ -84,9 +81,7 @@ export const ZeninCategory3DStack: React.FC<ZeninCategory3DStackProps> = ({ init
 
   const items: CardStackItem[] = useMemo(() => {
     const rawList =
-      (mounted && cmsStackCards && cmsStackCards.length > 0)
-        ? cmsStackCards
-        : (initialCards && initialCards.length > 0)
+      (initialCards && initialCards.length > 0)
         ? initialCards
         : (cmsStackCards && cmsStackCards.length > 0)
         ? cmsStackCards
@@ -99,11 +94,11 @@ export const ZeninCategory3DStack: React.FC<ZeninCategory3DStackProps> = ({ init
         category: c.category || fb.category,
         title: c.title || fb.title,
         subtitle: c.subtitle || fb.subtitle,
-        image: c.image || fb.image,
+        image: c.image && c.image.trim() !== '' ? c.image : fb.image,
         link: c.link || fb.link || '/collections',
       };
     });
-  }, [mounted, cmsStackCards, initialCards]);
+  }, [initialCards, cmsStackCards]);
 
   const safeActiveIndex = Math.min(activeIndex, items.length - 1);
   const current = items[safeActiveIndex] || items[0] || STACK_ITEMS[0];

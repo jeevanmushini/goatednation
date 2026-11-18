@@ -527,20 +527,16 @@ const createCmsStore = () =>
             if (json.success && json.data) {
               const serverData = json.data;
 
-              const sanitizedServerHeroBottoms =
+              const serverHeroBottoms =
                 Array.isArray(serverData.heroBottoms) && serverData.heroBottoms.length > 0
-                  ? serverData.heroBottoms.map((b: CmsHeroBottomItem, idx: number) => {
-                      const fb = INITIAL_HERO_BOTTOMS[idx] || INITIAL_HERO_BOTTOMS[0];
-                      const validImage = b.image && b.image.trim() !== '' ? b.image : fb.image;
-                      return { ...fb, ...b, image: validImage };
-                    })
+                  ? serverData.heroBottoms
                   : get().heroBottoms;
 
               // Check if server data actually differs from current state.
               // If identical, do NOT call set() to prevent spurious re-renders of the storefront.
               const current = get();
               const isIdentical =
-                JSON.stringify(current.heroBottoms) === JSON.stringify(sanitizedServerHeroBottoms) &&
+                JSON.stringify(current.heroBottoms) === JSON.stringify(serverHeroBottoms) &&
                 JSON.stringify(current.stackCards) === JSON.stringify(serverData.stackCards || current.stackCards) &&
                 JSON.stringify(current.editorialBanner) === JSON.stringify(serverData.editorialBanner || current.editorialBanner) &&
                 JSON.stringify(current.announcement) === JSON.stringify(serverData.announcement || current.announcement) &&
@@ -560,7 +556,7 @@ const createCmsStore = () =>
                 settings: serverData.settings || prev.settings,
                 navigation: serverData.navigation || prev.navigation,
                 media: serverData.media || prev.media,
-                heroBottoms: sanitizedServerHeroBottoms,
+                heroBottoms: serverHeroBottoms,
                 stackCards: serverData.stackCards || prev.stackCards,
                 editorialBanner: serverData.editorialBanner || prev.editorialBanner,
                 announcement: serverData.announcement || prev.announcement,

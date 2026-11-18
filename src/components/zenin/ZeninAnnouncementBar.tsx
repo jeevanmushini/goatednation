@@ -17,7 +17,7 @@ export const ZeninAnnouncementBar: React.FC<ZeninAnnouncementBarProps> = ({ init
   const cmsAnnouncement = useCmsStore((state) => state.announcement);
   const settings = useCmsStore((state) => state.settings);
 
-  const activeAnn = cmsAnnouncement || initialAnnouncement;
+  const activeAnn = initialAnnouncement || cmsAnnouncement;
   const announcementText = activeAnn?.text || 'APPLIED AT CHECKOUT';
   const highlightText = activeAnn?.highlightText || 'EXTRA 15% OFF ON PREPAID ORDERS';
   const ctaText = activeAnn?.ctaText || 'SHOP NOW';

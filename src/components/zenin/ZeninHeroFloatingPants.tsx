@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useMemo, useRef, useSyncExternalStore } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -24,7 +24,7 @@ const FALLBACK_HERO_BOTTOMS: BottomHeroItem[] = INITIAL_HERO_BOTTOMS.map((b, idx
   id: b.id || `b-${idx + 1}`,
   name: b.name,
   image: b.image,
-  link: (b as { link?: string }).link || '/collections/hoodies',
+  link: b.link || '/collections',
 }));
 
 // Base position parameters based on relative offset from active center item (-3 to +3)
@@ -44,14 +44,11 @@ const MOBILE_POSITIONS: Record<number, { x: number; y: number; scale: number; ro
   [1]: { x: 56, y: 14, scale: 0.74, rotate: 8, zIndex: 16, opacity: 0.45 },
 };
 
-const emptySubscribe = () => () => {};
-
 export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ initialBottoms }) => {
   const cmsBottoms = useCmsStore((state) => state.heroBottoms);
   const [dragOffsetPx, setDragOffsetPx] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -62,13 +59,11 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Stable single source of truth: guarantees SSR HTML and hydrated DOM match on frame 1,
-  // while immediately prioritizing client cmsStore edits once mounted!
+  // Stable single source of truth: ensures published CMS data from server (initialBottoms)
+  // or client store renders identically on frame 1 without any 1-second hydration glitch!
   const items: BottomHeroItem[] = useMemo(() => {
     const rawList =
-      (mounted && cmsBottoms && cmsBottoms.length > 0)
-        ? cmsBottoms
-        : (initialBottoms && initialBottoms.length > 0)
+      (initialBottoms && initialBottoms.length > 0)
         ? initialBottoms
         : (cmsBottoms && cmsBottoms.length > 0)
         ? cmsBottoms
@@ -76,15 +71,14 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
 
     return rawList.map((cmsItem, idx) => {
       const fb = FALLBACK_HERO_BOTTOMS[idx] || FALLBACK_HERO_BOTTOMS[0];
-      const validImage = cmsItem.image && cmsItem.image.trim() !== '' ? cmsItem.image : fb.image;
       return {
         id: cmsItem.id || fb.id || `b-${idx + 1}`,
         name: cmsItem.name || fb.name,
-        image: validImage,
-        link: (cmsItem as { link?: string }).link || fb.link || '/collections',
+        image: cmsItem.image && cmsItem.image.trim() !== '' ? cmsItem.image : fb.image,
+        link: cmsItem.link || fb.link || '/collections',
       };
     });
-  }, [mounted, cmsBottoms, initialBottoms]);
+  }, [initialBottoms, cmsBottoms]);
 
   const total = items.length;
 

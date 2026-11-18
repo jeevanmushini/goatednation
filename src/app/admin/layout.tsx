@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -21,6 +23,9 @@ import {
   Lock,
   ArrowRight,
   LogOut,
+  Menu,
+  X,
+  AlertTriangle,
 } from 'lucide-react';
 import { useCmsStore } from '../../lib/cms/cmsStore';
 import { useAuthStore } from '../../stores/authStore';
@@ -32,21 +37,31 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const { user, isAuthenticated, isAdmin, isLoading, checkAuth, login, logout } = useAuthStore();
 
   const [publishedToast, setPublishedToast] = useState(false);
+  const [resetSuccessToast, setResetSuccessToast] = useState(false);
+  const [showResetModal, setShowResetModal] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [quickLoginLoading, setQuickLoginLoading] = useState(false);
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
+  // Close mobile sidebar on route change
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
+    setMobileSidebarOpen(false);
+  }
+
   const navItems = [
     { label: 'Overview', href: '/admin', icon: LayoutDashboard },
     { label: 'Homepage CMS', href: '/admin/homepage', icon: Layers },
-    { label: 'Products', href: '/admin/products', icon: ShoppingBag },
-    { label: 'Categories', href: '/admin/categories', icon: Grid },
+    { label: 'Drops & Products', href: '/admin/products', icon: ShoppingBag },
+    { label: 'Collections / Decks', href: '/admin/categories', icon: Grid },
     { label: 'Media Library', href: '/admin/media', icon: ImageIcon },
-    { label: 'Shipping & Logistics', href: '/admin/shipping', icon: Truck },
-    { label: 'Navigation', href: '/admin/navigation', icon: Compass },
-    { label: 'Global Settings', href: '/admin/settings', icon: Settings },
+    { label: 'Navigation & Links', href: '/admin/navigation', icon: Compass },
+    { label: 'Shiprocket Logistics', href: '/admin/shipping', icon: Truck },
+    { label: 'Store Settings', href: '/admin/settings', icon: Settings },
   ];
 
   const handlePublish = () => {
@@ -55,17 +70,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     setTimeout(() => setPublishedToast(false), 3000);
   };
 
-  const handleReset = () => {
-    if (confirm('Are you sure you want to reset all CMS content to default values?')) {
-      resetToDefaults();
-      alert('CMS content reset to official defaults.');
-    }
+  const handleConfirmReset = () => {
+    resetToDefaults();
+    setShowResetModal(false);
+    setResetSuccessToast(true);
+    setTimeout(() => setResetSuccessToast(false), 3500);
   };
 
   const handleQuickAdminLogin = async () => {
     setQuickLoginLoading(true);
-    await login('admin@goatednation.com', 'Admin@123');
-    setQuickLoginLoading(false);
+    try {
+      await login('admin@goatednation.com', 'Admin@123');
+    } finally {
+      setQuickLoginLoading(false);
+    }
   };
 
   // 1. Loading State
@@ -124,23 +142,26 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
           {/* Action Buttons */}
           <div className="space-y-3">
-            <button
-              onClick={handleQuickAdminLogin}
-              disabled={quickLoginLoading}
-              className="w-full py-3 px-4 rounded-lg bg-black hover:bg-[#222222] text-white text-xs font-mono uppercase tracking-widest font-bold flex items-center justify-center space-x-2 transition-all shadow-sm hover:scale-[1.01] active:scale-95 disabled:opacity-50"
-            >
-              <Shield className="w-4 h-4 text-[#FF4D00]" />
-              <span>
-                {quickLoginLoading ? 'AUTHENTICATING ADMIN...' : '1-CLICK ADMIN DEMO LOGIN'}
-              </span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
+            {/* Gated demo login for non-production environments */}
+            {process.env.NODE_ENV !== 'production' && (
+              <button
+                onClick={handleQuickAdminLogin}
+                disabled={quickLoginLoading}
+                className="w-full py-3 px-4 rounded-lg bg-black hover:bg-[#222222] text-white text-xs font-mono uppercase tracking-widest font-bold flex items-center justify-center space-x-2 transition-all shadow-sm hover:scale-[1.01] active:scale-95 disabled:opacity-50"
+              >
+                <Shield className="w-4 h-4 text-[#FF4D00]" />
+                <span>
+                  {quickLoginLoading ? 'AUTHENTICATING ADMIN...' : '1-CLICK ADMIN DEV LOGIN'}
+                </span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            )}
 
             <Link
               href="/login?redirect=/admin"
               className="w-full py-2.5 px-4 rounded-lg border border-[#D0D0D0] hover:border-black bg-white hover:bg-[#FAFAFA] text-xs font-mono uppercase tracking-widest font-bold text-black flex items-center justify-center space-x-2 transition-colors"
             >
-              <span>SIGN IN WITH DIFFERENT ACCOUNT</span>
+              <span>SIGN IN WITH ADMIN CREDENTIALS</span>
             </Link>
 
             <Link
@@ -155,14 +176,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
-  // 3. Authenticated as ADMIN
-  return (
-    <div className="flex min-h-screen bg-[#FBFBFB] text-black font-sans antialiased selection:bg-[#FF4D00] selection:text-white">
-      {/* Sidebar Navigation */}
-      <aside className="w-64 bg-white border-r border-[#EAEAEA] flex flex-col justify-between shrink-0 hidden md:flex">
-        <div>
-          {/* Admin Header */}
-          <div className="p-6 border-b border-[#EAEAEA]">
+  const renderSidebarContent = () => (
+    <div className="flex flex-col justify-between h-full">
+      <div>
+        {/* Admin Header */}
+        <div className="p-6 border-b border-[#EAEAEA] flex items-center justify-between">
+          <div>
             <Link href="/admin" className="flex items-center space-x-2">
               <span className="text-xl font-mono font-bold tracking-tight text-black">
                 GOATED NATION
@@ -178,99 +197,140 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               </span>
             </div>
           </div>
-
-          {/* Links */}
-          <nav className="p-4 space-y-1">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`flex items-center space-x-3 px-3.5 py-2.5 rounded-lg text-xs font-mono tracking-wide transition-all ${
-                    isActive
-                      ? 'bg-black text-white font-bold shadow-sm'
-                      : 'text-[#666666] hover:text-black hover:bg-[#F2F2F2]'
-                  }`}
-                >
-                  <Icon className="w-4 h-4 shrink-0" />
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
-          </nav>
+          {mobileSidebarOpen && (
+            <button
+              onClick={() => setMobileSidebarOpen(false)}
+              className="p-1.5 rounded-md hover:bg-zinc-100 text-zinc-500 md:hidden"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          )}
         </div>
 
-        {/* Footer Actions & Admin User Info */}
-        <div className="p-4 border-t border-[#EAEAEA] space-y-2">
-          {/* Current Admin User Badge */}
-          {user && (
-            <div className="p-3 bg-[#FAFAFA] border border-[#EAEAEA] rounded-lg mb-2">
-              <div className="flex items-center space-x-2.5">
-                <div className="relative w-7 h-7 rounded-full overflow-hidden bg-black/10 shrink-0">
-                  {user.avatar ? (
-                    <Image src={user.avatar} alt={user.name} fill sizes="28px" className="object-cover" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-[10px] font-mono font-bold">
-                      {user.name.charAt(0)}
-                    </div>
-                  )}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="text-[11px] font-mono font-bold text-black truncate uppercase">
-                    {user.name}
+        {/* Links */}
+        <nav className="p-4 space-y-1">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setMobileSidebarOpen(false)}
+                className={`flex items-center space-x-3 px-3.5 py-2.5 rounded-lg text-xs font-mono tracking-wide transition-all ${
+                  isActive
+                    ? 'bg-black text-white font-bold shadow-sm'
+                    : 'text-[#666666] hover:text-black hover:bg-[#F2F2F2]'
+                }`}
+              >
+                <Icon className="w-4 h-4 shrink-0" />
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
+
+      {/* Footer Actions & Admin User Info */}
+      <div className="p-4 border-t border-[#EAEAEA] space-y-2">
+        {user && (
+          <div className="p-3 bg-[#FAFAFA] border border-[#EAEAEA] rounded-lg mb-2">
+            <div className="flex items-center space-x-2.5">
+              <div className="relative w-7 h-7 rounded-full overflow-hidden bg-black/10 shrink-0">
+                {user.avatar ? (
+                  <Image src={user.avatar} alt={user.name} fill sizes="28px" className="object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-[10px] font-mono font-bold">
+                    {user.name.charAt(0)}
                   </div>
-                  <div className="text-[9px] font-mono text-[#888888] truncate">{user.email}</div>
+                )}
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="text-[11px] font-mono font-bold text-black truncate uppercase">
+                  {user.name}
                 </div>
+                <div className="text-[9px] font-mono text-[#888888] truncate">{user.email}</div>
               </div>
             </div>
-          )}
+          </div>
+        )}
 
-          <Link
-            href="/"
-            target="_blank"
-            className="flex items-center justify-between w-full px-3.5 py-2.5 rounded-lg bg-[#FAFAFA] hover:bg-[#F0F0F0] border border-[#EAEAEA] text-black text-xs font-mono transition-colors"
+        <Link
+          href="/"
+          target="_blank"
+          className="flex items-center justify-between w-full px-3.5 py-2.5 rounded-lg bg-[#FAFAFA] hover:bg-[#F0F0F0] border border-[#EAEAEA] text-black text-xs font-mono transition-colors"
+        >
+          <span className="flex items-center">
+            <ExternalLink className="w-3.5 h-3.5 mr-2 text-[#FF4D00]" /> Live Storefront
+          </span>
+          <span className="text-[10px] text-[#888888]">&rarr;</span>
+        </Link>
+
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => setShowResetModal(true)}
+            className="flex-1 flex items-center justify-center px-2 py-2 rounded-lg text-[11px] font-mono text-[#888888] hover:text-[#8A1616] transition-colors"
           >
-            <span className="flex items-center">
-              <ExternalLink className="w-3.5 h-3.5 mr-2 text-[#FF4D00]" /> Live Storefront
-            </span>
-            <span className="text-[10px] text-[#888888]">&rarr;</span>
-          </Link>
+            <RotateCcw className="w-3 h-3 mr-1" /> Reset
+          </button>
 
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={handleReset}
-              className="flex-1 flex items-center justify-center px-2 py-2 rounded-lg text-[11px] font-mono text-[#888888] hover:text-[#8A1616] transition-colors"
-            >
-              <RotateCcw className="w-3 h-3 mr-1" /> Reset
-            </button>
+          <button
+            onClick={async () => {
+              await logout();
+              router.push('/login');
+            }}
+            className="flex-1 flex items-center justify-center px-2 py-2 rounded-lg text-[11px] font-mono text-[#888888] hover:text-black transition-colors"
+          >
+            <LogOut className="w-3 h-3 mr-1" /> Sign Out
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 
-            <button
-              onClick={async () => {
-                await logout();
-                router.push('/login');
-              }}
-              className="flex-1 flex items-center justify-center px-2 py-2 rounded-lg text-[11px] font-mono text-[#888888] hover:text-black transition-colors"
-            >
-              <LogOut className="w-3 h-3 mr-1" /> Sign Out
-            </button>
+  // 3. Authenticated as ADMIN
+  return (
+    <div className="flex min-h-screen bg-[#FBFBFB] text-black font-sans antialiased selection:bg-[#FF4D00] selection:text-white">
+      {/* Desktop Sidebar Navigation */}
+      <aside className="w-64 bg-white border-r border-[#EAEAEA] flex flex-col justify-between shrink-0 hidden md:flex">
+        {renderSidebarContent()}
+      </aside>
+
+      {/* Mobile Drawer Backdrop & Sidebar (BUG-38 Fix) */}
+      {mobileSidebarOpen && (
+        <div className="fixed inset-0 z-50 flex md:hidden">
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
+            onClick={() => setMobileSidebarOpen(false)}
+          />
+          <div className="relative z-10 w-72 max-w-[80vw] bg-white h-full shadow-2xl flex flex-col">
+            {renderSidebarContent()}
           </div>
         </div>
-      </aside>
+      )}
 
       {/* Main Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Bar */}
-        <header className="h-16 bg-white border-b border-[#EAEAEA] px-6 flex items-center justify-between sticky top-0 z-30">
-          <div className="flex items-center space-x-2">
-            <span className="text-xs font-mono uppercase text-[#888888]">ADMIN /</span>
-            <span className="text-xs font-mono text-black font-bold uppercase">
-              {pathname === '/admin' ? 'Overview' : pathname.replace('/admin/', '').replace('-', ' ')}
-            </span>
+        <header className="h-16 bg-white border-b border-[#EAEAEA] px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30">
+          <div className="flex items-center space-x-3">
+            {/* Hamburger button for mobile (BUG-38) */}
+            <button
+              onClick={() => setMobileSidebarOpen(true)}
+              className="p-2 -ml-2 rounded-lg text-black hover:bg-zinc-100 md:hidden"
+              aria-label="Toggle navigation menu"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+            <div className="flex items-center space-x-2">
+              <span className="text-xs font-mono uppercase text-[#888888] hidden sm:inline">ADMIN /</span>
+              <span className="text-xs font-mono text-black font-bold uppercase truncate">
+                {pathname === '/admin' ? 'Overview' : pathname.replace('/admin/', '').replace('-', ' ')}
+              </span>
+            </div>
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-3 sm:space-x-4">
             {/* Live Status indicator */}
             <div className="flex items-center space-x-2 text-xs font-mono">
               <span
@@ -278,23 +338,24 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   isDraft ? 'bg-[#F59E0B] animate-pulse' : 'bg-[#16A34A]'
                 }`}
               />
-              <span className={isDraft ? 'text-[#F59E0B] font-semibold' : 'text-[#888888]'}>
-                {isDraft ? 'Draft Changes Pending' : 'All Published'}
+              <span className={`text-[11px] sm:text-xs ${isDraft ? 'text-[#F59E0B] font-semibold' : 'text-[#888888]'}`}>
+                {isDraft ? 'Draft Pending' : 'Published'}
               </span>
             </div>
 
             {/* Publish Button */}
             <button
               onClick={handlePublish}
-              className="flex items-center space-x-1.5 px-4 py-2 rounded bg-black hover:bg-[#222222] text-white font-mono text-xs font-bold uppercase tracking-wider transition-all shadow-sm active:scale-95"
+              className="flex items-center space-x-1.5 px-3 sm:px-4 py-2 rounded bg-black hover:bg-[#222222] text-white font-mono text-xs font-bold uppercase tracking-wider transition-all shadow-sm active:scale-95"
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Publish to Live Store</span>
+              <span className="hidden sm:inline">Publish to Live Store</span>
+              <span className="sm:hidden">Publish</span>
             </button>
           </div>
         </header>
 
-        {/* Toast Alert */}
+        {/* Publish Toast Alert */}
         {publishedToast && (
           <div className="fixed bottom-6 right-6 z-50 p-4 rounded-lg bg-white border border-[#16A34A] text-black text-xs font-mono flex items-center space-x-3 shadow-2xl animate-in slide-in-from-bottom duration-200">
             <div className="w-6 h-6 rounded-full bg-[#16A34A]/10 text-[#16A34A] flex items-center justify-center">
@@ -309,8 +370,58 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
         )}
 
+        {/* Reset Success Toast */}
+        {resetSuccessToast && (
+          <div className="fixed bottom-6 right-6 z-50 p-4 rounded-lg bg-white border border-black text-black text-xs font-mono flex items-center space-x-3 shadow-2xl animate-in slide-in-from-bottom duration-200">
+            <div className="w-6 h-6 rounded-full bg-black text-white flex items-center justify-center font-bold">
+              ✓
+            </div>
+            <div>
+              <div className="font-bold text-black">Defaults Restored</div>
+              <div className="text-[#666666] text-[11px]">
+                CMS content has been reset to official defaults.
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Modal-based Confirmation for Reset (BUG-39 Fix) */}
+        {showResetModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-xs" onClick={() => setShowResetModal(false)} />
+            <div className="relative z-10 w-full max-w-md bg-white border border-[#EAEAEA] rounded-xl p-6 shadow-2xl font-mono space-y-4">
+              <div className="flex items-center space-x-3 text-[#B91C1C]">
+                <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                  <AlertTriangle className="w-5 h-5 text-red-600" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm text-black uppercase">Reset CMS Defaults</h3>
+                  <p className="text-xs text-[#666666] mt-0.5">This action will restore default layout & copy.</p>
+                </div>
+              </div>
+              <p className="text-xs text-[#555555] leading-relaxed">
+                Are you sure you want to reset all CMS content to default values? Any unpublished changes will be replaced.
+              </p>
+              <div className="flex items-center justify-end space-x-3 pt-2">
+                <button
+                  onClick={() => setShowResetModal(false)}
+                  className="px-4 py-2 rounded-lg border border-[#D5D5D5] hover:bg-zinc-100 text-xs text-black transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleConfirmReset}
+                  className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold text-xs uppercase tracking-wider transition-colors"
+                >
+                  Confirm Reset
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Content Body */}
-        <main className="flex-1 p-6 sm:p-8 overflow-y-auto">{children}</main>
+        <main className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto">{children}</main>
       </div>
     </div>
   );

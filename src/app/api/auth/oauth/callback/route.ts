@@ -24,10 +24,9 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(`${siteUrl}/login?error=OAuthCodeMissing`);
   }
 
-  // Parse state data
+  // Parse state data (cryptographically validated structure)
   let role: UserRole = 'CUSTOMER';
   let redirectTo = '/';
-  let matchedRedirectUri = '';
 
   if (state) {
     try {
@@ -36,34 +35,25 @@ export async function GET(req: NextRequest) {
         role = parsed.role;
       }
       if (parsed.redirect && typeof parsed.redirect === 'string') {
-        redirectTo = parsed.redirect;
-      }
-      if (parsed.redirectUri && typeof parsed.redirectUri === 'string') {
-        matchedRedirectUri = parsed.redirectUri;
+        // Enforce safe relative redirect to prevent open-redirect vulnerabilities
+        if (parsed.redirect.startsWith('/') && !parsed.redirect.startsWith('//')) {
+          redirectTo = parsed.redirect;
+        }
       }
     } catch {
-      // Ignore parse error, use defaults
+      // Ignore parse error, use safe defaults
     }
-  }
-
-  // Fallback to query params if state wasn't present
-  if (searchParams.get('role')) {
-    role = (searchParams.get('role') as UserRole) || role;
-  }
-  if (searchParams.get('redirect')) {
-    redirectTo = searchParams.get('redirect') || redirectTo;
   }
 
   try {
     const clientId = process.env.GOOGLE_CLIENT_ID?.trim();
     const clientSecret = process.env.GOOGLE_CLIENT_SECRET?.trim();
     
-    // Use the exact redirectUri that initiated the authorization flow
+    // Server-controlled redirect URI to prevent state-injection attacks
     const customCallback = process.env.GOOGLE_CALLBACK_URL?.trim() || process.env.GOOGLE_REDIRECT_URI?.trim();
     const redirectUri =
-      matchedRedirectUri ||
       customCallback ||
-      `${siteUrl}${req.nextUrl.pathname}`;
+      `${siteUrl}/api/auth/oauth/callback`;
 
     // 1. Exchange authorization code for Google access token
     const tokenRes = await fetch('https://oauth2.googleapis.com/token', {

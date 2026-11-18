@@ -3,6 +3,7 @@ import { writeFile, mkdir } from 'fs/promises';
 import { existsSync } from 'fs';
 import path from 'path';
 import { uploadToCloudinary, isCloudinaryConfigured } from '../../../../lib/cloudinary';
+import { verifyJwt } from '../../../../lib/auth/jwt';
 
 // Allowed MIME types and extensions
 const ALLOWED_TYPES = [
@@ -19,6 +20,15 @@ const MAX_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
 
 export async function POST(req: NextRequest) {
   try {
+    const token = req.cookies.get('auth_token')?.value || req.headers.get('authorization')?.replace(/^Bearer\s+/i, '');
+    const payload = token ? verifyJwt(token) : null;
+    if (!payload || payload.role !== 'ADMIN') {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized: Admin clearance required to upload media.' },
+        { status: 401 }
+      );
+    }
+
     const formData = await req.formData();
     const file = formData.get('file') as File | null;
     const category = (formData.get('category') as string) || 'products';
@@ -116,10 +126,16 @@ export async function POST(req: NextRequest) {
     });
   } catch (error) {
     console.error('[Media Upload] Error:', error);
+    const errorMessage =
+      process.env.NODE_ENV === 'production'
+        ? 'Internal server error while uploading file.'
+        : error instanceof Error
+        ? error.message
+        : 'Internal server error while uploading file.';
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Internal server error while uploading file.',
+        error: errorMessage,
       },
       { status: 500 }
     );

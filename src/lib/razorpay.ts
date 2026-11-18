@@ -100,7 +100,9 @@ export function verifyRazorpayPayment(
       .update(text)
       .digest('hex');
 
-    const isMatch = generatedSignature === params.razorpay_signature;
+    const genBuf = Buffer.from(generatedSignature, 'hex');
+    const paramBuf = Buffer.from(params.razorpay_signature || '', 'hex');
+    const isMatch = genBuf.length === paramBuf.length && crypto.timingSafeEqual(genBuf, paramBuf);
 
     return {
       verified: isMatch,

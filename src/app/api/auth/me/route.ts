@@ -2,8 +2,30 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyJwt } from '../../../../lib/auth/jwt';
 import { findUserById } from '../../../../lib/auth/userDb';
 
+// Simple in-memory rate limiter: max 120 requests per minute per IP
+const rateLimitMap = new Map<string, { count: number; reset: number }>();
+
+function isRateLimited(ip: string, maxReq = 120, windowMs = 60_000): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip) ?? { count: 0, reset: now + windowMs };
+  if (now > entry.reset) {
+    entry.count = 0;
+    entry.reset = now + windowMs;
+  }
+  entry.count++;
+  rateLimitMap.set(ip, entry);
+  return entry.count > maxReq;
+}
+
 export async function GET(req: NextRequest) {
   try {
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown-client';
+    if (isRateLimited(ip)) {
+      return NextResponse.json(
+        { success: false, error: 'Too many requests. Please slow down.' },
+        { status: 429 }
+      );
+    }
     // 1. Check HTTP-only cookie first
     let token = req.cookies.get('auth_token')?.value;
 

@@ -27,7 +27,7 @@ export default async function Home() {
         <ZeninHeroFloatingPants initialBottoms={cmsData.heroBottoms} />
 
         {/* 4. Section 2: NEW ARRIVAL / 新品上市 4-Column Grid with Dual-Image Hover & Red Badges */}
-        <ZeninNewArrivals />
+        <ZeninNewArrivals initialProducts={cmsData.products} />
 
         {/* 5. Section 3: 3D Fanned Card Deck Category Showcase (Zoro Backpack & Tactical Lookbook) */}
         <ZeninCategory3DStack initialCards={cmsData.stackCards} />

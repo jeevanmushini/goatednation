@@ -493,7 +493,7 @@ const ZeninAllProductsCard: React.FC<{
 }> = ({ product }) => {
   const [isHovered, setIsHovered] = useState(false);
 
-  const primaryImage = product.images[0] || 'https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web1s.jpg';
+  const primaryImage = product.images[0] || '/images/placeholder-product.svg';
   const secondaryImage = product.images[1] || primaryImage;
 
   return (

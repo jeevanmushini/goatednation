@@ -120,6 +120,7 @@ export interface CmsHeroBottomItem {
   image: string;
   color: string;
   badge: string;
+  link?: string;
 }
 
 export interface CmsStackCardItem {

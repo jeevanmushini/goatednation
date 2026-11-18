@@ -56,9 +56,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   checkAuth: async () => {
+    // Return early if session is already verified and initialized
+    if (get().initialized && !get().isLoading && get().user) {
+      return get().user;
+    }
+
     set({ isLoading: true });
 
-    // Optimistic read from localStorage
+    // Optimistic read from localStorage to eliminate UI flash on hard reload
     if (typeof window !== 'undefined' && !get().initialized) {
       try {
         const storedUser = localStorage.getItem('gn_auth_user');

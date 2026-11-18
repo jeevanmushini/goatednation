@@ -55,9 +55,22 @@ export const ZeninHeader: React.FC = () => {
 
   const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
 
+  // Initialize authentication once across routes
   useEffect(() => {
-    checkAuth();
+    if (!useAuthStore.getState().initialized) {
+      checkAuth();
+    }
   }, [checkAuth]);
+
+  // Close menus and drawer on route change (BUG-20 Fix)
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
+    setIsMobileMenuOpen(false);
+    setIsCategoriesOpen(false);
+    setIsSearchOpen(false);
+    setIsUserMenuOpen(false);
+  }
 
   // Close user dropdown on outside click
   useEffect(() => {

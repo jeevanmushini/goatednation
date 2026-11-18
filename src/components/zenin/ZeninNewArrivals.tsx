@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCartStore } from '../../stores/cartStore';
 import { useCmsStore } from '../../lib/cms/cmsStore';
+import { Product } from '../../types/product';
 
 interface ZeninProduct {
   id: string;
@@ -15,6 +16,10 @@ interface ZeninProduct {
   badge: string;
   images: [string, string];
   category: string;
+}
+
+interface ZeninNewArrivalsProps {
+  initialProducts?: Product[];
 }
 
 const NEW_ARRIVALS: ZeninProduct[] = [
@@ -98,16 +103,17 @@ const NEW_ARRIVALS: ZeninProduct[] = [
   },
 ];
 
-export const ZeninNewArrivals: React.FC = () => {
+export const ZeninNewArrivals: React.FC<ZeninNewArrivalsProps> = ({ initialProducts }) => {
   const addItem = useCartStore((state) => state.addItem);
   const openDrawer = useCartStore((state) => state.openDrawer);
   const cmsProducts = useCmsStore((state) => state.products);
+  const activeProducts = (initialProducts && initialProducts.length > 0) ? initialProducts : cmsProducts;
 
   // Merge CMS product updates and include newly added products from Admin
   const products: ZeninProduct[] = React.useMemo(() => {
     // 1. Updated existing NEW_ARRIVALS with any edits made in admin
     const updatedNewArrivals = NEW_ARRIVALS.map((na) => {
-      const matchingCms = cmsProducts.find((p) => p.slug === na.slug || p.id === na.id);
+      const matchingCms = activeProducts.find((p) => p.slug === na.slug || p.id === na.id);
       if (!matchingCms) return na;
       return {
         ...na,
@@ -123,8 +129,8 @@ export const ZeninNewArrivals: React.FC = () => {
       };
     });
 
-    // 2. Newly added products in cmsProducts that are not already in NEW_ARRIVALS
-    const newCustomProducts: ZeninProduct[] = cmsProducts
+    // 2. Newly added products in activeProducts that are not already in NEW_ARRIVALS
+    const newCustomProducts: ZeninProduct[] = activeProducts
       .filter((p) => !NEW_ARRIVALS.some((na) => na.id === p.id || na.slug === p.slug))
       .map((p) => ({
         id: p.id,
@@ -142,7 +148,7 @@ export const ZeninNewArrivals: React.FC = () => {
 
     // Put newly created products first, then updated arrivals, capped to 8 for the grid
     return [...newCustomProducts, ...updatedNewArrivals].slice(0, 8);
-  }, [cmsProducts]);
+  }, [activeProducts]);
 
   const handleQuickAdd = (p: ZeninProduct, e: React.MouseEvent) => {
     e.preventDefault();

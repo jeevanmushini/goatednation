@@ -55,8 +55,8 @@ function RegisterForm() {
       return;
     }
 
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters.');
+    if (password.length < 8 || !/[0-9]/.test(password) || !/[a-zA-Z]/.test(password)) {
+      setError('Password must be at least 8 characters long and contain both letters and numbers.');
       return;
     }
 

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" width="600" height="800">
+  <rect width="600" height="800" fill="#F4F4F5"/>
+  <circle cx="300" cy="360" r="80" fill="#E4E4E7"/>
+  <path d="M 220 540 Q 300 480 380 540 Z" fill="#E4E4E7"/>
+  <text x="300" y="600" font-family="system-ui, sans-serif" font-size="20" font-weight="700" fill="#71717A" text-anchor="middle" letter-spacing="3">GOATED NATION</text>
+  <text x="300" y="630" font-family="monospace" font-size="12" fill="#A1A1AA" text-anchor="middle" letter-spacing="1">OVERSIZED STREETWEAR</text>
+</svg>
