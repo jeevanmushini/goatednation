@@ -47,6 +47,7 @@ const MOBILE_POSITIONS: Record<number, { x: number; y: number; scale: number; ro
 };
 
 export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ initialBottoms }) => {
+  const isDraft = useCmsStore((state) => state.isDraft);
   const cmsBottoms = useCmsStore((state) => state.heroBottoms);
   const [dragOffsetPx, setDragOffsetPx] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -61,13 +62,25 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Stable single source of truth: admin-selected silhouettes from CMS store or server initialBottoms.
+  // Synchronize store immediately with authoritative server-rendered items to eliminate any hydration delay
+  useEffect(() => {
+    if (initialBottoms && initialBottoms.length > 0 && !isDraft) {
+      useCmsStore.setState({ heroBottoms: initialBottoms });
+    }
+  }, [initialBottoms, isDraft]);
+
+  // Stable authoritative source of truth:
+  // 1. In active draft editing mode (admin panel), use cmsBottoms.
+  // 2. On storefront with initialBottoms from SSR, use initialBottoms (guarantees ZERO flicker/glitch on refresh).
+  // 3. Fallback to cmsBottoms or FALLBACK_HERO_BOTTOMS.
   const items: BottomHeroItem[] = useMemo(() => {
     const rawList =
-      (cmsBottoms && cmsBottoms.length > 0)
+      (isDraft && cmsBottoms && cmsBottoms.length > 0)
         ? cmsBottoms
         : (initialBottoms && initialBottoms.length > 0)
         ? initialBottoms
+        : (cmsBottoms && cmsBottoms.length > 0)
+        ? cmsBottoms
         : FALLBACK_HERO_BOTTOMS;
 
     return rawList.map((cmsItem, idx) => {
@@ -79,7 +92,7 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
         link: cmsItem.link || fb.link || '/collections',
       };
     });
-  }, [initialBottoms, cmsBottoms]);
+  }, [initialBottoms, cmsBottoms, isDraft]);
 
   const total = items.length;
 

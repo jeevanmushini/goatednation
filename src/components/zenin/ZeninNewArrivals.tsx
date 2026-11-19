@@ -173,14 +173,14 @@ export const ZeninNewArrivals: React.FC<ZeninNewArrivalsProps> = ({ initialProdu
       }
     };
 
-    // 1. Any product in cmsProducts (client store has newest drops)
-    if (cmsProducts && cmsProducts.length > 0) {
-      cmsProducts.forEach(processItem);
-    }
-
-    // 2. Any product in initialProducts (server published data)
+    // 1. Authoritative server-published data processed first (guarantees zero hydration flicker)
     if (initialProducts && initialProducts.length > 0) {
       initialProducts.forEach(processItem);
+    }
+
+    // 2. Merge client store drops
+    if (cmsProducts && cmsProducts.length > 0) {
+      cmsProducts.forEach(processItem);
     }
 
     // Fallback if empty

@@ -644,7 +644,7 @@ const createCmsStore = () =>
     }),
     {
       name: 'animestreet-cms-data',
-      version: 6,
+      version: 7,
       migrate: (persistedState: unknown, version: number) => {
         const state = persistedState as CmsState;
         if (!state) return state;
@@ -657,6 +657,12 @@ const createCmsStore = () =>
             state.settings.address = 'GOATED NATION Hub, Harajuku Road, Mumbai, Maharashtra 400050';
           }
         }
+
+        // Version 7 Migration: Invalidate stale cached heroBottoms so browser always accepts fresh published DB state
+        if (version < 7) {
+          delete (state as Partial<CmsState>).heroBottoms;
+        }
+
         if (!state?.heroBottoms || state.heroBottoms.length === 0) {
           state.heroBottoms = INITIAL_HERO_BOTTOMS;
         }
@@ -667,14 +673,6 @@ const createCmsStore = () =>
           state.editorialBanner = INITIAL_EDITORIAL_BANNER;
         }
         if (!state?.announcement) {
-          state.announcement = INITIAL_ANNOUNCEMENT;
-        }
-
-        // Version 6 Migration: Purge any legacy track pants, dead links, or test data
-        if (version < 6) {
-          state.heroBottoms = INITIAL_HERO_BOTTOMS;
-          state.stackCards = INITIAL_STACK_ITEMS;
-          state.editorialBanner = INITIAL_EDITORIAL_BANNER;
           state.announcement = INITIAL_ANNOUNCEMENT;
         }
 
