@@ -151,15 +151,16 @@ export async function getPublishedCmsData(): Promise<{ data: PublishedCmsData; s
 export async function savePublishedCmsData(data: Partial<PublishedCmsData>): Promise<{ savedToKv: boolean; savedToFile: boolean }> {
   // Read existing published data first so partial updates don't clobber other sections
   let existingData: Partial<PublishedCmsData> = {};
-  if (globalForCms.__SERVER_PUBLISHED_CMS__) {
-    existingData = globalForCms.__SERVER_PUBLISHED_CMS__;
-  } else if (fs.existsSync(CMS_STORAGE_FILE)) {
+  if (fs.existsSync(CMS_STORAGE_FILE)) {
     try {
       const raw = fs.readFileSync(CMS_STORAGE_FILE, 'utf-8');
       existingData = JSON.parse(raw) || {};
     } catch {
       // ignore
     }
+  }
+  if (globalForCms.__SERVER_PUBLISHED_CMS__) {
+    existingData = { ...existingData, ...globalForCms.__SERVER_PUBLISHED_CMS__ };
   }
 
   const payload: PublishedCmsData = sanitizePublishedCmsData({

@@ -104,8 +104,8 @@ interface CmsState {
   deleteMedia: (id: string) => void;
 
   // Publishing & Reset
-  publishChanges: () => void;
-  resetToDefaults: () => void;
+  publishChanges: () => Promise<{ success: boolean; error?: string }>;
+  resetToDefaults: () => Promise<{ success: boolean; error?: string }>;
   syncFromServer: () => Promise<void>;
 }
 
@@ -192,53 +192,81 @@ const safeStorage: StateStorage = {
 
 let serverSyncTimer: ReturnType<typeof setTimeout> | null = null;
 
-function triggerServerSync(state: Partial<CmsState>, immediate = false) {
-  if (typeof window === 'undefined' || !window.location?.origin) return;
+function triggerServerSync(state: Partial<CmsState>, immediate = false): Promise<{ success: boolean; error?: string }> {
+  if (typeof window === 'undefined' || !window.location?.origin) {
+    return Promise.resolve({ success: false, error: 'SSR environment' });
+  }
 
   if (serverSyncTimer) {
     clearTimeout(serverSyncTimer);
     serverSyncTimer = null;
   }
 
-  const sendPayload = () => {
+  const sendPayload = async (): Promise<{ success: boolean; error?: string }> => {
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };
     try {
-      const match = document.cookie.match(/(?:^|;\s*)auth_token=([^;]+)/);
-      const cookieToken = match ? decodeURIComponent(match[1]) : null;
-      const localToken = localStorage.getItem('auth_token') || localStorage.getItem('token');
-      const token = cookieToken || localToken;
+      const match = document.cookie.match(/(?:^|;\s*)(?:auth_token|gn_auth_token)=([^;]+)/);
+      let token = match ? decodeURIComponent(match[1]) : null;
+      if (!token) {
+        token =
+          localStorage.getItem('gn_auth_token') ||
+          localStorage.getItem('auth_token') ||
+          localStorage.getItem('token');
+      }
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
-    } catch {}
+    } catch {
+      // ignore
+    }
 
-    fetch('/api/cms', {
-      method: 'POST',
-      headers,
-      credentials: 'include',
-      body: JSON.stringify({
-        heroSlides: state.heroSlides,
-        categories: state.categories,
-        products: state.products,
-        banners: state.banners,
-        brandStory: state.brandStory,
-        newsletter: state.newsletter,
-        sections: state.sections,
-        settings: state.settings,
-        navigation: state.navigation,
-        media: state.media,
-        heroBottoms: state.heroBottoms,
-        stackCards: state.stackCards,
-        editorialBanner: state.editorialBanner,
-        announcement: state.announcement,
-      }),
-    }).catch(() => {});
+    try {
+      const res = await fetch('/api/cms', {
+        method: 'POST',
+        headers,
+        credentials: 'include',
+        body: JSON.stringify({
+          heroSlides: state.heroSlides,
+          categories: state.categories,
+          products: state.products,
+          banners: state.banners,
+          brandStory: state.brandStory,
+          newsletter: state.newsletter,
+          sections: state.sections,
+          settings: state.settings,
+          navigation: state.navigation,
+          media: state.media,
+          heroBottoms: state.heroBottoms,
+          stackCards: state.stackCards,
+          editorialBanner: state.editorialBanner,
+          announcement: state.announcement,
+        }),
+      });
+
+      const json = await res.json().catch(() => null);
+      if (!res.ok || !json?.success) {
+        console.warn('[CMS Sync] Server response error:', res.status, json?.error);
+        return { success: false, error: json?.error || `HTTP ${res.status}` };
+      }
+
+      console.info('[CMS Sync] Successfully persisted CMS state to server:', json.storageTarget);
+      return { success: true };
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Network sync failed';
+      console.warn('[CMS Sync] Network error during server push:', msg);
+      return { success: false, error: msg };
+    }
   };
 
   if (immediate) {
-    sendPayload();
+    return sendPayload();
   } else {
-    serverSyncTimer = setTimeout(sendPayload, 250);
+    return new Promise((resolve) => {
+      serverSyncTimer = setTimeout(async () => {
+        const result = await sendPayload();
+        resolve(result);
+      }, 250);
+    });
   }
 }
 
@@ -498,16 +526,16 @@ const createCmsStore = () =>
         set({ media: get().media.filter((m) => m.id !== id), isDraft: true });
       },
 
-      publishChanges: () => {
+      publishChanges: async () => {
         const publishedAt = new Date().toISOString();
         set({
           isDraft: false,
           lastPublishedAt: publishedAt,
         });
-        triggerServerSync({ ...get(), isDraft: false, lastPublishedAt: publishedAt }, true);
+        return await triggerServerSync({ ...get(), isDraft: false, lastPublishedAt: publishedAt }, true);
       },
 
-      resetToDefaults: () => {
+      resetToDefaults: async () => {
         const defaultState = {
           heroSlides: INITIAL_HERO_SLIDES,
           categories: INITIAL_CATEGORIES,
@@ -527,7 +555,7 @@ const createCmsStore = () =>
           lastPublishedAt: new Date().toISOString(),
         };
         set(defaultState);
-        triggerServerSync(defaultState, true);
+        return await triggerServerSync(defaultState, true);
       },
 
       syncFromServer: async () => {
@@ -538,16 +566,41 @@ const createCmsStore = () =>
             const json = await res.json();
             if (json.success && json.data) {
               const serverData = json.data;
+              const current = get();
+
+              // DEFENSIVE PRODUCT MERGE:
+              // Never wipe out newly added admin products from localStorage on refresh!
+              const currentProducts = current.products || [];
+              const serverProducts = Array.isArray(serverData.products) ? serverData.products : [];
+
+              const serverIdSet = new Set(serverProducts.map((p: Product) => p.id));
+              // Identify local products created or edited in this browser that are not yet on the server
+              const localOnlyProducts = currentProducts.filter(
+                (p: Product) => !serverIdSet.has(p.id)
+              );
+
+              // Merge: custom drops created by admin stay at the very front
+              const mergedProducts = [...localOnlyProducts, ...serverProducts];
+
+              // If there were local additions not present on the server, auto-sync them back so disk/KV stays updated
+              if (localOnlyProducts.length > 0) {
+                console.info(
+                  `[CMS Sync] Preserved ${localOnlyProducts.length} local drops. Auto-syncing to server...`
+                );
+                setTimeout(() => {
+                  triggerServerSync({ ...get(), products: mergedProducts }, true);
+                }, 400);
+              }
 
               const serverHeroBottoms =
                 Array.isArray(serverData.heroBottoms) && serverData.heroBottoms.length > 0
                   ? serverData.heroBottoms
-                  : get().heroBottoms;
+                  : current.heroBottoms;
 
               // Check if server data actually differs from current state.
               // If identical, do NOT call set() to prevent spurious re-renders of the storefront.
-              const current = get();
               const isIdentical =
+                JSON.stringify(current.products) === JSON.stringify(mergedProducts) &&
                 JSON.stringify(current.heroBottoms) === JSON.stringify(serverHeroBottoms) &&
                 JSON.stringify(current.stackCards) === JSON.stringify(serverData.stackCards || current.stackCards) &&
                 JSON.stringify(current.editorialBanner) === JSON.stringify(serverData.editorialBanner || current.editorialBanner) &&
@@ -560,7 +613,7 @@ const createCmsStore = () =>
                 ...prev,
                 heroSlides: serverData.heroSlides || prev.heroSlides,
                 categories: serverData.categories || prev.categories,
-                products: serverData.products || prev.products,
+                products: mergedProducts,
                 banners: serverData.banners || prev.banners,
                 brandStory: serverData.brandStory || prev.brandStory,
                 newsletter: serverData.newsletter || prev.newsletter,

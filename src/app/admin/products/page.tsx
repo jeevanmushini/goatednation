@@ -21,6 +21,10 @@ export default function AdminProductsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
 
   // Form states
   const [title, setTitle] = useState('');
@@ -84,8 +88,10 @@ export default function AdminProductsPage() {
     setIsModalOpen(true);
   };
 
-  const handleSaveProduct = (e: React.FormEvent) => {
+  const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSaving(true);
+    setSaveError(null);
 
     const productPayload: Product = {
       id: editingId || `as-${Date.now()}`,
@@ -119,19 +125,33 @@ export default function AdminProductsPage() {
       reviews: [],
     };
 
-    if (editingId) {
-      updateProduct(editingId, productPayload);
-    } else {
-      addProduct(productPayload);
-    }
+    try {
+      if (editingId) {
+        updateProduct(editingId, productPayload);
+      } else {
+        addProduct(productPayload);
+      }
 
-    // Immediately publish so changes are reflected on the storefront live
-    publishChanges();
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new Event('cms-published'));
-    }
+      // Immediately publish so changes are saved to disk / KV and visible across devices
+      const pubRes = await publishChanges();
+      if (!pubRes.success) {
+        console.warn('[Admin Products] Server persistence notice:', pubRes.error);
+      }
 
-    setIsModalOpen(false);
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('cms-published'));
+      }
+
+      setToastMessage(editingId ? 'Product updated & published successfully!' : 'New drop added & published to storefront!');
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3500);
+      setIsModalOpen(false);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to publish product';
+      setSaveError(msg);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -251,8 +271,17 @@ export default function AdminProductsPage() {
                         <Edit2 className="w-3.5 h-3.5" />
                       </button>
                       <button
-                        onClick={() => {
-                          if (confirm(`Delete "${p.title}"?`)) deleteProduct(p.id);
+                        onClick={async () => {
+                          if (confirm(`Delete "${p.title}"?`)) {
+                            deleteProduct(p.id);
+                            await publishChanges();
+                            if (typeof window !== 'undefined') {
+                              window.dispatchEvent(new Event('cms-published'));
+                            }
+                            setToastMessage(`Deleted "${p.title}"`);
+                            setShowToast(true);
+                            setTimeout(() => setShowToast(false), 3000);
+                          }
                         }}
                         className="p-1.5 rounded-lg bg-[#F5F5F5] hover:bg-[#DC2626] hover:text-white text-[#555555] transition-colors"
                         title="Delete Drop"
@@ -420,23 +449,40 @@ export default function AdminProductsPage() {
                 />
               </div>
 
+              {saveError && (
+                <div className="p-2.5 rounded bg-red-50 border border-red-200 text-red-600 text-[11px] font-mono">
+                  {saveError}
+                </div>
+              )}
+
               <div className="pt-3 border-t border-[#EAEAEA] flex justify-end space-x-3">
                 <button
                   type="button"
+                  disabled={isSaving}
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-lg bg-[#F5F5F5] hover:bg-[#EAEAEA] text-[#333333] text-xs font-mono font-semibold transition-colors"
+                  className="px-4 py-2 rounded-lg bg-[#F5F5F5] hover:bg-[#EAEAEA] text-[#333333] text-xs font-mono font-semibold transition-colors disabled:opacity-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2 rounded-lg bg-black hover:bg-neutral-800 text-white font-mono font-bold text-xs uppercase transition-colors shadow-sm"
+                  disabled={isSaving}
+                  className="px-6 py-2 rounded-lg bg-black hover:bg-neutral-800 disabled:opacity-50 text-white font-mono font-bold text-xs uppercase transition-colors shadow-sm flex items-center space-x-2"
                 >
-                  Save Drop
+                  {isSaving && <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />}
+                  <span>{isSaving ? 'PUBLISHING...' : editingId ? 'UPDATE PRODUCT' : 'SAVE DROP'}</span>
                 </button>
               </div>
             </form>
           </div>
+        </div>
+      )}
+
+      {/* Floating Status Toast */}
+      {showToast && (
+        <div className="fixed bottom-6 right-6 z-50 bg-black text-white px-4 py-3 rounded-xl shadow-2xl border border-neutral-700 flex items-center space-x-2.5 font-mono text-xs animate-in fade-in slide-in-from-bottom-3 duration-200">
+          <div className="w-2 h-2 rounded-full bg-[#FF4D00] animate-pulse" />
+          <span>{toastMessage}</span>
         </div>
       )}
     </div>

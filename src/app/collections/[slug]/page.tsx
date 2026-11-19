@@ -110,7 +110,7 @@ export default function CategoryCollectionPage({
       p.title.toLowerCase().includes(slug.toLowerCase())
   );
 
-  const displayProducts = filteredProducts.length > 0 ? filteredProducts : allProducts;
+  const displayProducts = filteredProducts;
 
   return (
     <div className="flex flex-col min-h-screen bg-[#FFFFFF] text-black antialiased selection:bg-[#FF4D00] selection:text-white">
@@ -147,11 +147,25 @@ export default function CategoryCollectionPage({
         </div>
 
         {/* Product Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-          {displayProducts.map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
-        </div>
+        {displayProducts.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+            {displayProducts.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        ) : (
+          <div className="py-20 text-center font-mono">
+            <p className="text-sm uppercase tracking-widest text-[#888888]">
+              No active drops found in this collection capsule yet.
+            </p>
+            <Link
+              href="/collections"
+              className="inline-block mt-4 px-6 py-2.5 bg-black text-white text-xs uppercase tracking-widest font-bold hover:bg-neutral-800 transition-colors rounded-lg"
+            >
+              Explore All Drops
+            </Link>
+          </div>
+        )}
       </main>
 
       <ZeninFooter />
