@@ -62,7 +62,6 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
   }, []);
 
   // Stable single source of truth: admin-selected silhouettes from CMS store or server initialBottoms.
-  // Any external CDN images are replaced with local optimized hero assets.
   const items: BottomHeroItem[] = useMemo(() => {
     const rawList =
       (cmsBottoms && cmsBottoms.length > 0)
@@ -71,27 +70,15 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
         ? initialBottoms
         : FALLBACK_HERO_BOTTOMS;
 
-    return rawList
-      .filter((cmsItem) => cmsItem && !cmsItem.image?.includes('cdn.shopify.com'))
-      .map((cmsItem, idx) => {
-        const fb = FALLBACK_HERO_BOTTOMS[idx] || FALLBACK_HERO_BOTTOMS[0];
-        let img = cmsItem.image && cmsItem.image.trim() !== '' ? cmsItem.image : fb.image;
-        if (img.includes('greyfront') || img.toLowerCase().includes('grey')) {
-          img = '/images/hero/grey-hoodie.webp';
-        } else if (img.includes('black_front') || img.toLowerCase().includes('black')) {
-          img = '/images/hero/black-hoodie.webp';
-        } else if (img.includes('whitezeninfront') || img.toLowerCase().includes('white')) {
-          img = '/images/hero/white-hoodie.webp';
-        } else if (img.startsWith('http://') || img.startsWith('https://')) {
-          img = fb.image;
-        }
-        return {
-          id: cmsItem.id || fb.id || `b-${idx + 1}`,
-          name: cmsItem.name || fb.name,
-          image: img,
-          link: cmsItem.link || fb.link || '/collections',
-        };
-      });
+    return rawList.map((cmsItem, idx) => {
+      const fb = FALLBACK_HERO_BOTTOMS[idx] || FALLBACK_HERO_BOTTOMS[0];
+      return {
+        id: cmsItem.id || fb.id || `b-${idx + 1}`,
+        name: cmsItem.name || fb.name,
+        image: cmsItem.image && cmsItem.image.trim() !== '' ? cmsItem.image : fb.image,
+        link: cmsItem.link || fb.link || '/collections',
+      };
+    });
   }, [initialBottoms, cmsBottoms]);
 
   const total = items.length;
