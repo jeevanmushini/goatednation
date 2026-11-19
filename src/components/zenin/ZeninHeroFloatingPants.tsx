@@ -62,7 +62,7 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
   }, []);
 
   // Stable single source of truth: admin-selected silhouettes from CMS store or server initialBottoms.
-  // Any external Shopify CDN images are strictly filtered out so only admin-chosen artwork renders.
+  // Any external CDN images are replaced with local optimized hero assets.
   const items: BottomHeroItem[] = useMemo(() => {
     const rawList =
       (cmsBottoms && cmsBottoms.length > 0)
@@ -75,10 +75,20 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
       .filter((cmsItem) => cmsItem && !cmsItem.image?.includes('cdn.shopify.com'))
       .map((cmsItem, idx) => {
         const fb = FALLBACK_HERO_BOTTOMS[idx] || FALLBACK_HERO_BOTTOMS[0];
+        let img = cmsItem.image && cmsItem.image.trim() !== '' ? cmsItem.image : fb.image;
+        if (img.includes('greyfront') || img.toLowerCase().includes('grey')) {
+          img = '/images/hero/grey-hoodie.webp';
+        } else if (img.includes('black_front') || img.toLowerCase().includes('black')) {
+          img = '/images/hero/black-hoodie.webp';
+        } else if (img.includes('whitezeninfront') || img.toLowerCase().includes('white')) {
+          img = '/images/hero/white-hoodie.webp';
+        } else if (img.startsWith('http://') || img.startsWith('https://')) {
+          img = fb.image;
+        }
         return {
           id: cmsItem.id || fb.id || `b-${idx + 1}`,
           name: cmsItem.name || fb.name,
-          image: cmsItem.image && cmsItem.image.trim() !== '' ? cmsItem.image : fb.image,
+          image: img,
           link: cmsItem.link || fb.link || '/collections',
         };
       });
@@ -378,7 +388,7 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
                           className="object-contain pointer-events-none transition-all duration-300 [filter:drop-shadow(0_6px_8px_rgba(0,0,0,0.18))_drop-shadow(0_18px_24px_rgba(0,0,0,0.16))_drop-shadow(0_32px_42px_rgba(0,0,0,0.10))] group-hover:[filter:drop-shadow(0_10px_12px_rgba(0,0,0,0.22))_drop-shadow(0_26px_34px_rgba(0,0,0,0.18))_drop-shadow(0_45px_55px_rgba(0,0,0,0.12))]"
                           priority={isCenter}
                           draggable={false}
-                          unoptimized={item.image.startsWith('data:') || item.image.startsWith('/uploads/')}
+                          unoptimized={true}
                         />
                       ) : (
                         <div className="w-full h-full flex flex-col items-center justify-center bg-black/5 rounded-2xl border border-dashed border-[#CCCCCC] text-[#888888] font-mono text-xs">

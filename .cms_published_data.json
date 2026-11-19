@@ -5523,7 +5523,7 @@
   "media": [
     {
       "id": "med-1795085001249",
-      "url": "https://res.cloudinary.com/bu4oxldy/image/upload/v1795085000/1795084997815-whitezeninfront-removebg-preview/xvyeoy0tmuoy1t0l8mu4.webp",
+      "url": "/images/hero/white-hoodie.webp",
       "name": "whitezeninfront-removebg-preview.webp",
       "size": "21 KB",
       "category": "products",
@@ -5531,7 +5531,7 @@
     },
     {
       "id": "med-1795084979850",
-      "url": "https://res.cloudinary.com/bu4oxldy/image/upload/v1795084979/1795084975605-greyfront-removebg-preview/aaraaalypcdtjkyj1vjg.webp",
+      "url": "/images/hero/grey-hoodie.webp",
       "name": "greyfront-removebg-preview.webp",
       "size": "28 KB",
       "category": "products",
@@ -5539,7 +5539,7 @@
     },
     {
       "id": "med-1795084959579",
-      "url": "https://res.cloudinary.com/bu4oxldy/image/upload/v1795084958/1795084956253-black_front-removebg-preview/icxdacrq92r7pnyez3wk.webp",
+      "url": "/images/hero/black-hoodie.webp",
       "name": "black_front-removebg-preview.webp",
       "size": "28 KB",
       "category": "products",
@@ -5585,7 +5585,7 @@
       "name": "Black",
       "badge": "HEAVY EMBROIDERY",
       "color": "Vintage Black",
-      "image": "https://res.cloudinary.com/bu4oxldy/image/upload/v1795084958/1795084956253-black_front-removebg-preview/icxdacrq92r7pnyez3wk.webp",
+      "image": "/images/hero/black-hoodie.webp",
       "kanji": "神 // SATIN INTERIOR",
       "price": "Rs. 2,799"
     },
@@ -5595,7 +5595,7 @@
       "name": "grey",
       "badge": "NEW DROP",
       "color": "Custom Color",
-      "image": "https://res.cloudinary.com/bu4oxldy/image/upload/v1795084979/1795084975605-greyfront-removebg-preview/aaraaalypcdtjkyj1vjg.webp",
+      "image": "/images/hero/grey-hoodie.webp",
       "kanji": "新 // CUSTOM DROP",
       "price": "Rs. 1,999"
     },
@@ -5605,7 +5605,7 @@
       "name": "white",
       "badge": "NEW DROP",
       "color": "Custom Color",
-      "image": "https://res.cloudinary.com/bu4oxldy/image/upload/v1795085000/1795084997815-whitezeninfront-removebg-preview/xvyeoy0tmuoy1t0l8mu4.webp",
+      "image": "/images/hero/white-hoodie.webp",
       "kanji": "新 // CUSTOM DROP",
       "price": "Rs. 1,999"
     }
