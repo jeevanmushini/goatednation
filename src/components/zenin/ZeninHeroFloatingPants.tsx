@@ -39,9 +39,9 @@ const DESKTOP_POSITIONS: Record<number, { x: number; y: number; scale: number; r
 };
 
 const MOBILE_POSITIONS: Record<number, { x: number; y: number; scale: number; rotate: number; zIndex: number; opacity: number }> = {
-  [-1]: { x: -56, y: 14, scale: 0.74, rotate: -8, zIndex: 16, opacity: 0.45 },
-  [0]: { x: 0, y: 0, scale: 1.14, rotate: 0, zIndex: 30, opacity: 1.0 },
-  [1]: { x: 56, y: 14, scale: 0.74, rotate: 8, zIndex: 16, opacity: 0.45 },
+  [-1]: { x: -62, y: 16, scale: 0.72, rotate: -8, zIndex: 16, opacity: 0.4 },
+  [0]: { x: 0, y: 0, scale: 1.12, rotate: 0, zIndex: 30, opacity: 1.0 },
+  [1]: { x: 62, y: 16, scale: 0.72, rotate: 8, zIndex: 16, opacity: 0.4 },
 };
 
 export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ initialBottoms }) => {
@@ -241,7 +241,7 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
       onPointerCancel={handlePointerCancel}
       onWheel={handleWheel}
       style={{ touchAction: 'pan-y' }}
-      className={`relative w-full bg-[#FFFFFF] overflow-hidden select-none border-b border-[#EAEAEA] min-h-[500px] sm:min-h-[620px] lg:min-h-[700px] flex flex-col justify-between py-6 transition-colors ${
+      className={`relative w-full bg-[#FFFFFF] overflow-hidden select-none border-b border-[#EAEAEA] min-h-[520px] sm:min-h-[620px] lg:min-h-[700px] flex flex-col justify-between py-6 transition-colors ${
         isDragging ? 'cursor-grabbing' : 'cursor-grab'
       }`}
     >
@@ -257,7 +257,7 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
       </div>
 
       {/* 2. Panoramic Arc of Sliding Floating Stage */}
-      <div className="relative z-20 w-full max-w-7xl mx-auto h-[360px] sm:h-[460px] lg:h-[520px] flex items-center justify-center">
+      <div className="relative z-20 w-full max-w-7xl mx-auto h-[400px] xs:h-[420px] sm:h-[460px] lg:h-[520px] flex items-center justify-center">
         {/* Left & Right Slide Arrow Buttons */}
         <button
           type="button"
@@ -266,7 +266,7 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
             slidePrev();
           }}
           aria-label="Previous silhouette"
-          className="absolute left-2 sm:left-6 lg:left-12 top-1/2 -translate-y-1/2 z-35 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-white/95 hover:bg-black text-black hover:text-white border border-[#D5D5D5] flex items-center justify-center transition-all duration-200 shadow-md hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-sm"
+          className="absolute left-1.5 sm:left-6 lg:left-12 top-1/2 -translate-y-1/2 z-35 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-white/95 hover:bg-black text-black hover:text-white border border-[#D5D5D5] flex items-center justify-center transition-all duration-200 shadow-md hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-sm"
         >
           <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
@@ -278,7 +278,7 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
             slideNext();
           }}
           aria-label="Next silhouette"
-          className="absolute right-2 sm:right-6 lg:right-12 top-1/2 -translate-y-1/2 z-35 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-white/95 hover:bg-black text-black hover:text-white border border-[#D5D5D5] flex items-center justify-center transition-all duration-200 shadow-md hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-sm"
+          className="absolute right-1.5 sm:right-6 lg:right-12 top-1/2 -translate-y-1/2 z-35 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-white/95 hover:bg-black text-black hover:text-white border border-[#D5D5D5] flex items-center justify-center transition-all duration-200 shadow-md hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-sm"
         >
           <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
@@ -351,7 +351,7 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
                 >
                   {/* Subtle float drifting animation (GPU transform, no conflict with hover) */}
                   <motion.div
-                    className="relative w-[140px] sm:w-[200px] md:w-[240px] lg:w-[280px] h-[260px] sm:h-[360px] md:h-[420px] lg:h-[480px]"
+                    className="relative w-[210px] xs:w-[230px] sm:w-[240px] md:w-[260px] lg:w-[280px] h-[340px] xs:h-[370px] sm:h-[400px] md:h-[440px] lg:h-[480px]"
                     animate={{
                       y: [0, -8, 0],
                       rotate: [0, 0.4, 0],
@@ -370,7 +370,7 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
                           src={item.image}
                           alt={item.name}
                           fill
-                          sizes="(max-width: 640px) 140px, (max-width: 1024px) 240px, 280px"
+                          sizes="(max-width: 640px) 250px, (max-width: 1024px) 260px, 280px"
                           className="object-contain pointer-events-none transition-all duration-300 [filter:drop-shadow(0_6px_8px_rgba(0,0,0,0.18))_drop-shadow(0_18px_24px_rgba(0,0,0,0.16))_drop-shadow(0_32px_42px_rgba(0,0,0,0.10))] group-hover:[filter:drop-shadow(0_10px_12px_rgba(0,0,0,0.22))_drop-shadow(0_26px_34px_rgba(0,0,0,0.18))_drop-shadow(0_45px_55px_rgba(0,0,0,0.12))]"
                           priority={isCenter}
                           draggable={false}
