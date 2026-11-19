@@ -276,6 +276,9 @@ const ProductCard: React.FC<{
   onQuickAdd: (p: ZeninProduct, e: React.MouseEvent) => void;
 }> = ({ product, onQuickAdd }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const primaryImage = product.images[0] || '/images/placeholder-product.svg';
+  const secondaryImage = product.images[1] || primaryImage;
+  const hasSecondary = secondaryImage && secondaryImage !== primaryImage;
 
   return (
     <div
@@ -288,25 +291,29 @@ const ProductCard: React.FC<{
         <div className="relative w-full aspect-[3/4] overflow-hidden rounded-md bg-[#F4F4F4] mb-3">
           {/* Main Primary Image */}
           <Image
-            src={product.images[0] || '/images/placeholder-product.svg'}
+            src={primaryImage}
             alt={product.title}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            unoptimized={primaryImage.startsWith('data:') || primaryImage.startsWith('/uploads/')}
             className={`object-cover object-center transition-all duration-500 ease-out ${
-              isHovered ? 'opacity-0 scale-105' : 'opacity-100 scale-100'
+              isHovered && hasSecondary ? 'opacity-0 scale-105' : 'opacity-100 scale-100'
             }`}
           />
 
-          {/* Secondary Hover Image */}
-          <Image
-            src={product.images[1] || product.images[0] || '/images/placeholder-product.svg'}
-            alt={`${product.title} alternate view`}
-            fill
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className={`object-cover object-center transition-all duration-500 ease-out absolute inset-0 ${
-              isHovered ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-            }`}
-          />
+          {/* Secondary Hover Image (only if a distinct secondary image exists) */}
+          {hasSecondary && (
+            <Image
+              src={secondaryImage}
+              alt={`${product.title} alternate view`}
+              fill
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              unoptimized={secondaryImage.startsWith('data:') || secondaryImage.startsWith('/uploads/')}
+              className={`object-cover object-center transition-all duration-500 ease-out absolute inset-0 ${
+                isHovered ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+              }`}
+            />
+          )}
 
           {/* Crimson Red Discount Badge in Bottom-Left Corner */}
           <div className="absolute bottom-2 left-2 z-10">

@@ -39,13 +39,16 @@ const DESKTOP_POSITIONS: Record<number, { x: number; y: number; scale: number; r
 };
 
 const MOBILE_POSITIONS: Record<number, { x: number; y: number; scale: number; rotate: number; zIndex: number; opacity: number }> = {
-  [-1]: { x: -62, y: 16, scale: 0.72, rotate: -8, zIndex: 16, opacity: 0.4 },
+  [-2]: { x: -84, y: 22, scale: 0.58, rotate: -12, zIndex: 10, opacity: 0.25 },
+  [-1]: { x: -52, y: 14, scale: 0.82, rotate: -6, zIndex: 20, opacity: 0.75 },
   [0]: { x: 0, y: 0, scale: 1.12, rotate: 0, zIndex: 30, opacity: 1.0 },
-  [1]: { x: 62, y: 16, scale: 0.72, rotate: 8, zIndex: 16, opacity: 0.4 },
+  [1]: { x: 52, y: 14, scale: 0.82, rotate: 6, zIndex: 20, opacity: 0.75 },
+  [2]: { x: 84, y: 22, scale: 0.58, rotate: 12, zIndex: 10, opacity: 0.25 },
 };
 
 export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ initialBottoms }) => {
   const cmsBottoms = useCmsStore((state) => state.heroBottoms);
+  const cmsProducts = useCmsStore((state) => state.products);
   const [dragOffsetPx, setDragOffsetPx] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -62,30 +65,62 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
   // Stable single source of truth: ensures published CMS data from server (initialBottoms)
   // or client store renders identically on frame 1 without any 1-second hydration glitch!
   const items: BottomHeroItem[] = useMemo(() => {
-    const rawList =
-      (initialBottoms && initialBottoms.length > 0)
-        ? initialBottoms
-        : (cmsBottoms && cmsBottoms.length > 0)
+    const activeBottoms =
+      (cmsBottoms && cmsBottoms.length > 0)
         ? cmsBottoms
+        : (initialBottoms && initialBottoms.length > 0)
+        ? initialBottoms
         : FALLBACK_HERO_BOTTOMS;
 
-    return rawList.map((cmsItem, idx) => {
-      const fb = FALLBACK_HERO_BOTTOMS[idx] || FALLBACK_HERO_BOTTOMS[0];
-      return {
-        id: cmsItem.id || fb.id || `b-${idx + 1}`,
-        name: cmsItem.name || fb.name,
-        image: cmsItem.image && cmsItem.image.trim() !== '' ? cmsItem.image : fb.image,
-        link: cmsItem.link || fb.link || '/collections',
-      };
+    // Also include any newly added products from admin so new drops are immediately visible in hero on mobile
+    const adminDropBottoms: BottomHeroItem[] = (cmsProducts || [])
+      .filter((p) => {
+        const isCustom = p.id.startsWith('as-') || p.isNewDrop;
+        return isCustom && Array.isArray(p.images) && p.images.length > 0 && p.images[0];
+      })
+      .map((p) => ({
+        id: p.id,
+        name: p.title,
+        image: p.images[0] || '/images/placeholder-product.svg',
+        link: `/products/${p.slug}`,
+      }));
+
+    const combined: BottomHeroItem[] = [];
+    const seen = new Set<string>();
+
+    // Put newest drops first so they appear in mobile center view
+    adminDropBottoms.forEach((b) => {
+      if (!seen.has(b.id)) {
+        seen.add(b.id);
+        combined.push(b);
+      }
     });
-  }, [initialBottoms, cmsBottoms]);
+
+    activeBottoms.forEach((cmsItem, idx) => {
+      const fb = FALLBACK_HERO_BOTTOMS[idx] || FALLBACK_HERO_BOTTOMS[0];
+      const id = cmsItem.id || fb.id || `b-${idx + 1}`;
+      if (!seen.has(id)) {
+        seen.add(id);
+        combined.push({
+          id,
+          name: cmsItem.name || fb.name,
+          image: cmsItem.image && cmsItem.image.trim() !== '' ? cmsItem.image : fb.image,
+          link: cmsItem.link || fb.link || '/collections',
+        });
+      }
+    });
+
+    return combined.length > 0 ? combined : FALLBACK_HERO_BOTTOMS;
+  }, [initialBottoms, cmsBottoms, cmsProducts]);
 
   const total = items.length;
 
-  // Center index: middle item
+  // Center index: start at 0 if there are new admin drops, otherwise center
   const initialCenterIndex = useMemo(() => {
+    const hasNewDrop = items.some((it) => it.id.startsWith('as-'));
+    if (hasNewDrop) return 0;
     return Math.floor(total / 2);
-  }, [total]);
+  }, [total, items]);
 
   const [activeIndex, setActiveIndex] = useState(initialCenterIndex);
 
@@ -303,8 +338,8 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
             const dynamicX = basePos.x + dragPercentShift;
             const dynamicRotate = basePos.rotate + dragPercentShift * 0.25;
 
-            // CSS-based responsive visibility: Hide outer items on mobile phones directly in CSS without JS flip
-            const isOuter = Math.abs(rel) > 1;
+            // Responsive visibility: items beyond 2 relative slots on mobile gracefully fade
+            const isOuter = Math.abs(rel) > (isMobile ? 2 : 3);
 
             return (
               <motion.div
@@ -316,7 +351,7 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
                   scale: basePos.scale,
                   rotate: dynamicRotate,
                   zIndex: basePos.zIndex,
-                  opacity: basePos.opacity,
+                  opacity: isOuter ? 0 : basePos.opacity,
                 }}
                 transition={{
                   type: 'spring',
@@ -325,7 +360,7 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
                   mass: 0.6,
                 }}
                 className={`absolute -translate-x-1/2 -translate-y-1/2 ${
-                  isOuter ? 'hidden md:block' : 'block'
+                  isOuter ? 'pointer-events-none' : 'pointer-events-auto'
                 }`}
                 onClick={() => {
                   if (hasMoved.current) return;

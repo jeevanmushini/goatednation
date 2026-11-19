@@ -511,6 +511,7 @@ const ZeninAllProductsCard: React.FC<{
             alt={product.title}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            unoptimized={primaryImage.startsWith('data:') || primaryImage.startsWith('/uploads/')}
             className={`object-cover object-center transition-all duration-500 ease-out ${
               isHovered && secondaryImage !== primaryImage
                 ? 'opacity-0 scale-105'
@@ -525,6 +526,7 @@ const ZeninAllProductsCard: React.FC<{
               alt={`${product.title} alternate view`}
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              unoptimized={secondaryImage.startsWith('data:') || secondaryImage.startsWith('/uploads/')}
               className={`object-cover object-center transition-all duration-500 ease-out absolute inset-0 ${
                 isHovered ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
               }`}

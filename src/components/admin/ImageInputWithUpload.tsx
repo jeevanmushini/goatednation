@@ -108,6 +108,15 @@ export default function ImageInputWithUpload({
 
           xhr.onerror = () => reject(new Error('Network error'));
           xhr.open('POST', '/api/media/upload');
+          try {
+            const authToken =
+              localStorage.getItem('gn_auth_token') ||
+              localStorage.getItem('auth_token') ||
+              localStorage.getItem('token');
+            if (authToken) {
+              xhr.setRequestHeader('Authorization', `Bearer ${authToken}`);
+            }
+          } catch {}
           xhr.send(formData);
         });
       } catch (serverErr) {
