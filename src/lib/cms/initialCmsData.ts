@@ -27,10 +27,8 @@ export const INITIAL_HERO_SLIDES: CmsHeroSlide[] = [
     ctaLink: '/collections',
     secondaryCtaText: 'HEAVY HOODIES (420 GSM)',
     secondaryCtaLink: '/collections/hoodies',
-    desktopImage:
-      'https://images.unsplash.com/photo-1509967419530-da38b4704bc6?auto=format&fit=crop&w=2000&q=85',
-    mobileImage:
-      'https://images.unsplash.com/photo-1509967419530-da38b4704bc6?auto=format&fit=crop&w=1000&q=80',
+    desktopImage: '/images/hero/berserk-hoodie.jpg',
+    mobileImage: '/images/hero/berserk-hoodie.jpg',
     enabled: true,
     order: 1,
   },
@@ -45,8 +43,7 @@ export const INITIAL_HERO_SLIDES: CmsHeroSlide[] = [
     ctaLink: '/collections/acid-wash',
     secondaryCtaText: 'VIEW LOOKBOOK',
     secondaryCtaLink: '/about',
-    desktopImage:
-      'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=2000&q=85',
+    desktopImage: '/images/hero/valhalla-bomber.jpg',
     enabled: true,
     order: 2,
   },
@@ -66,8 +63,7 @@ export const INITIAL_BANNERS: CmsBanner[] = [
     subtitle: 'Waterproof matte shell with 120,000 stitch count back embroidery. Quilted satin interior.',
     ctaText: 'SHOP BOMBER JACKET',
     ctaLink: '/products/valhalla-bomber-jacket',
-    desktopImage:
-      'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=1600&q=80',
+    desktopImage: '/images/hero/valhalla-bomber.jpg',
     enabled: true,
     order: 1,
   },
@@ -85,7 +81,7 @@ export const INITIAL_BRAND_STORY: CmsBrandStory = {
   stat2Label: 'Cult Community Across India',
   stat3Value: '100%',
   stat3Label: 'Pre-Shrunk Bio-Washed',
-  image: 'https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9?auto=format&fit=crop&w=1200&q=80',
+  image: '/images/editorial/editorial-banner.jpg',
   ctaText: 'READ THE FULL MANIFESTO',
   ctaLink: '/about',
 };
@@ -137,24 +133,24 @@ export const INITIAL_NAVIGATION: CmsNavigationItem[] = [
 export const INITIAL_MEDIA: CmsMediaItem[] = [
   {
     id: 'med-1',
-    name: 'Shibuya Hero Dark Background',
-    url: 'https://images.unsplash.com/photo-1509967419530-da38b4704bc6?auto=format&fit=crop&w=2000&q=85',
+    name: 'Berserk Eclipse Hoodie',
+    url: '/images/hero/berserk-hoodie.jpg',
     category: 'banners',
     uploadedAt: '2026-11-01',
     size: '1.2 MB',
   },
   {
     id: 'med-2',
-    name: 'Shibuya Incident Tee Front',
-    url: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=1000&q=80',
+    name: 'Cherry Blossom Waffle',
+    url: '/images/hero/cherry-blossom-waffle.jpg',
     category: 'products',
     uploadedAt: '2026-11-01',
     size: '850 KB',
   },
   {
     id: 'med-3',
-    name: 'Infinite Void 420 GSM Hoodie',
-    url: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=1000&q=80',
+    name: 'Sukuna Domain Jacket',
+    url: '/images/hero/sukuna-jacket.jpg',
     category: 'products',
     uploadedAt: '2026-11-01',
     size: '920 KB',
@@ -162,7 +158,7 @@ export const INITIAL_MEDIA: CmsMediaItem[] = [
   {
     id: 'med-4',
     name: 'Valhalla Bomber Jacket',
-    url: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=1000&q=80',
+    url: '/images/hero/valhalla-bomber.jpg',
     category: 'products',
     uploadedAt: '2026-11-01',
     size: '1.1 MB',

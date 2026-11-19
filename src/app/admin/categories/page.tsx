@@ -16,9 +16,7 @@ export default function AdminCategoriesPage() {
   const [title, setTitle] = useState('');
   const [subtitle, setSubtitle] = useState('');
   const [count, setCount] = useState('10+ Styles');
-  const [image, setImage] = useState(
-    'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=800&q=80'
-  );
+  const [image, setImage] = useState('/images/placeholder-product.svg');
   const [slug, setSlug] = useState('');
 
   const openAddModal = () => {
@@ -26,9 +24,7 @@ export default function AdminCategoriesPage() {
     setTitle('');
     setSubtitle('280+ GSM Combed Heavy Cotton');
     setCount('12+ Styles');
-    setImage(
-      'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=800&q=80'
-    );
+    setImage('/images/placeholder-product.svg');
     setSlug('');
     setIsModalOpen(true);
   };
@@ -98,7 +94,7 @@ export default function AdminCategoriesPage() {
           >
             <div>
               <div className="relative w-full aspect-[16/10] rounded-lg overflow-hidden bg-[#F5F5F5] mb-4 border border-[#EEEEEE]">
-                <Image src={c.image} alt={c.title} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
+                <Image src={c.image || '/images/placeholder-product.svg'} alt={c.title} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
                 <div className="absolute top-2 right-2 flex space-x-1">
                   <button
                     onClick={() => openEditModal(c)}

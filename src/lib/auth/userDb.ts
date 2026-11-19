@@ -19,7 +19,7 @@ const SEED_USERS: UserRecord[] = [
     name: 'SYNDICATE ADMIN',
     email: 'admin@goatednation.com',
     role: 'ADMIN',
-    avatar: 'https://zenin.co.in/cdn/shop/files/web1s.jpg',
+    avatar: '',
     provider: 'credentials',
     salt: ADMIN_SALT,
     passwordHash: ADMIN_HASH,
@@ -30,7 +30,7 @@ const SEED_USERS: UserRecord[] = [
     name: 'Tokyo Streetwear Collector',
     email: 'customer@goatednation.com',
     role: 'CUSTOMER',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+    avatar: '',
     provider: 'credentials',
     salt: CUSTOMER_SALT,
     passwordHash: CUSTOMER_HASH,
@@ -118,9 +118,7 @@ export function createUser(params: {
     name: params.name.trim(),
     email: normalizedEmail,
     role: params.role || 'CUSTOMER',
-    avatar:
-      params.avatar ||
-      `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(normalizedEmail)}`,
+    avatar: params.avatar || '',
     provider: params.provider || 'credentials',
     salt,
     passwordHash,
@@ -184,9 +182,7 @@ export function findOrCreateOAuthUser(params: {
     name: params.name.trim(),
     email: normalizedEmail,
     role: params.defaultRole || 'CUSTOMER',
-    avatar:
-      params.avatar ||
-      `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(normalizedEmail)}`,
+    avatar: params.avatar || '',
     provider: params.provider,
     createdAt: new Date().toISOString(),
   };

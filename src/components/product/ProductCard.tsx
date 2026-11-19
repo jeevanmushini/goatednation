@@ -35,7 +35,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         anime: product.anime,
         price: product.price,
         originalPrice: product.originalPrice,
-        image: product.images[0],
+        image: product.images[0] || '/images/placeholder-product.svg',
         size,
         color: product.colors[0]?.name || 'Standard',
         quantity: 1,
@@ -57,6 +57,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     product.discountPercent ||
     Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
 
+  const primaryImage = product.images[0] || '/images/placeholder-product.svg';
+  const secondaryImage = product.images[1] || primaryImage;
+
   return (
     <div
       className="group flex flex-col justify-between"
@@ -68,19 +71,19 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <div className="relative w-full aspect-[3/4] overflow-hidden rounded-md bg-[#F4F4F4] mb-3">
           {/* Main Primary Image */}
           <Image
-            src={product.images[0]}
+            src={primaryImage}
             alt={product.title}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             className={`object-cover object-center transition-all duration-500 ease-out ${
-              isHovered && product.images[1] ? 'opacity-0 scale-105' : 'opacity-100 scale-100'
+              isHovered && secondaryImage !== primaryImage ? 'opacity-0 scale-105' : 'opacity-100 scale-100'
             }`}
           />
 
           {/* Secondary Hover Image (if present) */}
-          {product.images[1] && (
+          {secondaryImage !== primaryImage && (
             <Image
-              src={product.images[1]}
+              src={secondaryImage}
               alt={`${product.title} alternate view`}
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"

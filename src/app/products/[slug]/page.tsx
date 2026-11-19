@@ -133,7 +133,7 @@ export default function ProductDetailPage({
         anime: product.anime,
         price: product.price,
         originalPrice: product.originalPrice,
-        image: product.images[0],
+        image: product.images[0] || '/images/placeholder-product.svg',
         size: selectedSize,
         color: selectedColor,
         quantity,
@@ -152,7 +152,7 @@ export default function ProductDetailPage({
         anime: product.anime,
         price: product.price,
         originalPrice: product.originalPrice,
-        image: product.images[0],
+        image: product.images[0] || '/images/placeholder-product.svg',
         size: selectedSize,
         color: selectedColor,
         quantity,
@@ -248,7 +248,7 @@ export default function ProductDetailPage({
                   className="absolute inset-0 w-full h-full"
                 >
                   <Image
-                    src={product.images[selectedImageIndex] || product.images[0]}
+                    src={product.images[selectedImageIndex] || product.images[0] || '/images/placeholder-product.svg'}
                     alt={`${product.title} slide ${selectedImageIndex + 1}`}
                     fill
                     priority

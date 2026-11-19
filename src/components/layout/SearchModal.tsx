@@ -124,7 +124,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
                 >
                   <div className="relative w-16 h-20 bg-[#0E0E0E] rounded-lg overflow-hidden shrink-0">
                     <Image
-                      src={product.images[0]}
+                      src={product.images[0] || '/images/placeholder-product.svg'}
                       alt={product.title}
                       fill
                       sizes="64px"

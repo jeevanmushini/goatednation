@@ -30,7 +30,7 @@ export default function WishlistPage() {
         anime: product.anime,
         price: product.price,
         originalPrice: product.originalPrice,
-        image: product.images[0],
+        image: product.images[0] || '/images/placeholder-product.svg',
         size: product.sizes[0] || 'M',
         color: product.colors[0]?.name || 'Standard',
         quantity: 1,
@@ -91,7 +91,7 @@ export default function WishlistPage() {
               >
                 <div className="relative w-full aspect-[3/4] overflow-hidden rounded-md bg-[#F4F4F4] mb-3">
                   <Image
-                    src={product.images[0]}
+                    src={product.images[0] || '/images/placeholder-product.svg'}
                     alt={product.title}
                     fill
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"

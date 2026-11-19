@@ -122,7 +122,7 @@ export const CartDrawer: React.FC = () => {
                   {/* Thumbnail */}
                   <div className="relative w-20 h-24 bg-[#0A0A0A] rounded-lg overflow-hidden shrink-0">
                     <Image
-                      src={item.image}
+                      src={item.image || '/images/placeholder-product.svg'}
                       alt={item.title}
                       fill
                       sizes="80px"

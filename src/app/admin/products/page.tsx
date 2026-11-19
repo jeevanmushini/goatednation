@@ -30,12 +30,8 @@ export default function AdminProductsPage() {
   const [originalPrice, setOriginalPrice] = useState('2499');
   const [discountPercent, setDiscountPercent] = useState('40');
   const [badge, setBadge] = useState('LIMITED DROP');
-  const [image1, setImage1] = useState(
-    'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=1000&q=80'
-  );
-  const [image2, setImage2] = useState(
-    'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=1000&q=80'
-  );
+  const [image1, setImage1] = useState('/images/placeholder-product.svg');
+  const [image2, setImage2] = useState('/images/placeholder-product.svg');
   const [description, setDescription] = useState(
     'Custom-milled 280 GSM heavyweight French terry cotton with relaxed drop-shoulder cut.'
   );
@@ -60,12 +56,8 @@ export default function AdminProductsPage() {
     setOriginalPrice('2499');
     setDiscountPercent('40');
     setBadge('LIMITED DROP');
-    setImage1(
-      'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=1000&q=80'
-    );
-    setImage2(
-      'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=1000&q=80'
-    );
+    setImage1('/images/placeholder-product.svg');
+    setImage2('/images/placeholder-product.svg');
     setDescription('Custom-milled 280 GSM heavyweight French terry cotton.');
     setStockCount('15');
     setIsModalOpen(true);
@@ -208,7 +200,7 @@ export default function AdminProductsPage() {
                   <td className="py-3 px-4">
                     <div className="flex items-center space-x-3">
                       <div className="relative w-12 h-14 rounded-lg overflow-hidden bg-[#F0F0F0] border border-[#EAEAEA] shrink-0">
-                        <Image src={p.images[0]} alt={p.title} fill sizes="48px" className="object-cover" />
+                        <Image src={p.images[0] || '/images/placeholder-product.svg'} alt={p.title} fill sizes="48px" className="object-cover" />
                       </div>
                       <div className="min-w-0">
                         <div className="font-bold text-black truncate max-w-xs font-mono text-[11px]">{p.title}</div>

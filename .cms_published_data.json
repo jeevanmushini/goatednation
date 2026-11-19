@@ -10,8 +10,8 @@
       "ctaLink": "/collections",
       "secondaryCtaText": "HEAVY HOODIES (420 GSM)",
       "secondaryCtaLink": "/collections/hoodies",
-      "desktopImage": "https://images.unsplash.com/photo-1509967419530-da38b4704bc6?auto=format&fit=crop&w=2000&q=85",
-      "mobileImage": "https://images.unsplash.com/photo-1509967419530-da38b4704bc6?auto=format&fit=crop&w=1000&q=80",
+      "desktopImage": "/images/hero/berserk-hoodie.jpg",
+      "mobileImage": "/images/hero/berserk-hoodie.jpg",
       "enabled": true,
       "order": 1
     },
@@ -25,7 +25,7 @@
       "ctaLink": "/collections/acid-wash",
       "secondaryCtaText": "VIEW LOOKBOOK",
       "secondaryCtaLink": "/about",
-      "desktopImage": "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=2000&q=85",
+      "desktopImage": "/images/hero/valhalla-bomber.jpg",
       "enabled": true,
       "order": 2
     }
@@ -36,7 +36,7 @@
       "title": "Oversized Tees",
       "subtitle": "280+ GSM Combed Heavy Cotton",
       "count": "16+ Styles",
-      "image": "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-18.jpg",
+      "image": "/images/hero/cherry-blossom-waffle.jpg",
       "slug": "tees",
       "enabled": true,
       "order": 1
@@ -46,7 +46,7 @@
       "title": "Heavy Hoodies",
       "subtitle": "420 GSM Double French Terry",
       "count": "12+ Styles",
-      "image": "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W1-23.jpg",
+      "image": "/images/hero/berserk-hoodie.jpg",
       "slug": "hoodies",
       "enabled": true,
       "order": 2
@@ -56,7 +56,7 @@
       "title": "Bombers & Techwear",
       "subtitle": "Embroidered Windbreakers & Shells",
       "count": "10+ Styles",
-      "image": "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web1s.jpg",
+      "image": "/images/hero/ryujin-jacket.jpg",
       "slug": "jackets",
       "enabled": true,
       "order": 3
@@ -66,7 +66,7 @@
       "title": "Tactical Bottoms",
       "subtitle": "Barrel Sweatpants & Rope Cargo",
       "count": "15+ Styles",
-      "image": "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/a1ss.jpg",
+      "image": "/images/hero/tactical-vest.jpg",
       "slug": "cargo",
       "enabled": true,
       "order": 4
@@ -76,7 +76,7 @@
       "title": "Street Accessories",
       "subtitle": "Crossbody Slings & Pendants",
       "count": "20+ Styles",
-      "image": "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/berserkbagmock.jpg",
+      "image": "/images/hero/zoro-crossbody.jpg",
       "slug": "accessories",
       "enabled": true,
       "order": 5
@@ -5394,7 +5394,7 @@
       "subtitle": "Waterproof matte shell with 120,000 stitch count back embroidery. Quilted satin interior.",
       "ctaText": "SHOP BOMBER JACKET",
       "ctaLink": "/products/valhalla-bomber-jacket",
-      "desktopImage": "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=1600&q=80",
+      "desktopImage": "/images/hero/valhalla-bomber.jpg",
       "enabled": true,
       "order": 1
     }
@@ -5410,7 +5410,7 @@
     "stat2Label": "Cult Community Across India",
     "stat3Value": "100%",
     "stat3Label": "Pre-Shrunk Bio-Washed",
-    "image": "https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9?auto=format&fit=crop&w=1200&q=80",
+    "image": "/images/editorial/editorial-banner.jpg",
     "ctaText": "READ THE FULL MANIFESTO",
     "ctaLink": "/about"
   },
@@ -5532,9 +5532,33 @@
   ],
   "media": [
     {
+      "name": "whitezeninfront-removebg-preview.webp",
+      "url": "https://res.cloudinary.com/bu4oxldy/image/upload/v1795085000/1795084997815-whitezeninfront-removebg-preview/xvyeoy0tmuoy1t0l8mu4.webp",
+      "category": "products",
+      "size": "21 KB",
+      "id": "med-1795085001249",
+      "uploadedAt": "2026-11-19"
+    },
+    {
+      "name": "greyfront-removebg-preview.webp",
+      "url": "https://res.cloudinary.com/bu4oxldy/image/upload/v1795084979/1795084975605-greyfront-removebg-preview/aaraaalypcdtjkyj1vjg.webp",
+      "category": "products",
+      "size": "28 KB",
+      "id": "med-1795084979850",
+      "uploadedAt": "2026-11-19"
+    },
+    {
+      "name": "black_front-removebg-preview.webp",
+      "url": "https://res.cloudinary.com/bu4oxldy/image/upload/v1795084958/1795084956253-black_front-removebg-preview/icxdacrq92r7pnyez3wk.webp",
+      "category": "products",
+      "size": "28 KB",
+      "id": "med-1795084959579",
+      "uploadedAt": "2026-11-19"
+    },
+    {
       "id": "med-1",
       "name": "Shibuya Hero Dark Background",
-      "url": "https://images.unsplash.com/photo-1509967419530-da38b4704bc6?auto=format&fit=crop&w=2000&q=85",
+      "url": "/images/hero/valhalla-bomber.jpg",
       "category": "banners",
       "uploadedAt": "2026-11-01",
       "size": "1.2 MB"
@@ -5542,7 +5566,7 @@
     {
       "id": "med-2",
       "name": "Shibuya Incident Tee Front",
-      "url": "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=1000&q=80",
+      "url": "/images/hero/berserk-hoodie.jpg",
       "category": "products",
       "uploadedAt": "2026-11-01",
       "size": "850 KB"
@@ -5550,7 +5574,7 @@
     {
       "id": "med-3",
       "name": "Infinite Void 420 GSM Hoodie",
-      "url": "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=1000&q=80",
+      "url": "/images/hero/cherry-blossom-waffle.jpg",
       "category": "products",
       "uploadedAt": "2026-11-01",
       "size": "920 KB"
@@ -5558,7 +5582,7 @@
     {
       "id": "med-4",
       "name": "Valhalla Bomber Jacket",
-      "url": "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=1000&q=80",
+      "url": "/images/hero/sukuna-jacket.jpg",
       "category": "products",
       "uploadedAt": "2026-11-01",
       "size": "1.1 MB"
@@ -5566,74 +5590,34 @@
   ],
   "heroBottoms": [
     {
-      "id": "b-1",
-      "name": "BERSERK ECLIPSE // 420 GSM HOODIE",
-      "kanji": "黒 // 420 GSM TERRY",
-      "price": "Rs. 2,499",
-      "image": "/images/hero/berserk-hoodie.jpg",
-      "color": "Eclipse Black",
-      "badge": "BESTSELLER",
-      "link": "/collections/hoodie"
-    },
-    {
-      "id": "b-2",
-      "name": "SUKUNA DOMAIN // JACQUARD JACKET",
-      "kanji": "宿 // METALLIC STITCH",
-      "price": "Rs. 2,999",
-      "image": "/images/hero/sukuna-jacket.jpg",
-      "color": "Crimson Gold",
-      "badge": "LIMITED",
-      "link": "/collections/jacket"
-    },
-    {
-      "id": "b-3",
-      "name": "RYUJIN DRAGON // JACQUARD JACKET",
-      "kanji": "龍 // TRADITIONAL KNOT",
-      "price": "Rs. 2,099",
-      "image": "/images/hero/ryujin-jacket.jpg",
-      "color": "Onyx Green",
-      "badge": "NEW DROP",
-      "link": "/collections/jacket"
-    },
-    {
-      "id": "b-4",
-      "name": "WAFFLE CHERRY BLOSSOM // FULL SLEEVE",
-      "kanji": "桜 // 200K STITCHES",
-      "price": "Rs. 1,549",
-      "image": "/images/hero/cherry-blossom-waffle.jpg",
-      "color": "Cherry Floral",
-      "badge": "RESTOCKED",
-      "link": "/collections/tees"
-    },
-    {
-      "id": "b-5",
-      "name": "ZORO TACTICAL // CROSSBODY BAG",
-      "kanji": "刀 // 1000D CORDURA",
-      "price": "Rs. 1,299",
-      "image": "/images/hero/zoro-crossbody.jpg",
-      "color": "Military Olive",
-      "badge": "TACTICAL",
-      "link": "/collections/backpack"
-    },
-    {
-      "id": "b-6",
-      "name": "TACTICAL UTILITY // COMBAT VEST",
-      "kanji": "機 // MULTI POCKET",
-      "price": "Rs. 1,899",
-      "image": "/images/hero/tactical-vest.jpg",
-      "color": "Matte Slate",
-      "badge": "NEW",
-      "link": "/collections/vest"
-    },
-    {
       "id": "b-7",
-      "name": "VALHALLA 90S // BOMBER JACKET",
+      "name": "Black",
       "kanji": "神 // SATIN INTERIOR",
       "price": "Rs. 2,799",
-      "image": "/images/hero/valhalla-bomber.jpg",
+      "image": "https://res.cloudinary.com/bu4oxldy/image/upload/v1795084958/1795084956253-black_front-removebg-preview/icxdacrq92r7pnyez3wk.webp",
       "color": "Vintage Black",
       "badge": "HEAVY EMBROIDERY",
       "link": "/collections/jacket"
+    },
+    {
+      "name": "grey",
+      "kanji": "新 // CUSTOM DROP",
+      "price": "Rs. 1,999",
+      "image": "https://res.cloudinary.com/bu4oxldy/image/upload/v1795084979/1795084975605-greyfront-removebg-preview/aaraaalypcdtjkyj1vjg.webp",
+      "color": "Custom Color",
+      "badge": "NEW DROP",
+      "link": "/collections",
+      "id": "b-1795084968803"
+    },
+    {
+      "name": "white",
+      "kanji": "新 // CUSTOM DROP",
+      "price": "Rs. 1,999",
+      "image": "https://res.cloudinary.com/bu4oxldy/image/upload/v1795085000/1795084997815-whitezeninfront-removebg-preview/xvyeoy0tmuoy1t0l8mu4.webp",
+      "color": "Custom Color",
+      "badge": "NEW DROP",
+      "link": "/collections",
+      "id": "b-1795084990336"
     }
   ],
   "stackCards": [
@@ -5684,5 +5668,5 @@
     "ctaLink": "/collections",
     "countdownDays": 2
   },
-  "lastPublishedAt": "2026-11-17T09:26:02.490Z"
+  "lastPublishedAt": "2026-11-19T10:43:26.253Z"
 }

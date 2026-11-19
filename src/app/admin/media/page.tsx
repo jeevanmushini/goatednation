@@ -518,7 +518,7 @@ export default function AdminMediaPage() {
                 required
                 value={urlValue}
                 onChange={(e) => setUrlValue(e.target.value)}
-                placeholder="https://zenin.co.in/cdn/shop/files/..."
+                placeholder="https://... (or upload from your computer above)"
                 className="w-full bg-white border border-[#D5D5D5] focus:border-black focus:ring-1 focus:ring-black rounded-lg px-3 py-2 text-xs text-black outline-none font-mono"
               />
             </div>
