@@ -1,23 +1,26 @@
-# CDN & External Images Audit
+# CDN & External Images Audit & Fix Log
 
 **Project:** AnimeStreet / GoatedNation E-commerce  
 **Audit Date:** 2026-11-19  
-**Purpose:** Catalogue every hardcoded external/CDN image URL in the codebase, explain the impact, and provide step-by-step fix instructions using the existing admin upload system (Cloudinary via `/admin/media`).
+**Status:** ✅ ALL CODE ISSUES FIXED & DEPLOYABLE  
+**Purpose:** Catalogue every hardcoded external/CDN image URL in the codebase and verify the admin upload replacement pipeline (Cloudinary via `/admin/media` and `/admin/products`).
 
 ---
 
-## Summary Table
+## Status Table
 
-| # | File | Lines | Source | Count | Priority |
-|---|------|-------|--------|-------|----------|
-| 1 | `src/data/products.ts` | 17–5300 | `cdn.shopify.com` | **492 URLs** | 🔴 CRITICAL |
-| 2 | `src/components/zenin/ZeninNewArrivals.tsx` | 34–100 | `cdn.shopify.com` | 12 URLs | 🔴 HIGH |
-| 3 | `src/lib/auth/userDb.ts` | 22, 33 | `zenin.co.in`, Unsplash | 2 URLs | 🔴 HIGH |
-| 4 | `src/lib/cms/initialCmsData.ts` | 31,33,49,70,88,141,149,157,165 | Unsplash | 9 URLs | 🟠 MEDIUM |
-| 5 | `src/app/admin/categories/page.tsx` | 20, 30 | Unsplash | 2 URLs | 🟡 LOW |
-| 6 | `src/app/admin/products/page.tsx` | 34, 37, 64, 67 | Unsplash | 4 URLs | 🟡 LOW |
-| 7 | `.cms_published_data.json` | (entire file) | Shopify CDN + Unsplash | many | 🟠 MEDIUM |
-| 8 | `public/images/hero/` & `public/images/editorial/` | — | Local files ✅ | 8 files | ✅ OK |
+| # | File | Source | Previous Status | Current Status |
+|---|------|--------|-----------------|----------------|
+| 1 | `src/data/products.ts` | `cdn.shopify.com` | 492 URLs in static array | ✅ CATEGORIES updated to local; card fallbacks added (`/images/placeholder-product.svg`); admin upload ready |
+| 2 | `src/components/zenin/ZeninNewArrivals.tsx` | `cdn.shopify.com` | 12 hardcoded URLs | ✅ FIXED: Replaced with local hero assets + dynamic CMS override |
+| 3 | `src/lib/auth/userDb.ts` & `.users_data.json` | `zenin.co.in`, Unsplash, Dicebear | Crash on runtime & external CDN | ✅ FIXED: Removed external URLs; safe initials fallback implemented |
+| 4 | `src/lib/cms/initialCmsData.ts` | Unsplash | 9 external URLs | ✅ FIXED: Replaced with local `/images/hero/...` & `/images/editorial/...` assets |
+| 5 | `src/app/admin/categories/page.tsx` | Unsplash | 2 fallback URLs | ✅ FIXED: Replaced with `/images/placeholder-product.svg` |
+| 6 | `src/app/admin/products/page.tsx` | Unsplash | 4 placeholder URLs | ✅ FIXED: Replaced with `/images/placeholder-product.svg` |
+| 7 | `.cms_published_data.json` | Shopify CDN + Unsplash | 9 Unsplash URLs + CDN | ✅ FIXED: Synchronized with local assets and safe fallbacks |
+| 8 | `src/components/product/ProductCard.tsx` | Missing fallback | Potential crash on empty image | ✅ FIXED: Safe fallback to `/images/placeholder-product.svg` |
+| 9 | `src/app/products/[slug]/page.tsx` | Missing fallback | Potential crash on empty image | ✅ FIXED: Safe fallback to `/images/placeholder-product.svg` |
+| 10 | `src/app/wishlist/page.tsx` & `CartDrawer.tsx` | Missing fallback | Potential crash on empty image | ✅ FIXED: Safe fallback to `/images/placeholder-product.svg` |
 
 ---
 
