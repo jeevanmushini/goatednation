@@ -208,20 +208,22 @@ export async function savePublishedCmsData(data: Partial<PublishedCmsData>): Pro
   // 3. KV Store
   const savedToKv = await saveToKvStore(payload);
 
-  // 4. Local File with atomic write & retry logic to prevent Windows EBUSY locking
+  // 4. Local File fallback only if Neon and KV are not available (prevents dev server HMR reload loops)
   let savedToFile = false;
-  const jsonContent = JSON.stringify(payload, null, 2);
-  for (let attempt = 0; attempt < 3; attempt++) {
-    try {
-      fs.writeFileSync(CMS_STORAGE_FILE, jsonContent, 'utf-8');
-      savedToFile = true;
-      break;
-    } catch (err) {
-      if (attempt === 2) {
-        console.warn('[CMS Server] Failed to write CMS storage file after 3 attempts:', err);
+  if (!savedToNeon && !savedToKv) {
+    const jsonContent = JSON.stringify(payload, null, 2);
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        fs.writeFileSync(CMS_STORAGE_FILE, jsonContent, 'utf-8');
+        savedToFile = true;
+        break;
+      } catch (err) {
+        if (attempt === 2) {
+          console.warn('[CMS Server] Failed to write CMS storage file after 3 attempts:', err);
+        }
+        // Non-blocking async delay before retry (prevents freezing the Node event loop)
+        await new Promise<void>((resolve) => setTimeout(resolve, 35));
       }
-      // Non-blocking async delay before retry (prevents freezing the Node event loop)
-      await new Promise<void>((resolve) => setTimeout(resolve, 35));
     }
   }
 

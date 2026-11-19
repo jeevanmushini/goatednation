@@ -419,7 +419,8 @@ export async function addReviewToNeon(review: ReviewRecord): Promise<boolean> {
         ${review.fitFeedback || 'TRUE_TO_SIZE'},
         ${review.verifiedPurchase ?? true},
         CURRENT_TIMESTAMP
-      );
+      )
+      ON CONFLICT (id) DO NOTHING;
     `;
     return true;
   } catch (error) {

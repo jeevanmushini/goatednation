@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
       for (let i = 0; i < templates.length; i++) {
         const t = templates[i];
         const newRev: ReviewRecord = {
-          id: `rev_${productId}_${i + 1}`,
+          id: `rev_${productId}_${i + 1}_${Math.random().toString(36).slice(2, 7)}`,
           productId,
           authorName: t.authorName,
           rating: t.rating,

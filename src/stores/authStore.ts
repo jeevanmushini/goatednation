@@ -25,6 +25,8 @@ interface AuthState {
   setUser: (user: User | null, token?: string | null) => void;
 }
 
+let inFlightAuthPromise: Promise<User | null> | null = null;
+
 export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   token: null,
@@ -56,33 +58,43 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   checkAuth: async () => {
     // Return early if session is already verified and initialized
-    if (get().initialized && !get().isLoading && get().user) {
+    if (get().initialized && !get().isLoading) {
       return get().user;
+    }
+
+    if (inFlightAuthPromise) {
+      return inFlightAuthPromise;
     }
 
     set({ isLoading: true });
 
-    try {
-      const res = await fetch('/api/auth/me', {
-        headers: get().token ? { Authorization: `Bearer ${get().token}` } : {},
-      });
+    inFlightAuthPromise = (async () => {
+      try {
+        const res = await fetch('/api/auth/me', {
+          headers: get().token ? { Authorization: `Bearer ${get().token}` } : {},
+        });
 
-      if (res.ok) {
-        const data = await res.json();
-        if (data.success && data.user) {
-          get().setUser(data.user);
-          return data.user;
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.user) {
+            get().setUser(data.user);
+            return data.user;
+          }
         }
-      }
 
-      // If server returned 401 or unauthorized, clear local session
-      get().setUser(null, null);
-      return null;
-    } catch (err) {
-      console.warn('[useAuthStore] checkAuth error:', err);
-      set({ isLoading: false, initialized: true });
-      return null;
-    }
+        // If server returned 401 or unauthorized, clear local session
+        get().setUser(null, null);
+        return null;
+      } catch (err) {
+        console.warn('[useAuthStore] checkAuth error:', err);
+        set({ isLoading: false, initialized: true });
+        return null;
+      } finally {
+        inFlightAuthPromise = null;
+      }
+    })();
+
+    return inFlightAuthPromise;
   },
 
   login: async (email, password) => {

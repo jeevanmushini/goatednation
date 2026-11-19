@@ -182,6 +182,8 @@ function triggerServerSync(state: Partial<CmsState>, immediate = false): Promise
   }
 }
 
+let hasClientSyncedFromServer = false;
+
 const createCmsStore = () =>
   create<CmsState>()((set, get) => ({
       heroSlides: INITIAL_HERO_SLIDES,
@@ -470,6 +472,9 @@ const createCmsStore = () =>
 
       syncFromServer: async () => {
         if (typeof window === 'undefined' || !window.location?.origin) return;
+        if (hasClientSyncedFromServer) return;
+        hasClientSyncedFromServer = true;
+
         try {
           const res = await fetch('/api/cms', { cache: 'no-store' });
           if (res.ok) {
@@ -478,36 +483,9 @@ const createCmsStore = () =>
               const serverData = json.data;
               const current = get();
 
-              // DEFENSIVE PRODUCT MERGE:
-              // Never wipe out newly added admin products from localStorage on refresh!
-              const currentProducts = current.products || [];
-              const serverProducts = Array.isArray(serverData.products) ? serverData.products : [];
-
-              const serverIdSet = new Set(serverProducts.map((p: Product) => p.id));
-              // Identify local products created or edited in this browser that are not yet on the server
-              const localOnlyProducts = currentProducts.filter(
-                (p: Product) => !serverIdSet.has(p.id)
-              );
-
-              // Merge: custom drops created by admin stay at the very front across all devices
-              const rawMerged = [...localOnlyProducts, ...serverProducts];
-              const customDrops = rawMerged.filter(
-                (p: Product) => !p.id.startsWith('zn-') || p.id.startsWith('as-')
-              );
-              const standardDrops = rawMerged.filter(
-                (p: Product) => p.id.startsWith('zn-') && !p.id.startsWith('as-')
-              );
-              const mergedProducts = [...customDrops, ...standardDrops];
-
-              // If there were local additions not present on the server, auto-sync them back so disk/KV stays updated
-              if (localOnlyProducts.length > 0) {
-                console.info(
-                  `[CMS Sync] Preserved ${localOnlyProducts.length} local drops. Auto-syncing to server...`
-                );
-                setTimeout(() => {
-                  triggerServerSync({ ...get(), products: mergedProducts }, true);
-                }, 400);
-              }
+              const serverProducts = Array.isArray(serverData.products) && serverData.products.length > 0
+                ? serverData.products
+                : current.products;
 
               const serverHeroBottoms =
                 Array.isArray(serverData.heroBottoms) && serverData.heroBottoms.length > 0
@@ -517,7 +495,7 @@ const createCmsStore = () =>
               // Check if server data actually differs from current state.
               // If identical, do NOT call set() to prevent spurious re-renders of the storefront.
               const isIdentical =
-                JSON.stringify(current.products) === JSON.stringify(mergedProducts) &&
+                JSON.stringify(current.products) === JSON.stringify(serverProducts) &&
                 JSON.stringify(current.heroBottoms) === JSON.stringify(serverHeroBottoms) &&
                 JSON.stringify(current.stackCards) === JSON.stringify(serverData.stackCards || current.stackCards) &&
                 JSON.stringify(current.editorialBanner) === JSON.stringify(serverData.editorialBanner || current.editorialBanner) &&
@@ -530,7 +508,7 @@ const createCmsStore = () =>
                 ...prev,
                 heroSlides: serverData.heroSlides || prev.heroSlides,
                 categories: serverData.categories || prev.categories,
-                products: mergedProducts,
+                products: serverProducts,
                 banners: serverData.banners || prev.banners,
                 brandStory: serverData.brandStory || prev.brandStory,
                 newsletter: serverData.newsletter || prev.newsletter,
