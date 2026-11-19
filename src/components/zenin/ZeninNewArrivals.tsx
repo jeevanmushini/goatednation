@@ -110,37 +110,63 @@ export const ZeninNewArrivals: React.FC<ZeninNewArrivalsProps> = ({ initialProdu
   const cmsProducts = useCmsStore((state) => state.products);
 
   // Dynamic source of truth: merge client store (with latest admin drops) and server initialProducts
+  // Prioritizing custom admin drops (as-* or non-zn-*) at the very front!
   const activeProducts = React.useMemo(() => {
-    const list: Product[] = [];
+    const customList: Product[] = [];
+    const regularList: Product[] = [];
     const seen = new Set<string>();
 
-    // 1. Any product in cmsProducts (client store has newest drops prepended)
+    const processItem = (p: Product) => {
+      if (!p || !p.id || seen.has(p.id)) return;
+      seen.add(p.id);
+      const isCustomDrop = !p.id.startsWith('zn-') || p.id.startsWith('as-');
+      if (isCustomDrop) {
+        customList.push(p);
+      } else {
+        regularList.push(p);
+      }
+    };
+
+    // 1. Any product in cmsProducts (client store has newest drops)
     if (cmsProducts && cmsProducts.length > 0) {
-      cmsProducts.forEach((p) => {
-        if (p && p.id && !seen.has(p.id)) {
-          seen.add(p.id);
-          list.push(p);
-        }
-      });
+      cmsProducts.forEach(processItem);
     }
 
-    // 2. Any product in initialProducts not yet seen
+    // 2. Any product in initialProducts (server published data)
     if (initialProducts && initialProducts.length > 0) {
-      initialProducts.forEach((p) => {
-        if (p && p.id && !seen.has(p.id)) {
-          seen.add(p.id);
-          list.push(p);
-        }
-      });
+      initialProducts.forEach(processItem);
     }
 
-    return list.length > 0 ? list : PRODUCTS;
+    // Fallback if empty
+    if (customList.length === 0 && regularList.length === 0) {
+      PRODUCTS.forEach(processItem);
+    }
+
+    // Custom admin drops ALWAYS stay at the very beginning of the catalog!
+    return [...customList, ...regularList];
   }, [cmsProducts, initialProducts]);
 
   // Compute products to display in the New Arrivals grid
   const products: ZeninProduct[] = React.useMemo(() => {
-    // 1. Curated baseline New Arrivals (updated with any edits made in admin)
-    const updatedNewArrivals = NEW_ARRIVALS.map((na) => {
+    // 1. Identify newly added products created by admin (custom drops)
+    const adminCustomDrops: ZeninProduct[] = activeProducts
+      .filter((p: Product) => !p.id.startsWith('zn-') || p.id.startsWith('as-'))
+      .map((p: Product) => ({
+        id: p.id,
+        slug: p.slug,
+        title: p.title,
+        price: p.price,
+        originalPrice: p.originalPrice || Math.round(p.price * 1.4),
+        badge: p.badge || 'NEW DROP',
+        images: [
+          p.images[0] || '/images/placeholder-product.svg',
+          p.images[1] || p.images[0] || '/images/placeholder-product.svg',
+        ] as [string, string],
+        category: p.category,
+      }));
+
+    // 2. Curated baseline New Arrivals (updated with any edits made in admin)
+    const updatedNewArrivals: ZeninProduct[] = NEW_ARRIVALS.map((na) => {
       const matchingCms = activeProducts.find((p: Product) => p.slug === na.slug || p.id === na.id);
       if (!matchingCms) return na;
       return {
@@ -157,41 +183,15 @@ export const ZeninNewArrivals: React.FC<ZeninNewArrivalsProps> = ({ initialProdu
       };
     });
 
-    // 2. Identify newly added products (created by admin or marked as new drop)
-    const newlyAddedCustomProducts: ZeninProduct[] = activeProducts
-      .filter((p: Product) => {
-        // Exclude products that are already in baseline NEW_ARRIVALS
-        if (NEW_ARRIVALS.some((na) => na.id === p.id || na.slug === p.slug)) {
-          return false;
-        }
-        // Match if custom ID (as-*), marked as isNewDrop, or has NEW DROP badge
-        const isCustomDrop = !p.id.startsWith('zn-') || p.id.startsWith('as-');
-        const isMarkedNew = p.isNewDrop === true || (p.badge ? /new/i.test(p.badge) : false);
-        return isCustomDrop || isMarkedNew;
-      })
-      .map((p: Product) => ({
-        id: p.id,
-        slug: p.slug,
-        title: p.title,
-        price: p.price,
-        originalPrice: p.originalPrice || Math.round(p.price * 1.4),
-        badge: p.badge || 'NEW DROP',
-        images: [
-          p.images[0] || '/images/placeholder-product.svg',
-          p.images[1] || p.images[0] || '/images/placeholder-product.svg',
-        ] as [string, string],
-        category: p.category,
-      }));
-
-    // Put newly added products first at the very beginning of New Arrivals, followed by updated arrivals
-    const combined = [...newlyAddedCustomProducts];
+    // 3. Put newly added admin custom products first at the very beginning of New Arrivals!
+    const combined: ZeninProduct[] = [...adminCustomDrops];
     updatedNewArrivals.forEach((na) => {
       if (!combined.some((item) => item.id === na.id || item.slug === na.slug)) {
         combined.push(na);
       }
     });
 
-    // Ensure at least 8 items for a full 4-column 2-row grid
+    // 4. If fewer than 8 items, backfill with remaining active products to maintain a balanced grid
     if (combined.length < 8) {
       activeProducts.forEach((p: Product) => {
         if (!combined.some((item) => item.id === p.id || item.slug === p.slug)) {
@@ -212,8 +212,9 @@ export const ZeninNewArrivals: React.FC<ZeninNewArrivalsProps> = ({ initialProdu
       });
     }
 
-    const targetCount = Math.max(8, newlyAddedCustomProducts.length);
-    return combined.slice(0, Math.min(16, targetCount));
+    // Keep all custom drops visible at the top, plus baseline items up to max(8, combined.length)
+    const targetCount = Math.max(8, combined.length);
+    return combined.slice(0, Math.min(24, targetCount));
   }, [activeProducts]);
 
   const handleQuickAdd = (p: ZeninProduct, e: React.MouseEvent) => {
@@ -295,7 +296,7 @@ const ProductCard: React.FC<{
             alt={product.title}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            unoptimized={primaryImage.startsWith('data:') || primaryImage.startsWith('/uploads/')}
+            unoptimized={!primaryImage.startsWith('/images/')}
             className={`object-cover object-center transition-all duration-500 ease-out ${
               isHovered && hasSecondary ? 'opacity-0 scale-105' : 'opacity-100 scale-100'
             }`}
@@ -308,7 +309,7 @@ const ProductCard: React.FC<{
               alt={`${product.title} alternate view`}
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-              unoptimized={secondaryImage.startsWith('data:') || secondaryImage.startsWith('/uploads/')}
+              unoptimized={!secondaryImage.startsWith('/images/')}
               className={`object-cover object-center transition-all duration-500 ease-out absolute inset-0 ${
                 isHovered ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
               }`}

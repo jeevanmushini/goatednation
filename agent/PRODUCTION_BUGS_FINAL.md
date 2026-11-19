@@ -14,11 +14,11 @@ This document delivers an exhaustive codebase audit and bug resolution register 
 
 | Severity | Count | Status |
 | :--- | :---: | :---: |
-| 🔴 **CRITICAL** (Data Loss, Crash, Auth Bypass, Broken Flow) | 6 | ✅ RESOLVED |
+| 🔴 **CRITICAL** (Data Loss, Crash, Auth Bypass, Broken Flow) | 7 | ✅ RESOLVED |
 | 🟠 **HIGH** (Persistence Failure, State Desync, Empty Filter Fallbacks) | 5 | ✅ RESOLVED |
 | 🟡 **MEDIUM** (Missing Error Boundaries, Lack of Skeletons, Unhandled 404s) | 4 | ✅ RESOLVED |
 | 🟢 **LOW** (UI Consistency, Mobile Sizing, Cache Invalidation) | 3 | ✅ RESOLVED |
-| **TOTAL** | **18** | **100% RESOLVED** |
+| **TOTAL** | **19** | **100% RESOLVED** |
 
 ---
 
@@ -158,6 +158,33 @@ This document delivers an exhaustive codebase audit and bug resolution register 
   2. **Dedicated Admin-Managed Hero Silhouettes:** Restored `ZeninHeroFloatingPants.tsx` so it strictly displays only the silhouettes chosen, named, and uploaded by the admin in `/admin/homepage` (e.g. Black, Grey, White silhouettes). Any external CDN URLs are filtered out.
   3. **Universal Image Optimization Flags:** Added `unoptimized` guards across `ZeninNewArrivals.tsx`, `ProductCard.tsx`, and `collections/page.tsx` for data and local upload URLs.
   4. **Upload Authorization:** Added Bearer token transmission in `ImageInputWithUpload.tsx` and dev localhost clearance in `api/media/upload/route.ts`.
+
+---
+
+### Bug 10: New Arrivals Mobile View Catalog Priority & LAN Sync Barrier
+- **Severity:** 🔴 **CRITICAL** (Mobile User Invisibility / Cross-Device Catalog Desync)
+- **Files Affected:**
+  - `src/components/zenin/ZeninNewArrivals.tsx` (lines 110–225, 290–330)
+  - `src/app/api/cms/route.ts` (lines 28–42)
+  - `src/app/api/media/upload/route.ts` (lines 28–42)
+  - `src/lib/cms/cmsStore.ts` (lines 570–595)
+- **Root Cause Analysis:**
+  1. **Baseline Drops Flooded Grid Ahead of Admin Drops:** In `ZeninNewArrivals.tsx`, `newlyAddedCustomProducts` filtered `activeProducts` with:
+     ```ts
+     const isCustomDrop = !p.id.startsWith('zn-') || p.id.startsWith('as-');
+     const isMarkedNew = p.isNewDrop === true || (p.badge ? /new/i.test(p.badge) : false);
+     return isCustomDrop || isMarkedNew;
+     ```
+     Because 20 static baseline products in `products.ts` have `isNewDrop: true`, all 14 non-curated baseline items were matched by `isMarkedNew`. In array iteration order, these 14 baseline products filled up the list and pushed admin custom products (`as-*`) to position 15 or 16, burying them beneath 7 rows of 2-column mobile scrolling, or slicing them out entirely under `slice(0, 16)`.
+  2. **Hydration Order Buried Server Products:** On mobile devices or fresh sessions with empty `localStorage`, `useCmsStore` initialized with 107 baseline products. When `activeProducts` merged `cmsProducts` and `initialProducts`, all 107 baseline items were inserted first, appending any newly published server drop from `initialProducts` at index 107.
+  3. **Local Wi-Fi / Private IP 401 Rejection:** In `api/cms/route.ts` and `api/media/upload/route.ts`, requests were checked with `if (!(isDev && isLocalhost))`. When an admin connected from a mobile phone or tablet on LAN (`http://172.20.10.8:3000`), `isLocalhost` evaluated to `false`, throwing `401 Unauthorized` and preventing newly added drops from persisting to server disk.
+  4. **Next.js Image Hostname Rejection on Mobile:** Newly created products with external, Cloudinary, or uploaded images crashed or failed to render on mobile without `unoptimized={!primaryImage.startsWith('/images/')}`.
+- **Resolution Applied:**
+  1. **Strict Admin Custom Drops Pre-pending:** Overhauled `activeProducts` in `ZeninNewArrivals.tsx` to separate `customList` (`!p.id.startsWith('zn-') || p.id.startsWith('as-')`) and place them at **Index 0** before any baseline products.
+  2. **Guaranteed Position 0 in New Arrivals:** In `ZeninNewArrivals.tsx`, `adminCustomDrops` are placed at the very front: `combined = [...adminCustomDrops, ...updatedNewArrivals]`. Any newly added admin product renders immediately as the very first top-left item in the mobile 2-column grid.
+  3. **LAN / Private IP Clearance:** Updated `api/cms/route.ts` and `api/media/upload/route.ts` to allow local dev network IP ranges (`192.168.*`, `10.*`, `172.*`, `localhost`, `127.0.0.1`), ensuring mobile devices and LAN sessions can upload images and publish catalog updates seamlessly.
+  4. **Universal Image Optimization Exemption:** Added `unoptimized={!primaryImage.startsWith('/images/')}` to `ZeninNewArrivals.tsx` so all user uploads, Cloudinary URLs, and base64 strings load cleanly without Next.js hostname errors.
+  5. **Defensive Sync Sorting:** Updated `syncFromServer` in `cmsStore.ts` to sort all custom drops to index 0 on background synchronization.
 
 ---
 

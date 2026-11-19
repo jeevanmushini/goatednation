@@ -579,8 +579,15 @@ const createCmsStore = () =>
                 (p: Product) => !serverIdSet.has(p.id)
               );
 
-              // Merge: custom drops created by admin stay at the very front
-              const mergedProducts = [...localOnlyProducts, ...serverProducts];
+              // Merge: custom drops created by admin stay at the very front across all devices
+              const rawMerged = [...localOnlyProducts, ...serverProducts];
+              const customDrops = rawMerged.filter(
+                (p: Product) => !p.id.startsWith('zn-') || p.id.startsWith('as-')
+              );
+              const standardDrops = rawMerged.filter(
+                (p: Product) => p.id.startsWith('zn-') && !p.id.startsWith('as-')
+              );
+              const mergedProducts = [...customDrops, ...standardDrops];
 
               // If there were local additions not present on the server, auto-sync them back so disk/KV stays updated
               if (localOnlyProducts.length > 0) {

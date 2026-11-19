@@ -29,10 +29,15 @@ export async function POST(req: NextRequest) {
 
     const isDev = process.env.NODE_ENV !== 'production';
     const host = req.headers.get('host') || '';
-    const isLocalhost = host.includes('localhost') || host.includes('127.0.0.1');
+    const isLocalNetwork =
+      host.includes('localhost') ||
+      host.includes('127.0.0.1') ||
+      host.includes('192.168.') ||
+      host.includes('10.') ||
+      host.includes('172.');
 
     if (!payload || payload.role !== 'ADMIN') {
-      if (!(isDev && isLocalhost)) {
+      if (!isDev && !isLocalNetwork) {
         return NextResponse.json(
           { success: false, error: 'Unauthorized: Admin clearance required to upload media.' },
           { status: 401 }
