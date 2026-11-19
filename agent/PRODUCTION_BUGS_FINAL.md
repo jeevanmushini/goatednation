@@ -14,11 +14,11 @@ This document delivers an exhaustive codebase audit and bug resolution register 
 
 | Severity | Count | Status |
 | :--- | :---: | :---: |
-| 🔴 **CRITICAL** (Data Loss, Crash, Auth Bypass, Broken Flow) | 7 | ✅ RESOLVED |
+| 🔴 **CRITICAL** (Data Loss, Crash, Auth Bypass, Broken Flow) | 8 | ✅ RESOLVED |
 | 🟠 **HIGH** (Persistence Failure, State Desync, Empty Filter Fallbacks) | 5 | ✅ RESOLVED |
 | 🟡 **MEDIUM** (Missing Error Boundaries, Lack of Skeletons, Unhandled 404s) | 4 | ✅ RESOLVED |
 | 🟢 **LOW** (UI Consistency, Mobile Sizing, Cache Invalidation) | 3 | ✅ RESOLVED |
-| **TOTAL** | **19** | **100% RESOLVED** |
+| **TOTAL** | **20** | **100% RESOLVED** |
 
 ---
 
@@ -185,6 +185,24 @@ This document delivers an exhaustive codebase audit and bug resolution register 
   3. **LAN / Private IP Clearance:** Updated `api/cms/route.ts` and `api/media/upload/route.ts` to allow local dev network IP ranges (`192.168.*`, `10.*`, `172.*`, `localhost`, `127.0.0.1`), ensuring mobile devices and LAN sessions can upload images and publish catalog updates seamlessly.
   4. **Universal Image Optimization Exemption:** Added `unoptimized={!primaryImage.startsWith('/images/')}` to `ZeninNewArrivals.tsx` so all user uploads, Cloudinary URLs, and base64 strings load cleanly without Next.js hostname errors.
   5. **Defensive Sync Sorting:** Updated `syncFromServer` in `cmsStore.ts` to sort all custom drops to index 0 on background synchronization.
+
+---
+
+### Bug 11: Updated Hoodies Excluded from New Arrivals Grid
+- **Severity:** 🔴 **CRITICAL** (Category Drop Invisibility / Admin Edit Exclusion)
+- **Files Affected:**
+  - `src/components/zenin/ZeninNewArrivals.tsx` (lines 26–180)
+  - `src/data/products.ts` (lines 2350–4850)
+  - `.cms_published_data.json` (products array)
+- **Root Cause Analysis:**
+  1. **Strict ID Prefix Filter Blocked Existing Hoodies:** `ZeninNewArrivals.tsx` filtered custom drops strictly by `!p.id.startsWith('zn-') || p.id.startsWith('as-')`. The 3 catalog hoodies have IDs `zn-49` (`DEMON WASHED / SWEATSHIRT`), `zn-50` (`NO CURSED SPIRIT / EMBROIDERY SWEATSHIRT`), and `zn-98` (`DRAGON EMBROIDERY / ZIPPER`). Because their IDs start with `zn-`, they were discarded from the custom drops list.
+  2. **Baseline `NEW_ARRIVALS` Omitted Hoodies:** The curated baseline array in `ZeninNewArrivals.tsx` only had 6 products (`zn-01` to `zn-06`), none of which are hoodies.
+  3. **Low Grid Slicing:** As a result, the 3 hoodies remained stranded at index positions 49, 50, and 98 and never rendered in the New Arrivals grid on mobile.
+- **Resolution Applied:**
+  1. **Priority Integration for Hoodies:** Overhauled `activeProducts` and `priorityDrops` in `ZeninNewArrivals.tsx` to detect all hoodies (`p.category === 'hoodies'` or `p.id === 'zn-49' || p.id === 'zn-50' || p.id === 'zn-98'`) and place them at **Position 0, 1, and 2** at the top of New Arrivals.
+  2. **Baseline Fallback Inclusion:** Added all 3 hoodies to the baseline `NEW_ARRIVALS` array with `'NEW DROP'` badges.
+  3. **Data State Flagging:** Set `isNewDrop: true`, `isFeatured: true`, and badge `'NEW DROP'` for `zn-49`, `zn-50`, and `zn-98` across `.cms_published_data.json` and `products.ts`.
+  4. **Mobile Layout Verification:** Confirmed via simulated test that the 3 hoodies render in Row 1 and Row 2 of the mobile 2-column grid.
 
 ---
 

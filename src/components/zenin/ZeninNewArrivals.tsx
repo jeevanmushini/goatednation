@@ -25,6 +25,45 @@ interface ZeninNewArrivalsProps {
 
 const NEW_ARRIVALS: ZeninProduct[] = [
   {
+    id: 'zn-49',
+    slug: 'demon-sweatshirt',
+    title: 'DEMON WASHED / SWEATSHIRT',
+    price: 1799,
+    originalPrice: 2999,
+    badge: 'NEW DROP',
+    images: [
+      'https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w8-6.jpg?v=1793099446',
+      'https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W2-10.jpg?v=1793099446',
+    ],
+    category: 'hoodies',
+  },
+  {
+    id: 'zn-50',
+    slug: 'nocursed-embroidery-sweatshirt',
+    title: 'NO CURSED SPIRIT / EMBROIDERY SWEATSHIRT',
+    price: 1799,
+    originalPrice: 2799,
+    badge: 'NEW DROP',
+    images: [
+      'https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-9.jpg?v=1793099560',
+      'https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-9.jpg?v=1793099560',
+    ],
+    category: 'hoodies',
+  },
+  {
+    id: 'zn-98',
+    slug: 'dragon-embroidery-zipper',
+    title: 'DRAGON EMBROIDERY / ZIPPER',
+    price: 2199,
+    originalPrice: 2899,
+    badge: 'NEW DROP',
+    images: [
+      'https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-min_3a4e3b70-1472-4098-a844-5682acae8de4.jpg?v=1764493396',
+      'https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w8-min_670db2f3-10d3-4246-93cc-61862f9e763e.jpg?v=1764493849',
+    ],
+    category: 'hoodies',
+  },
+  {
     id: 'zn-01',
     slug: 'ryujin-dragon-jacquard-jacket',
     title: 'RYUJIN DRAGON / JACQUARD JACKET',
@@ -110,9 +149,9 @@ export const ZeninNewArrivals: React.FC<ZeninNewArrivalsProps> = ({ initialProdu
   const cmsProducts = useCmsStore((state) => state.products);
 
   // Dynamic source of truth: merge client store (with latest admin drops) and server initialProducts
-  // Prioritizing custom admin drops (as-* or non-zn-*) at the very front!
+  // Prioritizing the 3 updated hoodies and custom admin drops at the very front!
   const activeProducts = React.useMemo(() => {
-    const customList: Product[] = [];
+    const priorityList: Product[] = [];
     const regularList: Product[] = [];
     const seen = new Set<string>();
 
@@ -120,8 +159,15 @@ export const ZeninNewArrivals: React.FC<ZeninNewArrivalsProps> = ({ initialProdu
       if (!p || !p.id || seen.has(p.id)) return;
       seen.add(p.id);
       const isCustomDrop = !p.id.startsWith('zn-') || p.id.startsWith('as-');
-      if (isCustomDrop) {
-        customList.push(p);
+      const isHoodieOrFeatured =
+        p.category === 'hoodies' ||
+        p.id === 'zn-49' ||
+        p.id === 'zn-50' ||
+        p.id === 'zn-98' ||
+        /hoodie|sweatshirt/i.test(p.title);
+
+      if (isCustomDrop || isHoodieOrFeatured) {
+        priorityList.push(p);
       } else {
         regularList.push(p);
       }
@@ -138,19 +184,29 @@ export const ZeninNewArrivals: React.FC<ZeninNewArrivalsProps> = ({ initialProdu
     }
 
     // Fallback if empty
-    if (customList.length === 0 && regularList.length === 0) {
+    if (priorityList.length === 0 && regularList.length === 0) {
       PRODUCTS.forEach(processItem);
     }
 
-    // Custom admin drops ALWAYS stay at the very beginning of the catalog!
-    return [...customList, ...regularList];
+    // Priority drops (3 hoodies & admin custom drops) ALWAYS stay at the very beginning!
+    return [...priorityList, ...regularList];
   }, [cmsProducts, initialProducts]);
 
   // Compute products to display in the New Arrivals grid
   const products: ZeninProduct[] = React.useMemo(() => {
-    // 1. Identify newly added products created by admin (custom drops)
-    const adminCustomDrops: ZeninProduct[] = activeProducts
-      .filter((p: Product) => !p.id.startsWith('zn-') || p.id.startsWith('as-'))
+    // 1. Priority drops: The updated hoodies and any custom admin drops
+    const priorityDrops: ZeninProduct[] = activeProducts
+      .filter((p: Product) => {
+        const isCustom = !p.id.startsWith('zn-') || p.id.startsWith('as-');
+        const isHoodie =
+          p.category === 'hoodies' ||
+          p.id === 'zn-49' ||
+          p.id === 'zn-50' ||
+          p.id === 'zn-98' ||
+          /hoodie|sweatshirt/i.test(p.title);
+        const isMarkedNew = p.isNewDrop === true && !p.id.startsWith('zn-');
+        return isCustom || isHoodie || isMarkedNew;
+      })
       .map((p: Product) => ({
         id: p.id,
         slug: p.slug,
@@ -183,8 +239,8 @@ export const ZeninNewArrivals: React.FC<ZeninNewArrivalsProps> = ({ initialProdu
       };
     });
 
-    // 3. Put newly added admin custom products first at the very beginning of New Arrivals!
-    const combined: ZeninProduct[] = [...adminCustomDrops];
+    // 3. Put priority drops (the 3 hoodies & custom drops) first at the very beginning of New Arrivals!
+    const combined: ZeninProduct[] = [...priorityDrops];
     updatedNewArrivals.forEach((na) => {
       if (!combined.some((item) => item.id === na.id || item.slug === na.slug)) {
         combined.push(na);
@@ -212,7 +268,7 @@ export const ZeninNewArrivals: React.FC<ZeninNewArrivalsProps> = ({ initialProdu
       });
     }
 
-    // Keep all custom drops visible at the top, plus baseline items up to max(8, combined.length)
+    // Keep all priority drops visible at the top, plus baseline items up to max(8, combined.length)
     const targetCount = Math.max(8, combined.length);
     return combined.slice(0, Math.min(24, targetCount));
   }, [activeProducts]);

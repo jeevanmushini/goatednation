@@ -2354,7 +2354,7 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "discountPercent": 40,
     "rating": 4.7,
     "reviewCount": 21,
-    "badge": "SAVE 40%",
+    "badge": "NEW DROP",
     "images": [
       "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w8-6.jpg?v=1793099446",
       "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W2-10.jpg?v=1793099446",
@@ -2404,7 +2404,7 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "discountPercent": 36,
     "rating": 4.8,
     "reviewCount": 28,
-    "badge": "SAVE 36%",
+    "badge": "NEW DROP",
     "images": [
       "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-9.jpg?v=1793099560",
       "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-9.jpg?v=1793099560",
@@ -4811,7 +4811,7 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "discountPercent": 24,
     "rating": 4.8,
     "reviewCount": 34,
-    "badge": "SAVE 24%",
+    "badge": "NEW DROP",
     "images": [
       "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-min_3a4e3b70-1472-4098-a844-5682acae8de4.jpg?v=1764493396",
       "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w8-min_670db2f3-10d3-4246-93cc-61862f9e763e.jpg?v=1764493849",
