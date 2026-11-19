@@ -48,7 +48,6 @@ const MOBILE_POSITIONS: Record<number, { x: number; y: number; scale: number; ro
 
 export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ initialBottoms }) => {
   const cmsBottoms = useCmsStore((state) => state.heroBottoms);
-  const cmsProducts = useCmsStore((state) => state.products);
   const [dragOffsetPx, setDragOffsetPx] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -62,65 +61,35 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Stable single source of truth: ensures published CMS data from server (initialBottoms)
-  // or client store renders identically on frame 1 without any 1-second hydration glitch!
+  // Stable single source of truth: admin-selected silhouettes from CMS store or server initialBottoms.
+  // Any external Shopify CDN images are strictly filtered out so only admin-chosen artwork renders.
   const items: BottomHeroItem[] = useMemo(() => {
-    const activeBottoms =
+    const rawList =
       (cmsBottoms && cmsBottoms.length > 0)
         ? cmsBottoms
         : (initialBottoms && initialBottoms.length > 0)
         ? initialBottoms
         : FALLBACK_HERO_BOTTOMS;
 
-    // Also include any newly added products from admin so new drops are immediately visible in hero on mobile
-    const adminDropBottoms: BottomHeroItem[] = (cmsProducts || [])
-      .filter((p) => {
-        const isCustom = p.id.startsWith('as-') || p.isNewDrop;
-        return isCustom && Array.isArray(p.images) && p.images.length > 0 && p.images[0];
-      })
-      .map((p) => ({
-        id: p.id,
-        name: p.title,
-        image: p.images[0] || '/images/placeholder-product.svg',
-        link: `/products/${p.slug}`,
-      }));
-
-    const combined: BottomHeroItem[] = [];
-    const seen = new Set<string>();
-
-    // Put newest drops first so they appear in mobile center view
-    adminDropBottoms.forEach((b) => {
-      if (!seen.has(b.id)) {
-        seen.add(b.id);
-        combined.push(b);
-      }
-    });
-
-    activeBottoms.forEach((cmsItem, idx) => {
-      const fb = FALLBACK_HERO_BOTTOMS[idx] || FALLBACK_HERO_BOTTOMS[0];
-      const id = cmsItem.id || fb.id || `b-${idx + 1}`;
-      if (!seen.has(id)) {
-        seen.add(id);
-        combined.push({
-          id,
+    return rawList
+      .filter((cmsItem) => cmsItem && !cmsItem.image?.includes('cdn.shopify.com'))
+      .map((cmsItem, idx) => {
+        const fb = FALLBACK_HERO_BOTTOMS[idx] || FALLBACK_HERO_BOTTOMS[0];
+        return {
+          id: cmsItem.id || fb.id || `b-${idx + 1}`,
           name: cmsItem.name || fb.name,
           image: cmsItem.image && cmsItem.image.trim() !== '' ? cmsItem.image : fb.image,
           link: cmsItem.link || fb.link || '/collections',
-        });
-      }
-    });
-
-    return combined.length > 0 ? combined : FALLBACK_HERO_BOTTOMS;
-  }, [initialBottoms, cmsBottoms, cmsProducts]);
+        };
+      });
+  }, [initialBottoms, cmsBottoms]);
 
   const total = items.length;
 
-  // Center index: start at 0 if there are new admin drops, otherwise center
+  // Center index: middle item
   const initialCenterIndex = useMemo(() => {
-    const hasNewDrop = items.some((it) => it.id.startsWith('as-'));
-    if (hasNewDrop) return 0;
     return Math.floor(total / 2);
-  }, [total, items]);
+  }, [total]);
 
   const [activeIndex, setActiveIndex] = useState(initialCenterIndex);
 
