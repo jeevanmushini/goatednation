@@ -140,6 +140,29 @@ This document delivers an exhaustive codebase audit and bug resolution register 
 
 ---
 
+### Bug 9: Newly Added Products Hidden in Mobile View
+- **Severity:** 🔴 **CRITICAL** (Mobile User Experience / Catalog Invisibility)
+- **Files Affected:**
+  - `src/components/zenin/ZeninHeroFloatingPants.tsx` (lines 41–90, 340–375)
+  - `src/components/zenin/ZeninNewArrivals.tsx` (lines 273–315)
+  - `src/components/product/ProductCard.tsx` (lines 72–95)
+  - `src/app/collections/page.tsx` (lines 508–535)
+  - `src/app/api/media/upload/route.ts` (lines 22–38)
+  - `src/components/admin/ImageInputWithUpload.tsx` (lines 109–120)
+- **Root Cause Analysis:**
+  1. **Hard `hidden md:block` Clipping in Hero View:** In `ZeninHeroFloatingPants.tsx`, items with relative index `Math.abs(rel) > 1` were assigned `className="hidden md:block"`. On mobile view (`< 768px`), this meant only the 3 center baseline items were ever displayed; newly added admin products/bottoms were strictly hidden with `display: none` (`hidden md:block`). Furthermore, `MOBILE_POSITIONS` only had slots `[-1]`, `[0]`, and `[1]`.
+  2. **Hero Data Source Ignored Client Products & Store:** `ZeninHeroFloatingPants.tsx` evaluated `initialBottoms.length > 0 ? initialBottoms : cmsBottoms`. Because server `initialBottoms` always contained baseline items, `cmsBottoms` and `cmsProducts` were never checked, so newly added products never appeared in the top hero rotation.
+  3. **Touch Hover Opacity Inversion in New Arrivals:** In `ZeninNewArrivals.tsx`, `ProductCard` had `isHovered ? 'opacity-0' : 'opacity-100'` on the primary image without checking if a distinct secondary image was available. On mobile/touch devices, tapping a card triggered a sticky `mouseenter` event, turning the primary image transparent (`opacity-0`) and flashing the card blank if only 1 image was uploaded.
+  4. **Missing `unoptimized` on Next.js `<Image>`:** When admin uploaded images from laptop (e.g. data URLs or `/uploads/`), Next.js `<Image fill>` failed to optimize them on mobile browsers without `unoptimized={true}`.
+- **Resolution Applied:**
+  1. **Hero 3D Rotation Expanded for Mobile:** Extended `MOBILE_POSITIONS` to support offsets `[-2]` through `[2]`. Replaced `hidden md:block` with smooth opacity interpolation and pointer-events control so newly added items are visible and swipeable on mobile.
+  2. **Auto-Promote New Drops to Hero Front:** `ZeninHeroFloatingPants` now incorporates newly added admin drops from `cmsProducts`, setting `initialCenterIndex = 0` when new drops are present so they appear front-and-center at the top of the mobile screen.
+  3. **Touch Hover Guard:** Guarded `isHovered && hasSecondary` so cards never turn transparent on mobile touch when only one image is uploaded.
+  4. **Universal Image Optimization Flags:** Added `unoptimized` guards across `ZeninNewArrivals.tsx`, `ProductCard.tsx`, and `collections/page.tsx` for data and local upload URLs.
+  5. **Upload Authorization:** Added Bearer token transmission in `ImageInputWithUpload.tsx` and dev localhost clearance in `api/media/upload/route.ts`.
+
+---
+
 ## 3. Comprehensive Testing Approaches & Methodologies
 
 To guarantee that the platform maintains zero regressions and 100% production uptime, follow these verification procedures:
