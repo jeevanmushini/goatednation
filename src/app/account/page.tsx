@@ -100,6 +100,7 @@ export default function AccountPage() {
                       fill
                       sizes="64px"
                       className="object-cover"
+                      unoptimized
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center font-mono font-bold text-xl text-black">

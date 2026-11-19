@@ -238,7 +238,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div className="flex items-center space-x-2.5">
               <div className="relative w-7 h-7 rounded-full overflow-hidden bg-black/10 shrink-0">
                 {user.avatar ? (
-                  <Image src={user.avatar} alt={user.name} fill sizes="28px" className="object-cover" />
+                  <Image src={user.avatar} alt={user.name} fill sizes="28px" className="object-cover" unoptimized />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-[10px] font-mono font-bold">
                     {user.name.charAt(0)}

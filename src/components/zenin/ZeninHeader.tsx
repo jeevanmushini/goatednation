@@ -224,7 +224,7 @@ export const ZeninHeader: React.FC = () => {
                 >
                   <div className="relative w-6 h-6 rounded-full overflow-hidden border border-black/20 bg-black/5 flex items-center justify-center">
                     {user.avatar ? (
-                      <Image src={user.avatar} alt={user.name} fill sizes="24px" className="object-cover" />
+                      <Image src={user.avatar} alt={user.name} fill sizes="24px" className="object-cover" unoptimized />
                     ) : (
                       <span className="text-[10px] font-mono font-bold">{user.name.charAt(0)}</span>
                     )}

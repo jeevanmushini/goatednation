@@ -22,6 +22,18 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "lh3.googleusercontent.com",
       },
+      {
+        protocol: "https",
+        hostname: "zenin.co.in",
+      },
+      {
+        protocol: "https",
+        hostname: "www.zenin.co.in",
+      },
+      {
+        protocol: "https",
+        hostname: "api.dicebear.com",
+      },
     ],
   },
 };
