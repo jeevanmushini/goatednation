@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useCartStore } from '../../stores/cartStore';
 import { useCmsStore } from '../../lib/cms/cmsStore';
 import { Product } from '../../types/product';
+import { PRODUCTS } from '../../data/products';
 
 interface ZeninProduct {
   id: string;
@@ -107,13 +108,40 @@ export const ZeninNewArrivals: React.FC<ZeninNewArrivalsProps> = ({ initialProdu
   const addItem = useCartStore((state) => state.addItem);
   const openDrawer = useCartStore((state) => state.openDrawer);
   const cmsProducts = useCmsStore((state) => state.products);
-  const activeProducts = (initialProducts && initialProducts.length > 0) ? initialProducts : cmsProducts;
 
-  // Merge CMS product updates and include newly added products from Admin
+  // Dynamic source of truth: merge client store (with latest admin drops) and server initialProducts
+  const activeProducts = React.useMemo(() => {
+    const list: Product[] = [];
+    const seen = new Set<string>();
+
+    // 1. Any product in cmsProducts (client store has newest drops prepended)
+    if (cmsProducts && cmsProducts.length > 0) {
+      cmsProducts.forEach((p) => {
+        if (p && p.id && !seen.has(p.id)) {
+          seen.add(p.id);
+          list.push(p);
+        }
+      });
+    }
+
+    // 2. Any product in initialProducts not yet seen
+    if (initialProducts && initialProducts.length > 0) {
+      initialProducts.forEach((p) => {
+        if (p && p.id && !seen.has(p.id)) {
+          seen.add(p.id);
+          list.push(p);
+        }
+      });
+    }
+
+    return list.length > 0 ? list : PRODUCTS;
+  }, [cmsProducts, initialProducts]);
+
+  // Compute products to display in the New Arrivals grid
   const products: ZeninProduct[] = React.useMemo(() => {
-    // 1. Updated existing NEW_ARRIVALS with any edits made in admin
+    // 1. Curated baseline New Arrivals (updated with any edits made in admin)
     const updatedNewArrivals = NEW_ARRIVALS.map((na) => {
-      const matchingCms = activeProducts.find((p) => p.slug === na.slug || p.id === na.id);
+      const matchingCms = activeProducts.find((p: Product) => p.slug === na.slug || p.id === na.id);
       if (!matchingCms) return na;
       return {
         ...na,
@@ -129,10 +157,19 @@ export const ZeninNewArrivals: React.FC<ZeninNewArrivalsProps> = ({ initialProdu
       };
     });
 
-    // 2. Newly added products in activeProducts that are not already in NEW_ARRIVALS
-    const newCustomProducts: ZeninProduct[] = activeProducts
-      .filter((p) => !NEW_ARRIVALS.some((na) => na.id === p.id || na.slug === p.slug))
-      .map((p) => ({
+    // 2. Identify newly added products (created by admin or marked as new drop)
+    const newlyAddedCustomProducts: ZeninProduct[] = activeProducts
+      .filter((p: Product) => {
+        // Exclude products that are already in baseline NEW_ARRIVALS
+        if (NEW_ARRIVALS.some((na) => na.id === p.id || na.slug === p.slug)) {
+          return false;
+        }
+        // Match if custom ID (as-*), marked as isNewDrop, or has NEW DROP badge
+        const isCustomDrop = !p.id.startsWith('zn-') || p.id.startsWith('as-');
+        const isMarkedNew = p.isNewDrop === true || (p.badge ? /new/i.test(p.badge) : false);
+        return isCustomDrop || isMarkedNew;
+      })
+      .map((p: Product) => ({
         id: p.id,
         slug: p.slug,
         title: p.title,
@@ -140,14 +177,43 @@ export const ZeninNewArrivals: React.FC<ZeninNewArrivalsProps> = ({ initialProdu
         originalPrice: p.originalPrice || Math.round(p.price * 1.4),
         badge: p.badge || 'NEW DROP',
         images: [
-          p.images[0] || '/images/hero/berserk-hoodie.jpg',
-          p.images[1] || p.images[0] || '/images/hero/berserk-hoodie.jpg',
+          p.images[0] || '/images/placeholder-product.svg',
+          p.images[1] || p.images[0] || '/images/placeholder-product.svg',
         ] as [string, string],
         category: p.category,
       }));
 
-    // Put newly created products first, then updated arrivals, capped to 8 for the grid
-    return [...newCustomProducts, ...updatedNewArrivals].slice(0, 8);
+    // Put newly added products first at the very beginning of New Arrivals, followed by updated arrivals
+    const combined = [...newlyAddedCustomProducts];
+    updatedNewArrivals.forEach((na) => {
+      if (!combined.some((item) => item.id === na.id || item.slug === na.slug)) {
+        combined.push(na);
+      }
+    });
+
+    // Ensure at least 8 items for a full 4-column 2-row grid
+    if (combined.length < 8) {
+      activeProducts.forEach((p: Product) => {
+        if (!combined.some((item) => item.id === p.id || item.slug === p.slug)) {
+          combined.push({
+            id: p.id,
+            slug: p.slug,
+            title: p.title,
+            price: p.price,
+            originalPrice: p.originalPrice || Math.round(p.price * 1.4),
+            badge: p.badge || 'NEW DROP',
+            images: [
+              p.images[0] || '/images/placeholder-product.svg',
+              p.images[1] || p.images[0] || '/images/placeholder-product.svg',
+            ] as [string, string],
+            category: p.category,
+          });
+        }
+      });
+    }
+
+    const targetCount = Math.max(8, newlyAddedCustomProducts.length);
+    return combined.slice(0, Math.min(16, targetCount));
   }, [activeProducts]);
 
   const handleQuickAdd = (p: ZeninProduct, e: React.MouseEvent) => {
@@ -161,7 +227,7 @@ export const ZeninNewArrivals: React.FC<ZeninNewArrivalsProps> = ({ initialProdu
         anime: 'Tokyo Editorial',
         price: p.price,
         originalPrice: p.originalPrice,
-        image: p.images[0],
+        image: p.images[0] || '/images/placeholder-product.svg',
         size: 'L',
         color: 'Onyx Black',
         quantity: 1,
@@ -222,7 +288,7 @@ const ProductCard: React.FC<{
         <div className="relative w-full aspect-[3/4] overflow-hidden rounded-md bg-[#F4F4F4] mb-3">
           {/* Main Primary Image */}
           <Image
-            src={product.images[0]}
+            src={product.images[0] || '/images/placeholder-product.svg'}
             alt={product.title}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
@@ -233,7 +299,7 @@ const ProductCard: React.FC<{
 
           {/* Secondary Hover Image */}
           <Image
-            src={product.images[1] || product.images[0]}
+            src={product.images[1] || product.images[0] || '/images/placeholder-product.svg'}
             alt={`${product.title} alternate view`}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"

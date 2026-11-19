@@ -201,9 +201,21 @@ function triggerServerSync(state: Partial<CmsState>, immediate = false) {
   }
 
   const sendPayload = () => {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    try {
+      const match = document.cookie.match(/(?:^|;\s*)auth_token=([^;]+)/);
+      const cookieToken = match ? decodeURIComponent(match[1]) : null;
+      const localToken = localStorage.getItem('auth_token') || localStorage.getItem('token');
+      const token = cookieToken || localToken;
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+    } catch {}
+
     fetch('/api/cms', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
+      credentials: 'include',
       body: JSON.stringify({
         heroSlides: state.heroSlides,
         categories: state.categories,

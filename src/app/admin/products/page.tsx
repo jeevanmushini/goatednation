@@ -15,7 +15,7 @@ import { Product, ProductCategory } from '../../../types/product';
 import ImageInputWithUpload from '../../../components/admin/ImageInputWithUpload';
 
 export default function AdminProductsPage() {
-  const { products, addProduct, updateProduct, deleteProduct } = useCmsStore();
+  const { products, addProduct, updateProduct, deleteProduct, publishChanges } = useCmsStore();
 
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -29,7 +29,8 @@ export default function AdminProductsPage() {
   const [price, setPrice] = useState('1499');
   const [originalPrice, setOriginalPrice] = useState('2499');
   const [discountPercent, setDiscountPercent] = useState('40');
-  const [badge, setBadge] = useState('LIMITED DROP');
+  const [badge, setBadge] = useState('NEW DROP');
+  const [isNewDrop, setIsNewDrop] = useState(true);
   const [image1, setImage1] = useState('/images/placeholder-product.svg');
   const [image2, setImage2] = useState('/images/placeholder-product.svg');
   const [description, setDescription] = useState(
@@ -55,7 +56,8 @@ export default function AdminProductsPage() {
     setPrice('1499');
     setOriginalPrice('2499');
     setDiscountPercent('40');
-    setBadge('LIMITED DROP');
+    setBadge('NEW DROP');
+    setIsNewDrop(true);
     setImage1('/images/placeholder-product.svg');
     setImage2('/images/placeholder-product.svg');
     setDescription('Custom-milled 280 GSM heavyweight French terry cotton.');
@@ -71,7 +73,8 @@ export default function AdminProductsPage() {
     setPrice(p.price.toString());
     setOriginalPrice(p.originalPrice.toString());
     setDiscountPercent(p.discountPercent.toString());
-    setBadge(p.badge || '');
+    setBadge(p.badge || 'NEW DROP');
+    setIsNewDrop(p.isNewDrop ?? (p.badge?.toLowerCase().includes('new') || !p.id.startsWith('zn-')));
     setImage1(p.images[0] || '');
     setImage2(p.images[1] || '');
     setDescription(p.description);
@@ -95,7 +98,8 @@ export default function AdminProductsPage() {
       discountPercent: Number(discountPercent) || 40,
       rating: 4.9,
       reviewCount: 42,
-      badge: badge || undefined,
+      badge: badge || (isNewDrop ? 'NEW DROP' : undefined),
+      isNewDrop,
       images: [image1, image2].filter(Boolean),
       description,
       details: {
@@ -119,6 +123,12 @@ export default function AdminProductsPage() {
       updateProduct(editingId, productPayload);
     } else {
       addProduct(productPayload);
+    }
+
+    // Immediately publish so changes are reflected on the storefront live
+    publishChanges();
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('cms-published'));
     }
 
     setIsModalOpen(false);
@@ -353,7 +363,7 @@ export default function AdminProductsPage() {
                     type="text"
                     value={badge}
                     onChange={(e) => setBadge(e.target.value)}
-                    placeholder="e.g. SAVE 55%, LIMITED DROP"
+                    placeholder="e.g. NEW DROP, SAVE 55%"
                     className="w-full bg-white border border-[#D5D5D5] focus:border-black focus:ring-1 focus:ring-black rounded-lg px-3 py-2 text-xs text-black outline-none font-mono"
                   />
                 </div>
@@ -366,6 +376,21 @@ export default function AdminProductsPage() {
                     className="w-full bg-white border border-[#D5D5D5] focus:border-black focus:ring-1 focus:ring-black rounded-lg px-3 py-2 text-xs text-black outline-none font-mono"
                   />
                 </div>
+              </div>
+
+              {/* Feature in New Arrivals Toggle */}
+              <div className="flex items-center space-x-2.5 p-3 rounded-lg bg-[#FAFAFA] border border-[#EAEAEA]">
+                <input
+                  type="checkbox"
+                  id="featureInNewArrivals"
+                  checked={isNewDrop}
+                  onChange={(e) => setIsNewDrop(e.target.checked)}
+                  className="w-4 h-4 rounded text-black border-[#D5D5D5] focus:ring-black accent-black cursor-pointer"
+                />
+                <label htmlFor="featureInNewArrivals" className="text-xs font-mono font-semibold text-black cursor-pointer flex items-center gap-1.5 select-none">
+                  <span>FEATURE IN NEW ARRIVALS (新品上市)</span>
+                  <span className="text-[10px] text-[#FF4D00] uppercase font-bold">• SHOW ON HOMEPAGE</span>
+                </label>
               </div>
 
               <ImageInputWithUpload

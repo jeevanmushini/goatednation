@@ -91,7 +91,7 @@ export default function CollectionsPage() {
         if (existingIdx !== -1) {
           list[existingIdx] = cp;
         } else {
-          list.push(cp);
+          list.unshift(cp);
         }
       });
     }
