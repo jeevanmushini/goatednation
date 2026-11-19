@@ -146,6 +146,13 @@ export const ZeninHeader: React.FC = () => {
                 All Products
               </Link>
 
+              <Link
+                href="/#new-arrivals"
+                className="py-1 text-[#555555] hover:text-black transition-colors"
+              >
+                New Arrivals
+              </Link>
+
               {/* Categories with Dropdown */}
               <div
                 className="relative py-1"
@@ -350,6 +357,13 @@ export const ZeninHeader: React.FC = () => {
                 className="block py-2 text-[#444444] uppercase"
               >
                 All Products
+              </Link>
+              <Link
+                href="/#new-arrivals"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block py-2 text-[#FF4D00] font-bold uppercase"
+              >
+                New Arrivals (新品上市)
               </Link>
               <div className="py-2">
                 <span className="text-[10px] text-[#888888] uppercase tracking-wider block mb-2">

@@ -295,7 +295,7 @@ export const ZeninNewArrivals: React.FC<ZeninNewArrivalsProps> = ({ initialProdu
   };
 
   return (
-    <section className="bg-[#FFFFFF] py-16 px-4 sm:px-6 lg:px-8 border-b border-[#EAEAEA]">
+    <section id="new-arrivals" className="bg-[#FFFFFF] py-16 px-4 sm:px-6 lg:px-8 border-b border-[#EAEAEA] scroll-mt-20">
       <div className="max-w-7xl mx-auto">
         {/* Section Heading: NEW ARRIVAL / 新品上市 */}
         <div className="mb-8">
