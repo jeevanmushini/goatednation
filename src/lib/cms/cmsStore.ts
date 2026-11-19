@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage, StateStorage } from 'zustand/middleware';
 import {
   CmsHeroSlide,
   CmsCategory,
@@ -109,87 +108,6 @@ interface CmsState {
   syncFromServer: () => Promise<void>;
 }
 
-const memoryFallbackMap = new Map<string, string>();
-
-const safeStorage: StateStorage = {
-  getItem: (name: string): string | null => {
-    if (typeof window === 'undefined') return null;
-    try {
-      return localStorage.getItem(name) ?? memoryFallbackMap.get(name) ?? null;
-    } catch {
-      return memoryFallbackMap.get(name) ?? null;
-    }
-  },
-  setItem: (name: string, value: string): void => {
-    if (typeof window === 'undefined') return;
-    try {
-      localStorage.setItem(name, value);
-      memoryFallbackMap.delete(name);
-    } catch (err) {
-      console.warn('[CMS Storage] LocalStorage quota exceeded. Engaging auto-recovery...', err);
-
-      // Attempt 1: Clear non-essential auxiliary keys from localStorage
-      try {
-        const keysToRemove: string[] = [];
-        for (let i = 0; i < (localStorage.length || 0); i++) {
-          const k = localStorage.key(i);
-          if (
-            k &&
-            k !== name &&
-            !k.toLowerCase().includes('token') &&
-            !k.toLowerCase().includes('auth') &&
-            !k.toLowerCase().includes('session')
-          ) {
-            keysToRemove.push(k);
-          }
-        }
-        keysToRemove.forEach((k) => localStorage.removeItem(k));
-        localStorage.setItem(name, value);
-        console.info('[CMS Storage] Successfully saved after clearing auxiliary browser cache.');
-        return;
-      } catch {
-        // Still exceeding quota
-      }
-
-      // Attempt 2: Prune heavy base64 data URLs from media list
-      try {
-        const parsed = JSON.parse(value);
-        if (parsed?.state) {
-          if (Array.isArray(parsed.state.media)) {
-            parsed.state.media = parsed.state.media
-              .filter(
-                (m: Partial<CmsMediaItem>) =>
-                  !m?.url?.startsWith('data:') || (m.url?.length ?? 0) < 40000
-              )
-              .slice(0, 15);
-          }
-          const prunedValue = JSON.stringify(parsed);
-          localStorage.setItem(name, prunedValue);
-          console.info('[CMS Storage] Successfully saved after pruning legacy media data URLs.');
-          return;
-        }
-      } catch {
-        // Still exceeding quota
-      }
-
-      // Attempt 3: In-memory fallback to guarantee the UI never crashes
-      memoryFallbackMap.set(name, value);
-      console.warn(
-        '[CMS Storage] Browser storage quota (5MB) reached. Changes held safely in session memory.'
-      );
-    }
-  },
-  removeItem: (name: string): void => {
-    if (typeof window === 'undefined') return;
-    try {
-      localStorage.removeItem(name);
-    } catch {
-      // ignore
-    }
-    memoryFallbackMap.delete(name);
-  },
-};
-
 let serverSyncTimer: ReturnType<typeof setTimeout> | null = null;
 
 function triggerServerSync(state: Partial<CmsState>, immediate = false): Promise<{ success: boolean; error?: string }> {
@@ -206,13 +124,7 @@ function triggerServerSync(state: Partial<CmsState>, immediate = false): Promise
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };
     try {
       const match = document.cookie.match(/(?:^|;\s*)(?:auth_token|gn_auth_token)=([^;]+)/);
-      let token = match ? decodeURIComponent(match[1]) : null;
-      if (!token) {
-        token =
-          localStorage.getItem('gn_auth_token') ||
-          localStorage.getItem('auth_token') ||
-          localStorage.getItem('token');
-      }
+      const token = match ? decodeURIComponent(match[1]) : null;
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
@@ -271,9 +183,7 @@ function triggerServerSync(state: Partial<CmsState>, immediate = false): Promise
 }
 
 const createCmsStore = () =>
-  create<CmsState>()(
-    persist(
-      (set, get) => ({
+  create<CmsState>()((set, get) => ({
       heroSlides: INITIAL_HERO_SLIDES,
       categories: INITIAL_CATEGORIES,
       products: PRODUCTS,
@@ -641,47 +551,7 @@ const createCmsStore = () =>
           console.warn('[CMS Store] Background sync with server skipped:', err);
         }
       },
-    }),
-    {
-      name: 'animestreet-cms-data',
-      version: 7,
-      migrate: (persistedState: unknown, version: number) => {
-        const state = persistedState as CmsState;
-        if (!state) return state;
-
-        if (state?.settings) {
-          if (!state.settings.brandName || state.settings.brandName === 'ANIMESTREET') {
-            state.settings.brandName = 'GOATED NATION';
-            state.settings.logoSubtext = 'GOATED NATION // TOKYO • MUMBAI';
-            state.settings.supportEmail = 'support@goatednation.in';
-            state.settings.address = 'GOATED NATION Hub, Harajuku Road, Mumbai, Maharashtra 400050';
-          }
-        }
-
-        // Version 7 Migration: Invalidate stale cached heroBottoms so browser always accepts fresh published DB state
-        if (version < 7) {
-          delete (state as Partial<CmsState>).heroBottoms;
-        }
-
-        if (!state?.heroBottoms || state.heroBottoms.length === 0) {
-          state.heroBottoms = INITIAL_HERO_BOTTOMS;
-        }
-        if (!state?.stackCards || state.stackCards.length === 0) {
-          state.stackCards = INITIAL_STACK_ITEMS;
-        }
-        if (!state?.editorialBanner) {
-          state.editorialBanner = INITIAL_EDITORIAL_BANNER;
-        }
-        if (!state?.announcement) {
-          state.announcement = INITIAL_ANNOUNCEMENT;
-        }
-
-        return state;
-      },
-      storage: createJSONStorage(() => safeStorage),
-    }
-  )
-);
+    }));
 
 type CmsStoreType = ReturnType<typeof createCmsStore>;
 
@@ -695,6 +565,16 @@ export const useCmsStore: CmsStoreType =
 globalForCms.__ANIMESTREET_CMS_STORE__ = useCmsStore;
 
 if (typeof window !== 'undefined') {
+  // Purge legacy CMS data and cached keys from localStorage so client strictly relies on Neon DB and Cloudinary
+  try {
+    localStorage.removeItem('animestreet-cms-data');
+    localStorage.removeItem('goatednation_cms_v1');
+    localStorage.removeItem('gn_auth_user');
+    localStorage.removeItem('gn_auth_token');
+  } catch {
+    // ignore
+  }
+
   (window as unknown as { __CMS_STORE__: CmsStoreType }).__CMS_STORE__ = useCmsStore;
   // Automatically sync with published server CMS state on device load
   if (window.location?.origin) {

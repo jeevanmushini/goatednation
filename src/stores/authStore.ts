@@ -45,11 +45,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     });
 
     if (typeof window !== 'undefined') {
-      if (user) {
-        localStorage.setItem('gn_auth_user', JSON.stringify(user));
-      } else {
+      try {
         localStorage.removeItem('gn_auth_user');
         localStorage.removeItem('gn_auth_token');
+      } catch {
+        // ignore
       }
     }
   },
@@ -61,23 +61,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
 
     set({ isLoading: true });
-
-    // Optimistic read from localStorage to eliminate UI flash on hard reload
-    if (typeof window !== 'undefined' && !get().initialized) {
-      try {
-        const storedUser = localStorage.getItem('gn_auth_user');
-        if (storedUser) {
-          const parsed = JSON.parse(storedUser);
-          set({
-            user: parsed,
-            isAuthenticated: true,
-            isAdmin: parsed.role === 'ADMIN',
-          });
-        }
-      } catch {
-        // Ignore JSON parse errors
-      }
-    }
 
     try {
       const res = await fetch('/api/auth/me', {
