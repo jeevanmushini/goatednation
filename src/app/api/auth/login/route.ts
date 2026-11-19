@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const authResult = authenticateCredentials(email, password);
+    const authResult = await authenticateCredentials(email, password);
     if (!authResult.success || !authResult.user) {
       return NextResponse.json(
         { success: false, error: authResult.error || 'Authentication failed.' },

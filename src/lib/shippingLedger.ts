@@ -69,9 +69,8 @@ export function recordShipmentEvent(eventData: {
     details: eventData.details,
   });
 
-  ledger[key] = existing;
-  if (existing.awbCode) ledger[existing.awbCode] = existing;
-  if (existing.orderId) ledger[existing.orderId] = existing;
+  const canonicalKey = existing.orderId || existing.awbCode || existing.shipmentId || key;
+  ledger[canonicalKey] = existing;
 
   writeLedger(ledger);
   return existing;
@@ -79,5 +78,9 @@ export function recordShipmentEvent(eventData: {
 
 export function getShipmentRecord(key: string): ShipmentRecord | null {
   const ledger = readLedger();
-  return ledger[key] || null;
+  if (ledger[key]) return ledger[key];
+  const found = Object.values(ledger).find(
+    (r) => r.orderId === key || r.awbCode === key || r.shipmentId === key
+  );
+  return found || null;
 }

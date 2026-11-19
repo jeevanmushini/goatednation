@@ -4,17 +4,28 @@ import type { NextRequest } from 'next/server';
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Helper to attach standard security headers (PROD-01)
+  const attachSecurityHeaders = (res: NextResponse) => {
+    res.headers.set('X-Content-Type-Options', 'nosniff');
+    res.headers.set('X-Frame-Options', 'SAMEORIGIN');
+    res.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+    res.headers.set(
+      'Permissions-Policy',
+      'camera=(), microphone=(), geolocation=()'
+    );
+    return res;
+  };
+
   // 1. Admin route protection at the edge
   if (pathname.startsWith('/admin')) {
     const token =
       request.cookies.get('auth_token')?.value ||
       request.cookies.get('gn_auth_token')?.value;
 
-    // In production, enforce edge cookie redirect; in dev, allow access so admin 1-click login renders
     if (!token && process.env.NODE_ENV === 'production') {
       const loginUrl = new URL('/login', request.url);
       loginUrl.searchParams.set('redirect', pathname);
-      return NextResponse.redirect(loginUrl);
+      return attachSecurityHeaders(NextResponse.redirect(loginUrl));
     }
   }
 
@@ -39,7 +50,7 @@ export function middleware(request: NextRequest) {
         'Content-Type, Authorization, x-razorpay-signature, x-shiprocket-hmac'
       );
       response.headers.set('Access-Control-Allow-Credentials', 'true');
-      return response;
+      return attachSecurityHeaders(response);
     }
 
     const response = NextResponse.next();
@@ -47,10 +58,10 @@ export function middleware(request: NextRequest) {
       response.headers.set('Access-Control-Allow-Origin', origin);
       response.headers.set('Access-Control-Allow-Credentials', 'true');
     }
-    return response;
+    return attachSecurityHeaders(response);
   }
 
-  return NextResponse.next();
+  return attachSecurityHeaders(NextResponse.next());
 }
 
 export const config = {

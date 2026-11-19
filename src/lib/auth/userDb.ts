@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { User, UserRecord, UserRole, AuthProvider } from '../../types/auth';
 import { generateSalt, hashPassword, verifyPassword } from './jwt';
-import { getUsersFromNeon, upsertUserInNeon } from '../db/neon';
+import { getUsersFromNeon, getSingleUserByEmailFromNeon, upsertUserInNeon } from '../db/neon';
 
 const USERS_FILE = path.join(process.cwd(), '.users_data.json');
 
@@ -40,37 +40,8 @@ const SEED_USERS: UserRecord[] = [
 ];
 
 let cachedUsers: UserRecord[] | null = null;
-let neonSyncAttempted = false;
 
-// Asynchronously sync local cache with Neon Postgres
-async function syncWithNeon() {
-  if (neonSyncAttempted) return;
-  neonSyncAttempted = true;
-
-  try {
-    const neonUsers = await getUsersFromNeon<UserRecord>();
-    if (neonUsers && neonUsers.length > 0) {
-      // Merge neon users with cached users
-      const map = new Map<string, UserRecord>();
-      (cachedUsers || []).forEach((u) => map.set(u.email.toLowerCase(), u));
-      neonUsers.forEach((u) => map.set(u.email.toLowerCase(), u));
-      cachedUsers = Array.from(map.values());
-      // Update local file backup
-      try {
-        fs.writeFileSync(USERS_FILE, JSON.stringify(cachedUsers, null, 2), 'utf-8');
-      } catch {}
-    } else if (cachedUsers && cachedUsers.length > 0) {
-      // Seed Neon with existing users
-      for (const user of cachedUsers) {
-        await upsertUserInNeon(user);
-      }
-    }
-  } catch (err) {
-    console.warn('[UserDb] Background sync with Neon failed:', err);
-  }
-}
-
-function loadUsers(): UserRecord[] {
+function loadUsersFromLocal(): UserRecord[] {
   if (cachedUsers && cachedUsers.length > 0) {
     return cachedUsers;
   }
@@ -81,34 +52,27 @@ function loadUsers(): UserRecord[] {
       const parsed = JSON.parse(data);
       if (Array.isArray(parsed) && parsed.length > 0) {
         cachedUsers = parsed;
-        syncWithNeon().catch(() => {});
         return cachedUsers;
       }
     }
   } catch (err) {
-    console.error('[UserDb] Error loading users file:', err);
+    console.warn('[UserDb] Local users file read warning:', err);
   }
 
-  // Fallback to seed users
   cachedUsers = [...SEED_USERS];
-  saveUsers(cachedUsers);
-  syncWithNeon().catch(() => {});
   return cachedUsers;
 }
 
-function saveUsers(users: UserRecord[]): void {
+function saveLocalUsersBackup(users: UserRecord[]): void {
+  cachedUsers = users;
+  if (process.env.NODE_ENV === 'production') {
+    // In serverless environments, file writing may be read-only, Neon is primary
+    return;
+  }
   try {
-    cachedUsers = users;
     fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), 'utf-8');
   } catch (err) {
-    console.error('[UserDb] Error saving users file:', err);
-  }
-
-  // Persist each user to Neon Postgres asynchronously
-  for (const user of users) {
-    upsertUserInNeon(user).catch((err) => {
-      console.warn(`[UserDb] Failed to sync user ${user.email} to Neon:`, err);
-    });
+    console.warn('[UserDb] Local users backup write skipped/failed:', err);
   }
 }
 
@@ -124,31 +88,67 @@ export function toPublicUser(record: UserRecord): User {
   };
 }
 
-export function findUserByEmail(email: string): UserRecord | null {
-  const users = loadUsers();
+/**
+ * Finds a user by email. Checks memory/local cache first, then falls back to Neon Postgres.
+ */
+export async function findUserByEmail(email: string): Promise<UserRecord | null> {
   const normalized = email.toLowerCase().trim();
-  const found = users.find((u) => u.email.toLowerCase().trim() === normalized);
-  return found || null;
+  const localList = loadUsersFromLocal();
+  const cached = localList.find((u) => u.email.toLowerCase().trim() === normalized);
+  if (cached) return cached;
+
+  // Authoritative Neon cloud query on cache miss
+  try {
+    const neonUser = await getSingleUserByEmailFromNeon<UserRecord>(normalized);
+    if (neonUser) {
+      if (!cachedUsers) cachedUsers = [];
+      const idx = cachedUsers.findIndex((u) => u.email.toLowerCase().trim() === normalized);
+      if (idx >= 0) cachedUsers[idx] = neonUser;
+      else cachedUsers.push(neonUser);
+      return neonUser;
+    }
+  } catch (err) {
+    console.warn('[UserDb] Failed to fetch user from Neon by email:', err);
+  }
+
+  return null;
 }
 
-export function findUserById(id: string): UserRecord | null {
-  const users = loadUsers();
-  const found = users.find((u) => u.id === id);
-  return found || null;
+/**
+ * Finds a user by ID. Checks memory/local cache first, then all Neon records.
+ */
+export async function findUserById(id: string): Promise<UserRecord | null> {
+  const localList = loadUsersFromLocal();
+  const cached = localList.find((u) => u.id === id);
+  if (cached) return cached;
+
+  try {
+    const neonUsers = await getUsersFromNeon<UserRecord>();
+    if (neonUsers && neonUsers.length > 0) {
+      cachedUsers = neonUsers;
+      const found = neonUsers.find((u) => u.id === id);
+      if (found) return found;
+    }
+  } catch (err) {
+    console.warn('[UserDb] Failed to fetch users from Neon by ID:', err);
+  }
+
+  return null;
 }
 
-export function createUser(params: {
+/**
+ * Registers a new user. Persists to memory/disk and directly upserts ONLY this single user to Neon.
+ */
+export async function createUser(params: {
   name: string;
   email: string;
   password?: string;
   role?: UserRole;
   avatar?: string;
   provider?: AuthProvider;
-}): User {
-  const users = loadUsers();
+}): Promise<User> {
   const normalizedEmail = params.email.toLowerCase().trim();
-
-  const existing = users.find((u) => u.email.toLowerCase().trim() === normalizedEmail);
+  const existing = await findUserByEmail(normalizedEmail);
   if (existing) {
     throw new Error('An account with this email already exists.');
   }
@@ -168,17 +168,26 @@ export function createUser(params: {
     createdAt: new Date().toISOString(),
   };
 
+  const users = loadUsersFromLocal();
   users.push(newUser);
-  saveUsers(users);
+  saveLocalUsersBackup(users);
+
+  // Sync only the new user to Neon (no N-loop)
+  upsertUserInNeon(newUser).catch((err) => {
+    console.warn('[UserDb] Failed to sync new user to Neon:', err);
+  });
 
   return toPublicUser(newUser);
 }
 
-export function authenticateCredentials(
+/**
+ * Authenticates user credentials with password verification.
+ */
+export async function authenticateCredentials(
   email: string,
   password: string
-): { success: boolean; user?: User; error?: string } {
-  const user = findUserByEmail(email);
+): Promise<{ success: boolean; user?: User; error?: string }> {
+  const user = await findUserByEmail(email);
   if (!user) {
     return { success: false, error: 'Invalid email or password.' };
   }
@@ -198,28 +207,31 @@ export function authenticateCredentials(
   return { success: true, user: toPublicUser(user) };
 }
 
-export function findOrCreateOAuthUser(params: {
+/**
+ * Finds or registers an OAuth user. Syncs only this single user to Neon.
+ */
+export async function findOrCreateOAuthUser(params: {
   email: string;
   name: string;
   avatar?: string;
   provider: 'google';
   defaultRole?: UserRole;
-}): User {
-  const users = loadUsers();
+}): Promise<User> {
   const normalizedEmail = params.email.toLowerCase().trim();
-
-  const existing = users.find((u) => u.email.toLowerCase().trim() === normalizedEmail);
+  const existing = await findUserByEmail(normalizedEmail);
 
   if (existing) {
-    // If user already exists, update avatar or provider details if needed
     if (params.avatar && (!existing.avatar || existing.avatar.includes('dicebear'))) {
       existing.avatar = params.avatar;
-      saveUsers(users);
+      const users = loadUsersFromLocal();
+      saveLocalUsersBackup(users);
+      upsertUserInNeon(existing).catch((err) => {
+        console.warn('[UserDb] Failed to update OAuth user in Neon:', err);
+      });
     }
     return toPublicUser(existing);
   }
 
-  // Create new OAuth user
   const newUser: UserRecord = {
     id: `usr_oauth_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
     name: params.name.trim(),
@@ -230,8 +242,14 @@ export function findOrCreateOAuthUser(params: {
     createdAt: new Date().toISOString(),
   };
 
+  const users = loadUsersFromLocal();
   users.push(newUser);
-  saveUsers(users);
+  saveLocalUsersBackup(users);
+
+  // Sync only the new user to Neon
+  upsertUserInNeon(newUser).catch((err) => {
+    console.warn('[UserDb] Failed to sync OAuth user to Neon:', err);
+  });
 
   return toPublicUser(newUser);
 }

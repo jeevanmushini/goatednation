@@ -47,7 +47,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     if (typeof window !== 'undefined') {
       if (user) {
         localStorage.setItem('gn_auth_user', JSON.stringify(user));
-        if (token) localStorage.setItem('gn_auth_token', token);
       } else {
         localStorage.removeItem('gn_auth_user');
         localStorage.removeItem('gn_auth_token');
@@ -67,12 +66,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     if (typeof window !== 'undefined' && !get().initialized) {
       try {
         const storedUser = localStorage.getItem('gn_auth_user');
-        const storedToken = localStorage.getItem('gn_auth_token');
         if (storedUser) {
           const parsed = JSON.parse(storedUser);
           set({
             user: parsed,
-            token: storedToken,
             isAuthenticated: true,
             isAdmin: parsed.role === 'ADMIN',
           });

@@ -30,9 +30,12 @@
     --color-emerald-600: oklch(59.6% 0.145 163.225);
     --color-emerald-700: oklch(50.8% 0.118 165.612);
     --color-gray-300: oklch(87.2% 0.01 258.338);
+    --color-zinc-50: oklch(98.5% 0 none);
     --color-zinc-100: oklch(96.7% 0.001 286.375);
     --color-zinc-200: oklch(92% 0.004 286.32);
     --color-zinc-500: oklch(55.2% 0.016 285.938);
+    --color-zinc-800: oklch(27.4% 0.006 286.033);
+    --color-neutral-700: oklch(37.1% 0 none);
     --color-neutral-800: oklch(26.9% 0 none);
     --color-black: #000;
     --color-white: #fff;
@@ -634,6 +637,9 @@
   .h-full {
     height: 100%;
   }
+  .max-h-32 {
+    max-height: calc(var(--spacing) * 32);
+  }
   .max-h-48 {
     max-height: calc(var(--spacing) * 48);
   }
@@ -645,6 +651,9 @@
   }
   .max-h-\[600px\] {
     max-height: 600px;
+  }
+  .min-h-\[400px\] {
+    min-height: 400px;
   }
   .min-h-\[520px\] {
     min-height: 520px;
@@ -846,6 +855,9 @@
   }
   .resize-none {
     resize: none;
+  }
+  .scroll-mt-20 {
+    scroll-margin-top: calc(var(--spacing) * 20);
   }
   .grid-cols-1 {
     grid-template-columns: repeat(1, minmax(0, 1fr));
@@ -1244,6 +1256,9 @@
   .border-emerald-200 {
     border-color: var(--color-emerald-200);
   }
+  .border-neutral-700 {
+    border-color: var(--color-neutral-700);
+  }
   .border-orange-200 {
     border-color: var(--color-orange-200);
   }
@@ -1261,6 +1276,9 @@
   }
   .border-transparent {
     border-color: transparent;
+  }
+  .border-white {
+    border-color: var(--color-white);
   }
   .border-white\/70 {
     border-color: color-mix(in srgb, #fff 70%, transparent);
@@ -1830,6 +1848,10 @@
     font-size: var(--text-3xl);
     line-height: var(--tw-leading, var(--text-3xl--line-height));
   }
+  .text-4xl {
+    font-size: var(--text-4xl);
+    line-height: var(--tw-leading, var(--text-4xl--line-height));
+  }
   .text-base {
     font-size: var(--text-base);
     line-height: var(--tw-leading, var(--text-base--line-height));
@@ -2365,9 +2387,6 @@
       --tw-scale-z: 105%;
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-    .hover\:scale-\[1\.01\]:hover {
-      scale: 1.01;
-    }
     .hover\:border-\[\#333333\]:hover {
       border-color: #333333;
     }
@@ -2470,8 +2489,14 @@
     .hover\:bg-white:hover {
       background-color: var(--color-white);
     }
+    .hover\:bg-zinc-50:hover {
+      background-color: var(--color-zinc-50);
+    }
     .hover\:bg-zinc-100:hover {
       background-color: var(--color-zinc-100);
+    }
+    .hover\:bg-zinc-800:hover {
+      background-color: var(--color-zinc-800);
     }
     .hover\:text-\[\#8A1616\]:hover {
       color: #8A1616;
@@ -2796,9 +2821,6 @@
     }
     .md\:mb-0 {
       margin-bottom: 0px;
-    }
-    .md\:block {
-      display: block;
     }
     .md\:flex {
       display: flex;

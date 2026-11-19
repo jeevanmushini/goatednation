@@ -91,7 +91,7 @@ export async function GET(req: NextRequest) {
     }
 
     // 3. Find or create user in user database
-    const user = findOrCreateOAuthUser({
+    const user = await findOrCreateOAuthUser({
       email,
       name,
       avatar,

@@ -15,6 +15,7 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { useCartStore } from '../../stores/cartStore';
+import { useAuthStore } from '../../stores/authStore';
 import { ServiceabilityResponse } from '../../types/shipping';
 
 const loadRazorpayScript = (): Promise<boolean> => {
@@ -37,21 +38,30 @@ interface CheckoutModalProps {
 
 export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
   const { items, getSubtotal, getDiscount, getShipping, getTotal, clearCart } = useCartStore();
+  const { user } = useAuthStore();
 
   const [step, setStep] = useState<'details' | 'payment' | 'success'>('details');
   const [loading, setLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
 
-  // Form states
-  const [name, setName] = useState('Arjun Verma');
-  const [email, setEmail] = useState('arjun.streetwear@example.com');
-  const [phone, setPhone] = useState('9876543210');
-  const [address, setAddress] = useState('Flat 402, Neo Heights, Harajuku Road');
-  const [city, setCity] = useState('Mumbai');
-  const [pincode, setPincode] = useState('400050');
-  const [state, setState] = useState('Maharashtra');
+  // Form states - real empty inputs or user profile (no hardcoded demo credentials)
+  const [name, setName] = useState(user?.name || '');
+  const [email, setEmail] = useState(user?.email || '');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
+  const [city, setCity] = useState('');
+  const [pincode, setPincode] = useState('');
+  const [state, setState] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'upi' | 'card' | 'cod' | 'netbanking'>('upi');
-  const [upiId, setUpiId] = useState('arjun@okhdfcbank');
+  const [upiId, setUpiId] = useState('');
+
+  // Pre-fill user profile if logged in or changed
+  useEffect(() => {
+    if (user) {
+      if (user.name) setName((prev) => prev || user.name);
+      if (user.email) setEmail((prev) => prev || user.email);
+    }
+  }, [user]);
 
   // Completed order states from APIs
   const [orderId, setOrderId] = useState('');
@@ -75,7 +85,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
             if (data.state) setState(data.state);
           }
         })
-        .catch(() => {});
+        .catch(() => { });
     }
   }, [pincode]);
 
@@ -424,11 +434,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
               <div className="space-y-2.5">
                 <label
                   onClick={() => setPaymentMethod('upi')}
-                  className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${
-                    paymentMethod === 'upi'
-                      ? 'bg-[#181818] border-[#E8FF00]'
-                      : 'bg-[#141414] border-[#222222] hover:border-[#333333]'
-                  }`}
+                  className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${paymentMethod === 'upi'
+                    ? 'bg-[#181818] border-[#E8FF00]'
+                    : 'bg-[#141414] border-[#222222] hover:border-[#333333]'
+                    }`}
                 >
                   <div className="flex items-center space-x-3">
                     <Smartphone className="w-5 h-5 text-[#E8FF00]" />
@@ -457,11 +466,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
 
                 <label
                   onClick={() => setPaymentMethod('card')}
-                  className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${
-                    paymentMethod === 'card'
-                      ? 'bg-[#181818] border-[#E8FF00]'
-                      : 'bg-[#141414] border-[#222222] hover:border-[#333333]'
-                  }`}
+                  className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${paymentMethod === 'card'
+                    ? 'bg-[#181818] border-[#E8FF00]'
+                    : 'bg-[#141414] border-[#222222] hover:border-[#333333]'
+                    }`}
                 >
                   <div className="flex items-center space-x-3">
                     <CreditCard className="w-5 h-5 text-[#00E5FF]" />
@@ -474,11 +482,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
 
                 <label
                   onClick={() => setPaymentMethod('cod')}
-                  className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${
-                    paymentMethod === 'cod'
-                      ? 'bg-[#181818] border-[#E8FF00]'
-                      : 'bg-[#141414] border-[#222222] hover:border-[#333333]'
-                  }`}
+                  className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${paymentMethod === 'cod'
+                    ? 'bg-[#181818] border-[#E8FF00]'
+                    : 'bg-[#141414] border-[#222222] hover:border-[#333333]'
+                    }`}
                 >
                   <div className="flex items-center space-x-3">
                     <Banknote className="w-5 h-5 text-[#22C55E]" />
@@ -491,11 +498,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
 
                 <label
                   onClick={() => setPaymentMethod('netbanking')}
-                  className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${
-                    paymentMethod === 'netbanking'
-                      ? 'bg-[#181818] border-[#E8FF00]'
-                      : 'bg-[#141414] border-[#222222] hover:border-[#333333]'
-                  }`}
+                  className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${paymentMethod === 'netbanking'
+                    ? 'bg-[#181818] border-[#E8FF00]'
+                    : 'bg-[#141414] border-[#222222] hover:border-[#333333]'
+                    }`}
                 >
                   <div className="flex items-center space-x-3">
                     <Building className="w-5 h-5 text-[#A0A0A0]" />
@@ -554,8 +560,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
                   {loading
                     ? 'Processing Order...'
                     : paymentMethod === 'cod'
-                    ? `Confirm Order (Cash on Delivery)`
-                    : `Place Order • ₹${getTotal().toLocaleString('en-IN')}`}
+                      ? `Confirm Order (Cash on Delivery)`
+                      : `Place Order • ₹${getTotal().toLocaleString('en-IN')}`}
                 </button>
               </div>
             </div>

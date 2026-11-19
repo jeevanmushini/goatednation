@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
+import { saveOrderToNeon } from '../../../../lib/db/neon';
 
 export async function POST(req: NextRequest) {
   try {
@@ -7,7 +8,15 @@ export async function POST(req: NextRequest) {
     const signature = req.headers.get('x-razorpay-signature');
     const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
 
-    if (webhookSecret && signature) {
+    // Enforce mandatory signature validation (SEC-06)
+    if (webhookSecret) {
+      if (!signature) {
+        return NextResponse.json(
+          { success: false, error: 'Missing x-razorpay-signature header' },
+          { status: 401 }
+        );
+      }
+
       const expectedSignature = crypto
         .createHmac('sha256', webhookSecret)
         .update(rawBody)
@@ -21,14 +30,39 @@ export async function POST(req: NextRequest) {
           { status: 400 }
         );
       }
+    } else if (process.env.NODE_ENV === 'production') {
+      return NextResponse.json(
+        { success: false, error: 'Webhook secret not configured on production' },
+        { status: 500 }
+      );
     }
 
     const payload = JSON.parse(rawBody);
     console.log(`[Razorpay Webhook] Received event: ${payload.event}`);
 
-    // Handle payment.captured, order.paid, payment.failed, etc.
+    // Handle payment.captured and order.paid (BUG-04 & PROD-04)
     if (payload.event === 'payment.captured' || payload.event === 'order.paid') {
-      // Logic for updating internal order status, notifying customer, etc.
+      const paymentEntity = payload.payload?.payment?.entity;
+      const orderId = paymentEntity?.order_id || `ord_${Date.now()}`;
+      const paymentId = paymentEntity?.id;
+      const email = paymentEntity?.email || '';
+      const amount = paymentEntity?.amount ? paymentEntity.amount / 100 : 0;
+
+      console.log(`[Razorpay Webhook] Payment verified: orderId=${orderId}, paymentId=${paymentId}, email=${email}`);
+
+      // Persist order details to Neon Postgres database
+      await saveOrderToNeon({
+        id: orderId,
+        userEmail: email,
+        razorpayOrderId: paymentEntity?.order_id,
+        razorpayPaymentId: paymentId,
+        status: 'PAID',
+        items: paymentEntity?.notes?.items ? JSON.parse(paymentEntity.notes.items) : [],
+        shippingAddress: paymentEntity?.notes?.address ? JSON.parse(paymentEntity.notes.address) : {},
+        totalAmount: amount,
+      }).catch((err) => {
+        console.warn('[Razorpay Webhook] Failed to record order in Neon:', err);
+      });
     }
 
     return NextResponse.json({ status: 'ok', received: true });
@@ -40,4 +74,3 @@ export async function POST(req: NextRequest) {
     );
   }
 }
-

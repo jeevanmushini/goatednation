@@ -1,4 +1,5 @@
 import { neon, NeonQueryFunction } from '@neondatabase/serverless';
+import { UserRole } from '../../types/auth';
 
 let cachedSql: NeonQueryFunction<false, false> | null = null;
 let schemaInitialized = false;
@@ -21,7 +22,7 @@ export function getDb(): NeonQueryFunction<false, false> | null {
 
 /**
  * Ensures required database tables exist in Neon Postgres.
- * Creates app_cms_state, app_users, and app_shipping_orders if they do not exist.
+ * Creates app_cms_state, app_users, app_shipping_orders, app_orders, and app_settings if they do not exist.
  */
 export async function initDatabaseSchema(): Promise<boolean> {
   const sql = getDb();
@@ -62,8 +63,33 @@ export async function initDatabaseSchema(): Promise<boolean> {
       );
     `;
 
+    // 4. Production Orders Table (PROD-04)
+    await sql`
+      CREATE TABLE IF NOT EXISTS app_orders (
+        id TEXT PRIMARY KEY,
+        user_email TEXT,
+        razorpay_order_id TEXT,
+        razorpay_payment_id TEXT,
+        shiprocket_order_id TEXT,
+        awb_code TEXT,
+        status TEXT DEFAULT 'PENDING',
+        items JSONB NOT NULL,
+        shipping_address JSONB,
+        total_amount INTEGER,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+    `;
+
+    // 5. System & Integration Settings Table (BUG-07)
+    await sql`
+      CREATE TABLE IF NOT EXISTS app_settings (
+        key TEXT PRIMARY KEY,
+        value TEXT NOT NULL,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+    `;
+
     schemaInitialized = true;
-    console.log('[Neon Postgres] Schema successfully verified and initialized.');
     return true;
   } catch (error) {
     console.error('[Neon Postgres] Schema initialization error:', error);
@@ -79,7 +105,7 @@ export async function getCmsDataFromNeon<T = Record<string, unknown>>(): Promise
   if (!sql) return null;
 
   try {
-    await initDatabaseSchema();
+    if (!schemaInitialized) await initDatabaseSchema();
     const rows = await sql`
       SELECT data FROM app_cms_state WHERE key = 'published_cms' LIMIT 1;
     `;
@@ -101,7 +127,7 @@ export async function saveCmsDataToNeon(data: unknown): Promise<boolean> {
   if (!sql) return false;
 
   try {
-    await initDatabaseSchema();
+    if (!schemaInitialized) await initDatabaseSchema();
     const jsonString = JSON.stringify(data);
     await sql`
       INSERT INTO app_cms_state (key, data, updated_at)
@@ -124,7 +150,7 @@ export async function getUsersFromNeon<T = unknown>(): Promise<T[]> {
   if (!sql) return [];
 
   try {
-    await initDatabaseSchema();
+    if (!schemaInitialized) await initDatabaseSchema();
     const rows = await sql`
       SELECT id, name, email, role, avatar, provider, salt, password_hash as "passwordHash", created_at as "createdAt"
       FROM app_users
@@ -138,13 +164,38 @@ export async function getUsersFromNeon<T = unknown>(): Promise<T[]> {
 }
 
 /**
+ * Fetches a single user by email from Neon Postgres.
+ */
+export async function getSingleUserByEmailFromNeon<T = unknown>(email: string): Promise<T | null> {
+  const sql = getDb();
+  if (!sql) return null;
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+    const rows = await sql`
+      SELECT id, name, email, role, avatar, provider, salt, password_hash as "passwordHash", created_at as "createdAt"
+      FROM app_users
+      WHERE LOWER(email) = ${email.toLowerCase().trim()}
+      LIMIT 1;
+    `;
+    if (rows && rows.length > 0) {
+      return rows[0] as unknown as T;
+    }
+    return null;
+  } catch (error) {
+    console.error('[Neon Postgres] Error reading user by email:', error);
+    return null;
+  }
+}
+
+/**
  * Inserts or updates a user in Neon Postgres.
  */
 export async function upsertUserInNeon(user: {
   id: string;
   name: string;
   email: string;
-  role: string;
+  role: UserRole;
   avatar?: string;
   provider?: string;
   salt?: string;
@@ -155,7 +206,7 @@ export async function upsertUserInNeon(user: {
   if (!sql) return false;
 
   try {
-    await initDatabaseSchema();
+    if (!schemaInitialized) await initDatabaseSchema();
     await sql`
       INSERT INTO app_users (id, name, email, role, avatar, provider, salt, password_hash, created_at)
       VALUES (
@@ -181,6 +232,104 @@ export async function upsertUserInNeon(user: {
     return true;
   } catch (error) {
     console.error('[Neon Postgres] Error upserting user:', error);
+    return false;
+  }
+}
+
+/**
+ * Saves or updates an order in Neon Postgres (PROD-04).
+ */
+export async function saveOrderToNeon(order: {
+  id: string;
+  userEmail?: string;
+  razorpayOrderId?: string;
+  razorpayPaymentId?: string;
+  shiprocketOrderId?: string;
+  awbCode?: string;
+  status?: string;
+  items: unknown;
+  shippingAddress?: unknown;
+  totalAmount?: number;
+}): Promise<boolean> {
+  const sql = getDb();
+  if (!sql) return false;
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+    const itemsJson = JSON.stringify(order.items || []);
+    const addressJson = JSON.stringify(order.shippingAddress || {});
+    await sql`
+      INSERT INTO app_orders (
+        id, user_email, razorpay_order_id, razorpay_payment_id,
+        shiprocket_order_id, awb_code, status, items, shipping_address, total_amount, created_at
+      )
+      VALUES (
+        ${order.id},
+        ${order.userEmail || null},
+        ${order.razorpayOrderId || null},
+        ${order.razorpayPaymentId || null},
+        ${order.shiprocketOrderId || null},
+        ${order.awbCode || null},
+        ${order.status || 'PENDING'},
+        ${itemsJson}::jsonb,
+        ${addressJson}::jsonb,
+        ${order.totalAmount || 0},
+        CURRENT_TIMESTAMP
+      )
+      ON CONFLICT (id)
+      DO UPDATE SET
+        razorpay_payment_id = COALESCE(EXCLUDED.razorpay_payment_id, app_orders.razorpay_payment_id),
+        shiprocket_order_id = COALESCE(EXCLUDED.shiprocket_order_id, app_orders.shiprocket_order_id),
+        awb_code = COALESCE(EXCLUDED.awb_code, app_orders.awb_code),
+        status = EXCLUDED.status;
+    `;
+    return true;
+  } catch (error) {
+    console.error('[Neon Postgres] Error saving order:', error);
+    return false;
+  }
+}
+
+/**
+ * Retrieves a setting value from Neon Postgres app_settings (BUG-07).
+ */
+export async function getSettingFromNeon(key: string): Promise<string | null> {
+  const sql = getDb();
+  if (!sql) return null;
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+    const rows = await sql`
+      SELECT value FROM app_settings WHERE key = ${key} LIMIT 1;
+    `;
+    if (rows && rows.length > 0) {
+      return rows[0].value as string;
+    }
+    return null;
+  } catch (error) {
+    console.error(`[Neon Postgres] Error reading setting ${key}:`, error);
+    return null;
+  }
+}
+
+/**
+ * Persists a setting value to Neon Postgres app_settings (BUG-07).
+ */
+export async function saveSettingToNeon(key: string, value: string): Promise<boolean> {
+  const sql = getDb();
+  if (!sql) return false;
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+    await sql`
+      INSERT INTO app_settings (key, value, updated_at)
+      VALUES (${key}, ${value}, CURRENT_TIMESTAMP)
+      ON CONFLICT (key)
+      DO UPDATE SET value = EXCLUDED.value, updated_at = CURRENT_TIMESTAMP;
+    `;
+    return true;
+  } catch (error) {
+    console.error(`[Neon Postgres] Error saving setting ${key}:`, error);
     return false;
   }
 }

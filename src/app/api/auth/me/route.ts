@@ -2,15 +2,24 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyJwt } from '../../../../lib/auth/jwt';
 import { findUserById } from '../../../../lib/auth/userDb';
 
-// Simple in-memory rate limiter: max 120 requests per minute per IP
+// Simple in-memory rate limiter with periodic pruning to prevent memory leaks
 const rateLimitMap = new Map<string, { count: number; reset: number }>();
 
 function isRateLimited(ip: string, maxReq = 120, windowMs = 60_000): boolean {
   const now = Date.now();
-  const entry = rateLimitMap.get(ip) ?? { count: 0, reset: now + windowMs };
-  if (now > entry.reset) {
-    entry.count = 0;
-    entry.reset = now + windowMs;
+  // Periodic cleanup if map grows
+  if (rateLimitMap.size > 500) {
+    for (const [key, val] of rateLimitMap.entries()) {
+      if (now > val.reset) {
+        rateLimitMap.delete(key);
+      }
+    }
+  }
+
+  const entry = rateLimitMap.get(ip);
+  if (!entry || now > entry.reset) {
+    rateLimitMap.set(ip, { count: 1, reset: now + windowMs });
+    return false;
   }
   entry.count++;
   rateLimitMap.set(ip, entry);
@@ -60,7 +69,7 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    const userRecord = findUserById(payload.id);
+    const userRecord = await findUserById(payload.id);
     const user = userRecord
       ? {
           id: userRecord.id,
@@ -76,7 +85,7 @@ export async function GET(req: NextRequest) {
           name: payload.name,
           email: payload.email,
           role: payload.role,
-          avatar: payload.avatar,
+          avatar: payload.avatar || '',
           provider: payload.provider,
           createdAt: new Date().toISOString(),
         };

@@ -30,8 +30,11 @@ export async function GET(
   const customCallback = process.env.GOOGLE_CALLBACK_URL?.trim() || process.env.GOOGLE_REDIRECT_URI?.trim();
   const redirectUri = customCallback || `${siteUrl}/api/auth/oauth/callback`;
 
-  // Encode state securely to preserve role, redirect path, and exact redirectUri used
-  const stateObj = { provider: 'google', role: targetRole, redirect: redirectTo, redirectUri };
+  // Only allow safe relative paths
+  const safeRedirect = redirectTo.startsWith('/') && !redirectTo.startsWith('//') ? redirectTo : '/';
+
+  // Encode state securely to preserve role and safe redirect path
+  const stateObj = { provider: 'google', role: targetRole, redirect: safeRedirect };
   const state = Buffer.from(JSON.stringify(stateObj)).toString('base64url');
 
   const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(

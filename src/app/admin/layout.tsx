@@ -1,7 +1,5 @@
 'use client';
 
-export const dynamic = 'force-dynamic';
-
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -34,13 +32,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const router = useRouter();
   const { isDraft, publishChanges, resetToDefaults } = useCmsStore();
-  const { user, isAuthenticated, isAdmin, isLoading, checkAuth, login, logout } = useAuthStore();
+  const { user, isAuthenticated, isAdmin, isLoading, checkAuth, logout } = useAuthStore();
 
   const [publishedToast, setPublishedToast] = useState(false);
   const [resetSuccessToast, setResetSuccessToast] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-  const [quickLoginLoading, setQuickLoginLoading] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -75,15 +72,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     setShowResetModal(false);
     setResetSuccessToast(true);
     setTimeout(() => setResetSuccessToast(false), 3500);
-  };
-
-  const handleQuickAdminLogin = async () => {
-    setQuickLoginLoading(true);
-    try {
-      await login('admin@goatednation.com', 'Admin@123');
-    } finally {
-      setQuickLoginLoading(false);
-    }
   };
 
   // 1. Loading State
@@ -142,21 +130,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
           {/* Action Buttons */}
           <div className="space-y-3">
-            {/* Gated demo login for non-production environments */}
-            {process.env.NODE_ENV !== 'production' && (
-              <button
-                onClick={handleQuickAdminLogin}
-                disabled={quickLoginLoading}
-                className="w-full py-3 px-4 rounded-lg bg-black hover:bg-[#222222] text-white text-xs font-mono uppercase tracking-widest font-bold flex items-center justify-center space-x-2 transition-all shadow-sm hover:scale-[1.01] active:scale-95 disabled:opacity-50"
-              >
-                <Shield className="w-4 h-4 text-[#FF4D00]" />
-                <span>
-                  {quickLoginLoading ? 'AUTHENTICATING ADMIN...' : '1-CLICK ADMIN DEV LOGIN'}
-                </span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            )}
-
             <Link
               href="/login?redirect=/admin"
               className="w-full py-2.5 px-4 rounded-lg border border-[#D0D0D0] hover:border-black bg-white hover:bg-[#FAFAFA] text-xs font-mono uppercase tracking-widest font-bold text-black flex items-center justify-center space-x-2 transition-colors"

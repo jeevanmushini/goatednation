@@ -16,12 +16,13 @@ import {
   INITIAL_ANNOUNCEMENT,
 } from './initialCmsData';
 import { PRODUCTS } from '../../data/products';
+import { Product } from '../../types/product';
 import { getCmsDataFromNeon, saveCmsDataToNeon } from '../db/neon';
 
 export interface PublishedCmsData {
   heroSlides: typeof INITIAL_HERO_SLIDES;
   categories: typeof INITIAL_CATEGORIES;
-  products: typeof PRODUCTS;
+  products: Product[];
   banners: typeof INITIAL_BANNERS;
   brandStory: typeof INITIAL_BRAND_STORY;
   newsletter: typeof INITIAL_NEWSLETTER;
@@ -132,7 +133,9 @@ export async function getPublishedCmsData(): Promise<{ data: PublishedCmsData; s
   if (kvData) {
     const sanitized = sanitizePublishedCmsData({ ...DEFAULT_STATE, ...kvData });
     // Seed Neon Postgres asynchronously if it was empty
-    saveCmsDataToNeon(sanitized).catch(() => {});
+    saveCmsDataToNeon(sanitized).catch((err) => {
+      console.warn('[CMS Server] Background Neon Postgres seed failed:', err);
+    });
     return { data: sanitized, source: 'kv' };
   }
 
@@ -144,7 +147,9 @@ export async function getPublishedCmsData(): Promise<{ data: PublishedCmsData; s
       if (parsed && typeof parsed === 'object') {
         const sanitized = sanitizePublishedCmsData({ ...DEFAULT_STATE, ...parsed });
         // Seed Neon Postgres asynchronously so cloud database is up-to-date
-        saveCmsDataToNeon(sanitized).catch(() => {});
+        saveCmsDataToNeon(sanitized).catch((err) => {
+          console.warn('[CMS Server] Background Neon Postgres sync failed:', err);
+        });
         return { data: sanitized, source: 'file' };
       }
     } catch (err) {
@@ -215,9 +220,8 @@ export async function savePublishedCmsData(data: Partial<PublishedCmsData>): Pro
       if (attempt === 2) {
         console.warn('[CMS Server] Failed to write CMS storage file after 3 attempts:', err);
       }
-      // Brief synchronous wait before retry
-      const start = Date.now();
-      while (Date.now() - start < 35) {}
+      // Non-blocking async delay before retry (prevents freezing the Node event loop)
+      await new Promise<void>((resolve) => setTimeout(resolve, 35));
     }
   }
 
