@@ -32,6 +32,7 @@ import { CheckoutModal } from '../../../components/layout/CheckoutModal';
 import { SizeGuideModal } from '../../../components/product/SizeGuideModal';
 import { PincodeChecker } from '../../../components/product/PincodeChecker';
 import { ProductCard } from '../../../components/product/ProductCard';
+import { ProductReviewsSection } from '../../../components/product/ProductReviewsSection';
 
 export default function ProductDetailPage({
   params,
@@ -516,6 +517,9 @@ export default function ProductDetailPage({
             </div>
           </div>
         </div>
+
+        {/* Customer Reviews & Ratings */}
+        <ProductReviewsSection productId={product.id} productTitle={product.title} />
 
         {/* Related Drops */}
         {relatedProducts.length > 0 && (

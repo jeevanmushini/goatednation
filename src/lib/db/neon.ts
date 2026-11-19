@@ -89,6 +89,22 @@ export async function initDatabaseSchema(): Promise<boolean> {
       );
     `;
 
+    // 6. Product Reviews Table
+    await sql`
+      CREATE TABLE IF NOT EXISTS app_reviews (
+        id TEXT PRIMARY KEY,
+        product_id TEXT NOT NULL,
+        author_name TEXT NOT NULL,
+        author_email TEXT,
+        rating INTEGER NOT NULL,
+        title TEXT NOT NULL,
+        comment TEXT NOT NULL,
+        fit_feedback TEXT DEFAULT 'TRUE_TO_SIZE',
+        verified_purchase BOOLEAN DEFAULT TRUE,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+    `;
+
     schemaInitialized = true;
     return true;
   } catch (error) {
@@ -330,6 +346,84 @@ export async function saveSettingToNeon(key: string, value: string): Promise<boo
     return true;
   } catch (error) {
     console.error(`[Neon Postgres] Error saving setting ${key}:`, error);
+    return false;
+  }
+}
+
+export interface ReviewRecord {
+  id: string;
+  productId: string;
+  authorName: string;
+  authorEmail?: string;
+  rating: number;
+  title: string;
+  comment: string;
+  fitFeedback?: string;
+  verifiedPurchase?: boolean;
+  createdAt?: string;
+}
+
+/**
+ * Fetches all reviews for a product from Neon Postgres.
+ */
+export async function getReviewsFromNeon(productId: string): Promise<ReviewRecord[]> {
+  const sql = getDb();
+  if (!sql) return [];
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+    const rows = await sql`
+      SELECT 
+        id, 
+        product_id as "productId", 
+        author_name as "authorName", 
+        author_email as "authorEmail", 
+        rating, 
+        title, 
+        comment, 
+        fit_feedback as "fitFeedback", 
+        verified_purchase as "verifiedPurchase", 
+        created_at as "createdAt"
+      FROM app_reviews
+      WHERE product_id = ${productId}
+      ORDER BY created_at DESC;
+    `;
+    return rows as unknown as ReviewRecord[];
+  } catch (error) {
+    console.error(`[Neon Postgres] Error reading reviews for ${productId}:`, error);
+    return [];
+  }
+}
+
+/**
+ * Inserts a new review into Neon Postgres.
+ */
+export async function addReviewToNeon(review: ReviewRecord): Promise<boolean> {
+  const sql = getDb();
+  if (!sql) return false;
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+    await sql`
+      INSERT INTO app_reviews (
+        id, product_id, author_name, author_email, rating, title, comment, fit_feedback, verified_purchase, created_at
+      )
+      VALUES (
+        ${review.id},
+        ${review.productId},
+        ${review.authorName},
+        ${review.authorEmail || null},
+        ${review.rating},
+        ${review.title},
+        ${review.comment},
+        ${review.fitFeedback || 'TRUE_TO_SIZE'},
+        ${review.verifiedPurchase ?? true},
+        CURRENT_TIMESTAMP
+      );
+    `;
+    return true;
+  } catch (error) {
+    console.error(`[Neon Postgres] Error adding review for ${review.productId}:`, error);
     return false;
   }
 }
