@@ -127,10 +127,11 @@ export default function CartPage() {
                   >
                     <div className="relative w-20 h-24 bg-[#F4F4F4] rounded overflow-hidden shrink-0">
                       <Image
-                        src={item.image}
+                        src={item.image || '/images/placeholder-product.svg'}
                         alt={item.title}
                         fill
                         sizes="80px"
+                        unoptimized={!item.image?.startsWith('/images/')}
                         className="object-cover"
                       />
                     </div>

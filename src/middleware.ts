@@ -6,8 +6,12 @@ export function middleware(request: NextRequest) {
 
   // 1. Admin route protection at the edge
   if (pathname.startsWith('/admin')) {
-    const token = request.cookies.get('auth_token')?.value;
-    if (!token) {
+    const token =
+      request.cookies.get('auth_token')?.value ||
+      request.cookies.get('gn_auth_token')?.value;
+
+    // In production, enforce edge cookie redirect; in dev, allow access so admin 1-click login renders
+    if (!token && process.env.NODE_ENV === 'production') {
       const loginUrl = new URL('/login', request.url);
       loginUrl.searchParams.set('redirect', pathname);
       return NextResponse.redirect(loginUrl);

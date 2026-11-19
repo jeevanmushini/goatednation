@@ -223,7 +223,14 @@ export default function ProductDetailPage({
                       : 'border-[#EAEAEA] hover:border-[#999999]'
                   }`}
                 >
-                  <Image src={img} alt={`${product.title} view ${idx + 1}`} fill sizes="80px" className="object-cover" />
+                  <Image
+                    src={img}
+                    alt={`${product.title} view ${idx + 1}`}
+                    fill
+                    sizes="80px"
+                    unoptimized={!img?.startsWith('/images/')}
+                    className="object-cover"
+                  />
                 </button>
               ))}
             </div>
@@ -253,6 +260,7 @@ export default function ProductDetailPage({
                     fill
                     priority
                     sizes="(max-width: 1024px) 100vw, 60vw"
+                    unoptimized={!(product.images[selectedImageIndex] || product.images[0])?.startsWith('/images/')}
                     className="object-cover pointer-events-none group-hover:scale-105 transition-transform duration-500 ease-out"
                   />
                 </motion.div>
