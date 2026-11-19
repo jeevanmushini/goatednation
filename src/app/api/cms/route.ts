@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { savedToKv, savedToFile } = await savePublishedCmsData(body);
+    const { savedToNeon, savedToKv, savedToFile } = await savePublishedCmsData(body);
 
     try {
       revalidatePath('/', 'page');
@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       success: true,
       message: 'CMS data successfully published across devices!',
-      storageTarget: savedToKv ? 'vercel-kv' : savedToFile ? 'local-file' : 'server-memory',
+      storageTarget: savedToNeon ? 'neon-postgres' : savedToKv ? 'vercel-kv' : savedToFile ? 'local-file' : 'server-memory',
     });
   } catch (error) {
     console.error('[CMS API] Error publishing CMS data:', error);

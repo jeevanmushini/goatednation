@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { User, UserRecord, UserRole, AuthProvider } from '../../types/auth';
 import { generateSalt, hashPassword, verifyPassword } from './jwt';
+import { getUsersFromNeon, upsertUserInNeon } from '../db/neon';
 
 const USERS_FILE = path.join(process.cwd(), '.users_data.json');
 
@@ -39,14 +40,48 @@ const SEED_USERS: UserRecord[] = [
 ];
 
 let cachedUsers: UserRecord[] | null = null;
+let neonSyncAttempted = false;
+
+// Asynchronously sync local cache with Neon Postgres
+async function syncWithNeon() {
+  if (neonSyncAttempted) return;
+  neonSyncAttempted = true;
+
+  try {
+    const neonUsers = await getUsersFromNeon<UserRecord>();
+    if (neonUsers && neonUsers.length > 0) {
+      // Merge neon users with cached users
+      const map = new Map<string, UserRecord>();
+      (cachedUsers || []).forEach((u) => map.set(u.email.toLowerCase(), u));
+      neonUsers.forEach((u) => map.set(u.email.toLowerCase(), u));
+      cachedUsers = Array.from(map.values());
+      // Update local file backup
+      try {
+        fs.writeFileSync(USERS_FILE, JSON.stringify(cachedUsers, null, 2), 'utf-8');
+      } catch {}
+    } else if (cachedUsers && cachedUsers.length > 0) {
+      // Seed Neon with existing users
+      for (const user of cachedUsers) {
+        await upsertUserInNeon(user);
+      }
+    }
+  } catch (err) {
+    console.warn('[UserDb] Background sync with Neon failed:', err);
+  }
+}
 
 function loadUsers(): UserRecord[] {
+  if (cachedUsers && cachedUsers.length > 0) {
+    return cachedUsers;
+  }
+
   try {
     if (fs.existsSync(USERS_FILE)) {
       const data = fs.readFileSync(USERS_FILE, 'utf-8');
       const parsed = JSON.parse(data);
       if (Array.isArray(parsed) && parsed.length > 0) {
         cachedUsers = parsed;
+        syncWithNeon().catch(() => {});
         return cachedUsers;
       }
     }
@@ -57,6 +92,7 @@ function loadUsers(): UserRecord[] {
   // Fallback to seed users
   cachedUsers = [...SEED_USERS];
   saveUsers(cachedUsers);
+  syncWithNeon().catch(() => {});
   return cachedUsers;
 }
 
@@ -66,6 +102,13 @@ function saveUsers(users: UserRecord[]): void {
     fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), 'utf-8');
   } catch (err) {
     console.error('[UserDb] Error saving users file:', err);
+  }
+
+  // Persist each user to Neon Postgres asynchronously
+  for (const user of users) {
+    upsertUserInNeon(user).catch((err) => {
+      console.warn(`[UserDb] Failed to sync user ${user.email} to Neon:`, err);
+    });
   }
 }
 

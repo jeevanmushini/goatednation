@@ -16,6 +16,7 @@ import {
   INITIAL_ANNOUNCEMENT,
 } from './initialCmsData';
 import { PRODUCTS } from '../../data/products';
+import { getCmsDataFromNeon, saveCmsDataToNeon } from '../db/neon';
 
 export interface PublishedCmsData {
   heroSlides: typeof INITIAL_HERO_SLIDES;
@@ -113,27 +114,45 @@ function sanitizePublishedCmsData(data: PublishedCmsData): PublishedCmsData {
  * Retrieves the published CMS data for Server-Side Rendering (SSR) and API routes.
  * Guarantees zero-flicker on first page paint.
  */
-export async function getPublishedCmsData(): Promise<{ data: PublishedCmsData; source: 'kv' | 'file' | 'memory' | 'default' }> {
-  // 1. Try Vercel KV / Upstash Redis
-  const kvData = await getFromKvStore();
-  if (kvData) {
-    return { data: sanitizePublishedCmsData({ ...DEFAULT_STATE, ...kvData }), source: 'kv' };
+export async function getPublishedCmsData(): Promise<{ data: PublishedCmsData; source: 'neon' | 'kv' | 'file' | 'memory' | 'default' }> {
+  // 1. Try Neon Postgres
+  try {
+    const neonData = await getCmsDataFromNeon<PublishedCmsData>();
+    if (neonData && typeof neonData === 'object' && Object.keys(neonData).length > 0) {
+      const sanitized = sanitizePublishedCmsData({ ...DEFAULT_STATE, ...neonData });
+      globalForCms.__SERVER_PUBLISHED_CMS__ = sanitized;
+      return { data: sanitized, source: 'neon' };
+    }
+  } catch (err) {
+    console.warn('[CMS Server] Neon Postgres fetch failed:', err);
   }
 
-  // 2. Try Local File Storage
+  // 2. Try Vercel KV / Upstash Redis
+  const kvData = await getFromKvStore();
+  if (kvData) {
+    const sanitized = sanitizePublishedCmsData({ ...DEFAULT_STATE, ...kvData });
+    // Seed Neon Postgres asynchronously if it was empty
+    saveCmsDataToNeon(sanitized).catch(() => {});
+    return { data: sanitized, source: 'kv' };
+  }
+
+  // 3. Try Local File Storage
   if (fs.existsSync(CMS_STORAGE_FILE)) {
     try {
       const raw = fs.readFileSync(CMS_STORAGE_FILE, 'utf-8');
       const parsed = JSON.parse(raw);
       if (parsed && typeof parsed === 'object') {
-        return { data: sanitizePublishedCmsData({ ...DEFAULT_STATE, ...parsed }), source: 'file' };
+        const sanitized = sanitizePublishedCmsData({ ...DEFAULT_STATE, ...parsed });
+        // Seed Neon Postgres asynchronously so cloud database is up-to-date
+        saveCmsDataToNeon(sanitized).catch(() => {});
+        return { data: sanitized, source: 'file' };
       }
     } catch (err) {
       console.warn('[CMS Server] Failed to read local CMS storage file:', err);
     }
   }
 
-  // 3. Try In-Memory Cache
+  // 4. Try In-Memory Cache
   if (globalForCms.__SERVER_PUBLISHED_CMS__) {
     return {
       data: sanitizePublishedCmsData({ ...DEFAULT_STATE, ...globalForCms.__SERVER_PUBLISHED_CMS__ }),
@@ -141,14 +160,14 @@ export async function getPublishedCmsData(): Promise<{ data: PublishedCmsData; s
     };
   }
 
-  // 4. Default State Fallback
+  // 5. Default State Fallback
   return { data: DEFAULT_STATE, source: 'default' };
 }
 
 /**
- * Persists published CMS data across memory, disk, and cloud KV.
+ * Persists published CMS data across Neon Postgres, memory, disk, and cloud KV.
  */
-export async function savePublishedCmsData(data: Partial<PublishedCmsData>): Promise<{ savedToKv: boolean; savedToFile: boolean }> {
+export async function savePublishedCmsData(data: Partial<PublishedCmsData>): Promise<{ savedToNeon: boolean; savedToKv: boolean; savedToFile: boolean }> {
   // Read existing published data first so partial updates don't clobber other sections
   let existingData: Partial<PublishedCmsData> = {};
   if (fs.existsSync(CMS_STORAGE_FILE)) {
@@ -173,10 +192,18 @@ export async function savePublishedCmsData(data: Partial<PublishedCmsData>): Pro
   // 1. Memory Cache
   globalForCms.__SERVER_PUBLISHED_CMS__ = payload;
 
-  // 2. KV Store
+  // 2. Neon Postgres Cloud Database
+  let savedToNeon = false;
+  try {
+    savedToNeon = await saveCmsDataToNeon(payload);
+  } catch (err) {
+    console.warn('[CMS Server] Neon Postgres save failed:', err);
+  }
+
+  // 3. KV Store
   const savedToKv = await saveToKvStore(payload);
 
-  // 3. Local File with atomic write & retry logic to prevent Windows EBUSY locking
+  // 4. Local File with atomic write & retry logic to prevent Windows EBUSY locking
   let savedToFile = false;
   const jsonContent = JSON.stringify(payload, null, 2);
   for (let attempt = 0; attempt < 3; attempt++) {
@@ -194,5 +221,5 @@ export async function savePublishedCmsData(data: Partial<PublishedCmsData>): Pro
     }
   }
 
-  return { savedToKv, savedToFile };
+  return { savedToNeon, savedToKv, savedToFile };
 }
