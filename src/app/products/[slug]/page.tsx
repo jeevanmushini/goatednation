@@ -21,7 +21,7 @@ import {
 
 import { PRODUCTS } from '../../../data/products';
 import { useCmsStore } from '../../../lib/cms/cmsStore';
-import { ProductSize } from '../../../types/product';
+import { Product, ProductSize, ProductColor } from '../../../types/product';
 import { useCartStore } from '../../../stores/cartStore';
 import { useWishlistStore } from '../../../stores/wishlistStore';
 import { ZeninAnnouncementBar } from '../../../components/zenin/ZeninAnnouncementBar';
@@ -41,20 +41,69 @@ export default function ProductDetailPage({
 }) {
   const { slug } = use(params);
   const cmsProducts = useCmsStore((state) => state.products);
-  const product = cmsProducts.find((p) => p.slug === slug) || PRODUCTS.find((p) => p.slug === slug);
+  const [fetchedProduct, setFetchedProduct] = useState<Product | null>(null);
+  const [isResolving, setIsResolving] = useState(true);
 
-  if (!product) {
-    notFound();
-  }
+  const product =
+    cmsProducts.find((p) => p.slug === slug || p.id === slug) ||
+    PRODUCTS.find((p) => p.slug === slug || p.id === slug) ||
+    fetchedProduct;
+
+  React.useEffect(() => {
+    let active = true;
+    if (product) {
+      setIsResolving(false);
+      return;
+    }
+
+    async function resolveProduct() {
+      try {
+        const res = await fetch(`/api/cms/product?slug=${encodeURIComponent(slug)}`, { cache: 'no-store' });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && json.product && active) {
+            setFetchedProduct(json.product);
+            useCmsStore.setState((prev) => {
+              if (prev.products.some((p) => p.id === json.product.id || p.slug === json.product.slug)) {
+                return prev;
+              }
+              return { ...prev, products: [json.product, ...prev.products] };
+            });
+            setIsResolving(false);
+            return;
+          }
+        }
+      } catch {
+        // ignore
+      }
+      if (active) {
+        setIsResolving(false);
+      }
+    }
+
+    resolveProduct();
+    return () => {
+      active = false;
+    };
+  }, [slug, product]);
+
+  const activeProduct = product || PRODUCTS[0];
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [slideDirection, setSlideDirection] = useState(1);
-  const [selectedSize, setSelectedSize] = useState<ProductSize>(product.sizes[0] || 'M');
-  const [selectedColor, setSelectedColor] = useState(product.colors[0]?.name || 'Standard');
+  const [selectedSize, setSelectedSize] = useState<ProductSize>(activeProduct.sizes[0] || 'M');
+  const [selectedColor, setSelectedColor] = useState(activeProduct.colors[0]?.name || 'Standard');
   const [quantity, setQuantity] = useState(1);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+
+  React.useEffect(() => {
+    if (product) {
+      if (product.sizes[0]) setSelectedSize(product.sizes[0]);
+      if (product.colors[0]?.name) setSelectedColor(product.colors[0].name);
+    }
+  }, [product]);
 
   const isPointerDown = useRef(false);
   const startX = useRef(0);
@@ -62,7 +111,7 @@ export default function ProductDetailPage({
   const isHorizontalDrag = useRef(false);
   const isVerticalScroll = useRef(false);
 
-  const totalImages = product.images.length;
+  const totalImages = activeProduct.images.length || 1;
 
   const slideNext = useCallback(() => {
     setSlideDirection(1);
@@ -73,6 +122,27 @@ export default function ProductDetailPage({
     setSlideDirection(-1);
     setSelectedImageIndex((prev) => (prev - 1 + totalImages) % totalImages);
   }, [totalImages]);
+
+  if (!product) {
+    if (isResolving) {
+      return (
+        <div className="flex flex-col min-h-screen bg-[#FFFFFF] text-black antialiased">
+          <ZeninAnnouncementBar />
+          <ZeninHeader />
+          <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full flex items-center justify-center">
+            <div className="text-center font-mono space-y-3">
+              <div className="w-8 h-8 border-2 border-black border-t-transparent rounded-full animate-spin mx-auto" />
+              <p className="text-xs uppercase tracking-widest text-[#666666]">
+                LOADING DROP SILHOUETTE // 読み込み中...
+              </p>
+            </div>
+          </main>
+          <ZeninFooter />
+        </div>
+      );
+    }
+    notFound();
+  }
 
   const handlePointerDown = (e: React.PointerEvent) => {
     isPointerDown.current = true;
@@ -214,7 +284,7 @@ export default function ProductDetailPage({
           <div className="lg:col-span-7 flex flex-col-reverse sm:flex-row gap-4">
             {/* Thumbnails */}
             <div className="flex sm:flex-col gap-2.5 overflow-x-auto sm:overflow-visible shrink-0">
-              {product.images.map((img, idx) => (
+              {product.images.map((img: string, idx: number) => (
                 <button
                   key={idx}
                   onClick={() => setSelectedImageIndex(idx)}
@@ -403,7 +473,7 @@ export default function ProductDetailPage({
                     <span className="text-black font-bold">{selectedColor}</span>
                   </div>
                   <div className="flex space-x-2">
-                    {product.colors.map((c) => (
+                    {product.colors.map((c: ProductColor) => (
                       <button
                         key={c.name}
                         onClick={() => setSelectedColor(c.name)}
@@ -433,7 +503,7 @@ export default function ProductDetailPage({
                   </button>
                 </div>
                 <div className="grid grid-cols-5 gap-2">
-                  {product.sizes.map((size) => (
+                  {product.sizes.map((size: ProductSize) => (
                     <button
                       key={size}
                       onClick={() => setSelectedSize(size)}

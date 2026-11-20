@@ -93,6 +93,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       success: true,
       user,
+      token,
       role: user.role,
       isAdmin: user.role === 'ADMIN',
     });

@@ -5,13 +5,13 @@ import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
 import { PRODUCTS, CATEGORIES } from '../../../data/products';
 import { useCmsStore } from '../../../lib/cms/cmsStore';
-import { ProductCategory } from '../../../types/product';
+import { Product, ProductCategory } from '../../../types/product';
 import { ZeninAnnouncementBar } from '../../../components/zenin/ZeninAnnouncementBar';
 import { ZeninHeader } from '../../../components/zenin/ZeninHeader';
 import { ZeninFooter } from '../../../components/zenin/ZeninFooter';
 import { CartDrawer } from '../../../components/layout/CartDrawer';
 import { ProductCard } from '../../../components/product/ProductCard';
-import CollectionsPage from '../page';
+import CollectionsClientView from '../../../components/collections/CollectionsClientView';
 
 const CATEGORY_MAP: Record<string, { title: string; subtitle: string; filterKey: string }> = {
   backpack: {
@@ -85,12 +85,31 @@ export default function CategoryCollectionPage({
   const cmsCategories = useCmsStore((state) => state.categories);
   const cmsProducts = useCmsStore((state) => state.products);
 
+  React.useEffect(() => {
+    useCmsStore.getState().syncFromServer(true);
+  }, []);
+
   if (slug === 'all-products' || slug === 'all') {
-    return <CollectionsPage />;
+    return <CollectionsClientView />;
   }
 
   const allCategories = cmsCategories.length > 0 ? cmsCategories : CATEGORIES;
-  const allProducts = cmsProducts.length > 0 ? cmsProducts : PRODUCTS;
+  const allProducts = React.useMemo(() => {
+    const list = [...PRODUCTS];
+    if (cmsProducts && cmsProducts.length > 0) {
+      const customDrops: Product[] = [];
+      cmsProducts.forEach((cp) => {
+        const idx = list.findIndex((p) => p.id === cp.id || p.slug === cp.slug);
+        if (idx !== -1) {
+          list[idx] = cp;
+        } else {
+          customDrops.push(cp);
+        }
+      });
+      return [...customDrops, ...list];
+    }
+    return list;
+  }, [cmsProducts]);
 
   const mapped = CATEGORY_MAP[slug.toLowerCase()];
   const fallbackCat = allCategories.find((c) => c.slug === slug);

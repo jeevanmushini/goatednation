@@ -105,7 +105,7 @@ interface CmsState {
   // Publishing & Reset
   publishChanges: () => Promise<{ success: boolean; error?: string }>;
   resetToDefaults: () => Promise<{ success: boolean; error?: string }>;
-  syncFromServer: () => Promise<void>;
+  syncFromServer: (force?: boolean) => Promise<void>;
 }
 
 let serverSyncTimer: ReturnType<typeof setTimeout> | null = null;
@@ -124,7 +124,9 @@ function triggerServerSync(state: Partial<CmsState>, immediate = false): Promise
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };
     try {
       const match = document.cookie.match(/(?:^|;\s*)(?:auth_token|gn_auth_token)=([^;]+)/);
-      const token = match ? decodeURIComponent(match[1]) : null;
+      const cookieToken = match ? decodeURIComponent(match[1]) : null;
+      const inMemoryToken = (globalThis as unknown as { __AUTH_TOKEN__?: string }).__AUTH_TOKEN__;
+      const token = inMemoryToken || cookieToken;
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
@@ -470,9 +472,9 @@ const createCmsStore = () =>
         return await triggerServerSync(defaultState, true);
       },
 
-      syncFromServer: async () => {
+      syncFromServer: async (force = false) => {
         if (typeof window === 'undefined' || !window.location?.origin) return;
-        if (hasClientSyncedFromServer) return;
+        if (!force && hasClientSyncedFromServer) return;
         hasClientSyncedFromServer = true;
 
         try {
@@ -563,6 +565,14 @@ if (typeof window !== 'undefined') {
         // ignore
       }
     }, 50);
+
+    window.addEventListener('cms-published', () => {
+      try {
+        useCmsStore.getState().syncFromServer?.(true);
+      } catch {
+        // ignore
+      }
+    });
   }
 }
 

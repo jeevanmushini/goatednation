@@ -1,6 +1,5 @@
 import CollectionsPage from '../collections/page';
 
-export default function ProductsPage() {
-  return <CollectionsPage />;
-}
+export const dynamic = 'force-dynamic';
 
+export default CollectionsPage;

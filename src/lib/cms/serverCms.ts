@@ -108,6 +108,35 @@ function sanitizePublishedCmsData(data: PublishedCmsData): PublishedCmsData {
   if (!data.heroBottoms || data.heroBottoms.length === 0) {
     data.heroBottoms = INITIAL_HERO_BOTTOMS;
   }
+
+  // Ensure products list ALWAYS preserves all default catalog products + all custom admin drops
+  const catalogMap = new Map<string, Product>();
+  // 1. Seed base catalog
+  for (const p of PRODUCTS) {
+    catalogMap.set(p.id, p);
+  }
+  // 2. Overlay / prepend server/admin products
+  if (Array.isArray(data.products) && data.products.length > 0) {
+    for (const p of data.products) {
+      if (p && p.id) {
+        catalogMap.set(p.id, p);
+      }
+    }
+    // Custom admin drops (non-zn or as-*) come first
+    const customDrops: Product[] = [];
+    const baseDrops: Product[] = [];
+    for (const p of catalogMap.values()) {
+      if (!p.id.startsWith('zn-') || p.id.startsWith('as-')) {
+        customDrops.push(p);
+      } else {
+        baseDrops.push(p);
+      }
+    }
+    data.products = [...customDrops, ...baseDrops];
+  } else {
+    data.products = PRODUCTS;
+  }
+
   return data;
 }
 
@@ -229,3 +258,14 @@ export async function savePublishedCmsData(data: Partial<PublishedCmsData>): Pro
 
   return { savedToNeon, savedToKv, savedToFile };
 }
+
+/**
+ * Fast lookup for individual product by slug or ID with server fallback.
+ */
+export async function getPublishedProductBySlug(slug: string): Promise<Product | null> {
+  const { data } = await getPublishedCmsData();
+  const found = data.products.find((p) => p.slug === slug || p.id === slug);
+  if (found) return found;
+  return PRODUCTS.find((p) => p.slug === slug || p.id === slug) || null;
+}
+

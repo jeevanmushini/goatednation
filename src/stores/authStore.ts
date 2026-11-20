@@ -37,14 +37,21 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   setUser: (user, token) => {
     const isAdmin = user?.role === 'ADMIN';
+    const activeToken = token !== undefined ? token : get().token;
     set({
       user,
-      token: token !== undefined ? token : get().token,
+      token: activeToken,
       isAuthenticated: !!user,
       isAdmin,
       isLoading: false,
       initialized: true,
     });
+
+    if (activeToken) {
+      (globalThis as unknown as { __AUTH_TOKEN__?: string }).__AUTH_TOKEN__ = activeToken;
+    } else if (!user) {
+      delete (globalThis as unknown as { __AUTH_TOKEN__?: string }).__AUTH_TOKEN__;
+    }
 
     if (typeof window !== 'undefined') {
       try {
@@ -77,7 +84,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         if (res.ok) {
           const data = await res.json();
           if (data.success && data.user) {
-            get().setUser(data.user);
+            get().setUser(data.user, data.token);
             return data.user;
           }
         }

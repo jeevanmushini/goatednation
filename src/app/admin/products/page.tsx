@@ -135,7 +135,9 @@ export default function AdminProductsPage() {
       // Immediately publish so changes are saved to disk / KV and visible across devices
       const pubRes = await publishChanges();
       if (!pubRes.success) {
-        console.warn('[Admin Products] Server persistence notice:', pubRes.error);
+        setSaveError(pubRes.error || 'Failed to persist product to database. Please ensure you are signed in with administrative clearance.');
+        setIsSaving(false);
+        return;
       }
 
       if (typeof window !== 'undefined') {
