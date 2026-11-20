@@ -485,9 +485,33 @@ const createCmsStore = () =>
               const serverData = json.data;
               const current = get();
 
-              const serverProducts = Array.isArray(serverData.products) && serverData.products.length > 0
-                ? serverData.products
-                : current.products;
+              // Defensive product merge: ALWAYS preserve custom drops from both server AND current client state
+              const productMap = new Map<string, Product>();
+              if (Array.isArray(serverData.products)) {
+                for (const p of serverData.products) {
+                  if (p?.id) productMap.set(p.id, p);
+                }
+              }
+              // Also ensure any custom drops created on client are not lost
+              if (Array.isArray(current.products)) {
+                for (const p of current.products) {
+                  if (p?.id && (!p.id.startsWith('zn-') || p.id.startsWith('as-'))) {
+                    if (!productMap.has(p.id)) {
+                      productMap.set(p.id, p);
+                    }
+                  }
+                }
+              }
+              const customDrops: Product[] = [];
+              const baseDrops: Product[] = [];
+              for (const p of productMap.values()) {
+                if (!p.id.startsWith('zn-') || p.id.startsWith('as-')) {
+                  customDrops.push(p);
+                } else {
+                  baseDrops.push(p);
+                }
+              }
+              const serverProducts = productMap.size > 0 ? [...customDrops, ...baseDrops] : current.products;
 
               const serverHeroBottoms =
                 Array.isArray(serverData.heroBottoms) && serverData.heroBottoms.length > 0

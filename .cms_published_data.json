@@ -84,6 +84,140 @@
   ],
   "products": [
     {
+      "id": "as-1795177502041",
+      "slug": "test-drop-1795177502041",
+      "title": "TEST HOODIE DROP",
+      "anime": "Jujutsu Kaisen",
+      "category": "hoodies",
+      "price": 1999,
+      "originalPrice": 2999,
+      "discountPercent": 33,
+      "rating": 5,
+      "reviewCount": 1,
+      "badge": "NEW DROP",
+      "isNewDrop": true,
+      "images": [
+        "/images/placeholder-product.svg"
+      ],
+      "description": "Test hoodie",
+      "details": {
+        "gsm": "400 GSM",
+        "fabric": "Cotton",
+        "fit": "Oversized",
+        "printType": "Screen",
+        "care": [
+          "Wash cold"
+        ]
+      },
+      "sizes": [
+        "M",
+        "L"
+      ],
+      "colors": [
+        {
+          "name": "Black",
+          "hex": "#000000",
+          "class": "bg-black"
+        }
+      ],
+      "inStock": true,
+      "stockCount": 10,
+      "reviews": []
+    },
+    {
+      "id": "as-1795177178592",
+      "slug": "test-drop-1795177178592",
+      "anime": "Jujutsu Kaisen",
+      "badge": "NEW DROP",
+      "price": 1999,
+      "sizes": [
+        "M",
+        "L"
+      ],
+      "title": "TEST HOODIE DROP",
+      "colors": [
+        {
+          "hex": "#000000",
+          "name": "Black",
+          "class": "bg-black"
+        }
+      ],
+      "images": [
+        "/images/placeholder-product.svg"
+      ],
+      "rating": 5,
+      "details": {
+        "fit": "Oversized",
+        "gsm": "400 GSM",
+        "care": [
+          "Wash cold"
+        ],
+        "fabric": "Cotton",
+        "printType": "Screen"
+      },
+      "inStock": true,
+      "reviews": [],
+      "category": "hoodies",
+      "isNewDrop": true,
+      "stockCount": 10,
+      "description": "Test hoodie",
+      "reviewCount": 1,
+      "originalPrice": 2999,
+      "discountPercent": 33
+    },
+    {
+      "id": "as-1795176096613",
+      "slug": "black-zenin-hoodie",
+      "anime": "Jujutsu Kaisen",
+      "badge": "NEW DROP",
+      "price": 1499,
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "title": "black zenin hoodie",
+      "colors": [
+        {
+          "hex": "#111111",
+          "name": "Onyx Black",
+          "class": "bg-[#111111]"
+        },
+        {
+          "hex": "#262A30",
+          "name": "Charcoal Slate",
+          "class": "bg-[#262A30]"
+        }
+      ],
+      "images": [
+        "https://res.cloudinary.com/bu4oxldy/image/upload/v1795176069/1795176067470-blackzeninfront/nyaw2gv5mus2kbfxyijc.webp",
+        "https://res.cloudinary.com/bu4oxldy/image/upload/v1795176077/1795176075794-zeninblackback/v9b9ahrm9ocpqlbcxfuk.webp"
+      ],
+      "rating": 4.9,
+      "details": {
+        "fit": "Signature Drop-Shoulder Oversized Streetwear Fit",
+        "gsm": "280 GSM Heavyweight French Terry",
+        "care": [
+          "Machine wash cold inside-out",
+          "Do not iron print directly",
+          "Line dry in shade"
+        ],
+        "fabric": "100% Combed Bio-Washed Cotton",
+        "printType": "High-Density Puff + Distressed Screen Print"
+      },
+      "inStock": true,
+      "reviews": [],
+      "category": "hoodies",
+      "isNewDrop": true,
+      "stockCount": 15,
+      "description": "Custom-milled 280 GSM heavyweight French terry cotton.",
+      "reviewCount": 42,
+      "originalPrice": 2499,
+      "discountPercent": 40
+    },
+    {
       "id": "zn-01",
       "slug": "ryujin-dragon-jacquard-jacket",
       "anime": "Tokyo Editorial",
@@ -2467,8 +2601,8 @@
       "inStock": true,
       "reviews": [],
       "category": "hoodies",
-      "isNewDrop": true,
-      "isFeatured": true,
+      "isNewDrop": false,
+      "isFeatured": false,
       "stockCount": 27,
       "description": "BERSERK / SWEATSHIRT Premium 350 GSM heavyweight Terry Cotton Stone-washed finish for a rugged, worn-in look Front embroidery work with minimal symbolic detailing High-detail monochrome back artwork Theme inspired by “The One Who Left It All Behin...",
       "reviewCount": 21,
@@ -2518,8 +2652,8 @@
       "inStock": true,
       "reviews": [],
       "category": "hoodies",
-      "isNewDrop": true,
-      "isFeatured": true,
+      "isNewDrop": false,
+      "isFeatured": false,
       "stockCount": 31,
       "description": "Crafted from premium heavyweight 350 GSM Terry Cotton with soft fleece for superior warmth, structure, and long-lasting comfort Minimal front embroidery featuring a inverted spear of heaven , Striking back artwork with high-detail monochrome illus...",
       "reviewCount": 28,
@@ -4926,8 +5060,8 @@
       "inStock": true,
       "reviews": [],
       "category": "hoodies",
-      "isNewDrop": true,
-      "isFeatured": true,
+      "isNewDrop": false,
+      "isFeatured": false,
       "stockCount": 23,
       "description": "BUY DRAGON EMBROIDERY / ZIPPER NOTE : DUE TO HEAVY DEMAND DELIVERY WILL BE DELAYED ‼️ FREE ANIME STICKERS Quality: 350 GSM density 100% PURE Cotton Fleece Fabric Full Embroidery Sleeves",
       "reviewCount": 34,
@@ -5400,8 +5534,8 @@
     }
   ],
   "brandStory": {
-    "title": "GOATED NATION x NEON POSTGRES",
     "story": "Engineered for street culture. Powered by Neon Lakebase Postgres cloud database.",
+    "title": "GOATED NATION x NEON POSTGRES",
     "tagline": "UNCOMPROMISING SPEED"
   },
   "newsletter": {
@@ -5521,6 +5655,22 @@
     }
   ],
   "media": [
+    {
+      "id": "med-1795176077829",
+      "url": "https://res.cloudinary.com/bu4oxldy/image/upload/v1795176077/1795176075794-zeninblackback/v9b9ahrm9ocpqlbcxfuk.webp",
+      "name": "zeninblackback.webp",
+      "size": "113 KB",
+      "category": "products",
+      "uploadedAt": "2026-11-20"
+    },
+    {
+      "id": "med-1795176069131",
+      "url": "https://res.cloudinary.com/bu4oxldy/image/upload/v1795176069/1795176067470-blackzeninfront/nyaw2gv5mus2kbfxyijc.webp",
+      "name": "blackzeninfront.webp",
+      "size": "39 KB",
+      "category": "products",
+      "uploadedAt": "2026-11-20"
+    },
     {
       "id": "med-1795085001249",
       "url": "/images/hero/white-hoodie.webp",
@@ -5658,5 +5808,5 @@
     "countdownDays": 2,
     "highlightText": "EXTRA 15% OFF ON PREPAID ORDERS"
   },
-  "lastPublishedAt": "2026-11-19T16:04:38.754Z"
+  "lastPublishedAt": "2026-11-20T12:25:02.063Z"
 }

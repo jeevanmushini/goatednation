@@ -80,38 +80,17 @@ export default function AdminHomepageCmsPage() {
   };
 
   const triggerSaveNotice = async () => {
-    publishChanges();
     setSavedNotice(true);
 
     try {
-      const state = useCmsStore.getState();
-      const res = await fetch('/api/cms', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          heroSlides: state.heroSlides,
-          categories: state.categories,
-          products: state.products,
-          banners: state.banners,
-          brandStory: state.brandStory,
-          newsletter: state.newsletter,
-          sections: state.sections,
-          settings: state.settings,
-          navigation: state.navigation,
-          media: state.media,
-          heroBottoms: state.heroBottoms,
-          stackCards: state.stackCards,
-          editorialBanner: state.editorialBanner,
-          announcement: state.announcement,
-          lastPublishedAt: state.lastPublishedAt,
-        }),
-      });
-
-      if (res.ok) {
+      const res = await publishChanges();
+      if (res?.success) {
         if (typeof window !== 'undefined') {
           window.dispatchEvent(new Event('cms-published'));
         }
         router.refresh();
+      } else {
+        console.warn('[Admin] Failed to sync CMS changes to server:', res?.error);
       }
     } catch (err) {
       console.warn('[Admin] Failed to sync CMS changes to server:', err);

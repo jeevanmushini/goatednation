@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import {
   Plus,
@@ -25,6 +25,11 @@ export default function AdminProductsPage() {
   const [saveError, setSaveError] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+
+  // Re-sync with server state on mount to ensure all custom admin drops are loaded
+  useEffect(() => {
+    useCmsStore.getState().syncFromServer(true);
+  }, []);
 
   // Form states
   const [title, setTitle] = useState('');

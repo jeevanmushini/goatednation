@@ -175,10 +175,6 @@ export async function getPublishedCmsData(): Promise<{ data: PublishedCmsData; s
       const parsed = JSON.parse(raw);
       if (parsed && typeof parsed === 'object') {
         const sanitized = sanitizePublishedCmsData({ ...DEFAULT_STATE, ...parsed });
-        // Seed Neon Postgres asynchronously so cloud database is up-to-date
-        saveCmsDataToNeon(sanitized).catch((err) => {
-          console.warn('[CMS Server] Background Neon Postgres sync failed:', err);
-        });
         return { data: sanitized, source: 'file' };
       }
     } catch (err) {
@@ -202,18 +198,19 @@ export async function getPublishedCmsData(): Promise<{ data: PublishedCmsData; s
  * Persists published CMS data across Neon Postgres, memory, disk, and cloud KV.
  */
 export async function savePublishedCmsData(data: Partial<PublishedCmsData>): Promise<{ savedToNeon: boolean; savedToKv: boolean; savedToFile: boolean }> {
-  // Read existing published data first so partial updates don't clobber other sections
+  // Read authoritative published data first so partial updates don't clobber other sections
   let existingData: Partial<PublishedCmsData> = {};
-  if (fs.existsSync(CMS_STORAGE_FILE)) {
+  if (globalForCms.__SERVER_PUBLISHED_CMS__) {
+    existingData = { ...globalForCms.__SERVER_PUBLISHED_CMS__ };
+  } else {
     try {
-      const raw = fs.readFileSync(CMS_STORAGE_FILE, 'utf-8');
-      existingData = JSON.parse(raw) || {};
+      const current = await getPublishedCmsData();
+      if (current?.data) {
+        existingData = current.data;
+      }
     } catch {
       // ignore
     }
-  }
-  if (globalForCms.__SERVER_PUBLISHED_CMS__) {
-    existingData = { ...existingData, ...globalForCms.__SERVER_PUBLISHED_CMS__ };
   }
 
   const payload: PublishedCmsData = sanitizePublishedCmsData({
@@ -237,23 +234,14 @@ export async function savePublishedCmsData(data: Partial<PublishedCmsData>): Pro
   // 3. KV Store
   const savedToKv = await saveToKvStore(payload);
 
-  // 4. Local File fallback only if Neon and KV are not available (prevents dev server HMR reload loops)
+  // 4. Local File backup is ALWAYS kept in sync with latest published state
   let savedToFile = false;
-  if (!savedToNeon && !savedToKv) {
+  try {
     const jsonContent = JSON.stringify(payload, null, 2);
-    for (let attempt = 0; attempt < 3; attempt++) {
-      try {
-        fs.writeFileSync(CMS_STORAGE_FILE, jsonContent, 'utf-8');
-        savedToFile = true;
-        break;
-      } catch (err) {
-        if (attempt === 2) {
-          console.warn('[CMS Server] Failed to write CMS storage file after 3 attempts:', err);
-        }
-        // Non-blocking async delay before retry (prevents freezing the Node event loop)
-        await new Promise<void>((resolve) => setTimeout(resolve, 35));
-      }
-    }
+    fs.writeFileSync(CMS_STORAGE_FILE, jsonContent, 'utf-8');
+    savedToFile = true;
+  } catch (err) {
+    console.warn('[CMS Server] Failed to write local CMS storage backup:', err);
   }
 
   return { savedToNeon, savedToKv, savedToFile };
