@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyRazorpayPayment } from '../../../../lib/razorpay';
 import { PaymentVerificationRequest } from '../../../../types/payment';
+import { saveOrderToNeon } from '../../../../lib/db/neon';
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,6 +17,17 @@ export async function POST(req: NextRequest) {
     const verification = verifyRazorpayPayment(body);
 
     if (verification.verified) {
+      // Persist / update verified payment record in Neon Postgres (PROD-04)
+      await saveOrderToNeon({
+        id: body.razorpay_order_id,
+        razorpayOrderId: body.razorpay_order_id,
+        razorpayPaymentId: body.razorpay_payment_id,
+        status: 'PAID',
+        items: [],
+      }).catch((err) => {
+        console.warn('[Payment Verify] Failed to update order in Neon:', err);
+      });
+
       return NextResponse.json({
         success: true,
         data: verification,
@@ -34,4 +46,3 @@ export async function POST(req: NextRequest) {
     );
   }
 }
-

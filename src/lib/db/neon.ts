@@ -1,5 +1,8 @@
-import { neon, NeonQueryFunction } from '@neondatabase/serverless';
+import { neon, neonConfig, NeonQueryFunction } from '@neondatabase/serverless';
 import { UserRole } from '../../types/auth';
+
+// Enable connection caching for optimal latency and reuse across serverless requests (NEO-04)
+neonConfig.fetchConnectionCache = true;
 
 let cachedSql: NeonQueryFunction<false, false> | null = null;
 let schemaInitialized = false;
@@ -347,6 +350,51 @@ export async function saveSettingToNeon(key: string, value: string): Promise<boo
   } catch (error) {
     console.error(`[Neon Postgres] Error saving setting ${key}:`, error);
     return false;
+  }
+}
+
+/**
+ * Persists shipping order and tracking state to Neon Postgres (BUG-08).
+ */
+export async function saveShippingOrderToNeon(orderId: string, trackingData: unknown): Promise<boolean> {
+  const sql = getDb();
+  if (!sql) return false;
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+    const dataJson = JSON.stringify(trackingData || {});
+    await sql`
+      INSERT INTO app_shipping_orders (order_id, tracking_data, updated_at)
+      VALUES (${orderId}, ${dataJson}::jsonb, CURRENT_TIMESTAMP)
+      ON CONFLICT (order_id)
+      DO UPDATE SET tracking_data = EXCLUDED.tracking_data, updated_at = CURRENT_TIMESTAMP;
+    `;
+    return true;
+  } catch (error) {
+    console.error(`[Neon Postgres] Error saving shipping order ${orderId}:`, error);
+    return false;
+  }
+}
+
+/**
+ * Retrieves shipping tracking record by orderId from Neon Postgres (BUG-08).
+ */
+export async function getShippingOrderFromNeon<T = unknown>(orderId: string): Promise<T | null> {
+  const sql = getDb();
+  if (!sql) return null;
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+    const rows = await sql`
+      SELECT tracking_data as "trackingData" FROM app_shipping_orders WHERE order_id = ${orderId} LIMIT 1;
+    `;
+    if (rows && rows.length > 0) {
+      return rows[0].trackingData as T;
+    }
+    return null;
+  } catch (error) {
+    console.error(`[Neon Postgres] Error reading shipping order ${orderId}:`, error);
+    return null;
   }
 }
 

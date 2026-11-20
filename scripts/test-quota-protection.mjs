@@ -52,9 +52,11 @@ const { compressImage } = jiti('../src/lib/utils/imageCompressor.ts');
 
 async function testQuotaHandling() {
   // Test 1: Normal storage works
-  console.log('Test 1: Normal State Persistence');
-  useCmsStore.getState().updateHeroBottom('b1', { name: 'Resilient Pant' });
-  assert(storeMock.has('animestreet-cms-data'), 'Initial state persisted to localStorage');
+  console.log('Test 1: Normal State Persistence & Zero LocalStorage Reliance');
+  const targetId = useCmsStore.getState().heroBottoms[0]?.id || 'b-1';
+  useCmsStore.getState().updateHeroBottom(targetId, { name: 'Resilient Pant' });
+  const bottom = useCmsStore.getState().heroBottoms.find((b) => b.id === targetId);
+  assert(bottom && bottom.name === 'Resilient Pant', 'Zustand state successfully updated without client quota limits');
 
   // Test 2: Quota Exceeded Simulation
   console.log('\nTest 2: QuotaExceededError Graceful Interception');

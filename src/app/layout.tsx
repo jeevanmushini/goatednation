@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { ErrorBoundary } from "../components/ErrorBoundary";
 import "./tailwind.css";
 
 export const viewport: Viewport = {
@@ -32,7 +33,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth" data-scroll-behavior="smooth">
       <body className="min-h-screen bg-[#FFFFFF] text-black font-sans antialiased selection:bg-[#FF4D00] selection:text-white">
-        {children}
+        <ErrorBoundary>
+          {children}
+        </ErrorBoundary>
       </body>
     </html>
   );

@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
 import { verifyJwt } from '../../../../lib/auth/jwt';
 import { getSettingFromNeon, saveSettingToNeon } from '../../../../lib/db/neon';
 
@@ -19,11 +17,16 @@ export async function GET(req: NextRequest) {
     const effectiveClientId = neonClientId || process.env.GOOGLE_CLIENT_ID || '';
     const hasSecret = !!(neonClientSecret || process.env.GOOGLE_CLIENT_SECRET);
 
+    // Mask Client ID to prevent sensitive credential exposure in API response (SEC-05)
+    const maskedClientId = effectiveClientId
+      ? `${effectiveClientId.slice(0, 10)}...${effectiveClientId.slice(-6)}`
+      : '';
+
     return NextResponse.json({
       success: true,
       google: {
         configured: !!(effectiveClientId && hasSecret),
-        clientId: effectiveClientId,
+        clientId: maskedClientId,
       },
       callbackUrl: `${process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/auth/oauth/callback`,
     });
@@ -45,7 +48,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { googleClientId, googleClientSecret } = body;
 
-    // 1. Persist to Neon Postgres app_settings (works in serverless and preserves state across deploys)
+    // Persist to Neon Postgres app_settings (works in serverless and preserves state across deploys, BUG-07)
     if (googleClientId !== undefined && googleClientId.trim() !== '') {
       await saveSettingToNeon('GOOGLE_CLIENT_ID', googleClientId.trim());
       process.env.GOOGLE_CLIENT_ID = googleClientId.trim();
@@ -53,31 +56,6 @@ export async function POST(req: NextRequest) {
     if (googleClientSecret !== undefined && googleClientSecret.trim() !== '') {
       await saveSettingToNeon('GOOGLE_CLIENT_SECRET', googleClientSecret.trim());
       process.env.GOOGLE_CLIENT_SECRET = googleClientSecret.trim();
-    }
-
-    // 2. Also update local .env.local if filesystem is writable (development)
-    try {
-      const envPath = path.join(process.cwd(), '.env.local');
-      if (fs.existsSync(envPath)) {
-        let envContent = fs.readFileSync(envPath, 'utf-8');
-        const updateEnvVar = (key: string, val: string | undefined) => {
-          if (!val) return;
-          const regex = new RegExp(`^${key}=.*$`, 'm');
-          if (regex.test(envContent)) {
-            envContent = envContent.replace(regex, `${key}=${val}`);
-          } else {
-            envContent += `\n${key}=${val}`;
-          }
-        };
-
-        if (googleClientId) updateEnvVar('GOOGLE_CLIENT_ID', googleClientId);
-        if (googleClientSecret) updateEnvVar('GOOGLE_CLIENT_SECRET', googleClientSecret);
-
-        fs.writeFileSync(envPath, envContent.trim() + '\n', 'utf-8');
-      }
-    } catch (fsErr) {
-      // In read-only serverless filesystems, Neon Postgres is the authoritative source
-      console.warn('[OAuth Config] File system is read-only, saved directly to Neon database:', fsErr);
     }
 
     return NextResponse.json({

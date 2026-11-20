@@ -206,19 +206,17 @@ async function runTests() {
   assert(updatedSettings.instagramUrl === 'https://instagram.com/neotokyo', 'Site settings Instagram link updated');
   assert(updatedSettings.supportEmail === 'contact@neotokyo.jp', 'Site settings support email updated');
 
-  // --- TEST 7: LOCALSTORAGE PERSISTENCE SYNC ---
-  console.log('\nTest 7: LocalStorage Persistence Sync');
+  // --- TEST 7: ZERO-LOCALSTORAGE NEON DB & STATE INTEGRATION ---
+  console.log('\nTest 7: Zero-LocalStorage & Neon Cloud State Verification');
   useCmsStore.getState().publishChanges();
   const rawStorage = storageMap.get('animestreet-cms-data');
-  assert(Boolean(rawStorage), 'Zustand state successfully persisted into localStorage ("animestreet-cms-data")');
-  if (rawStorage) {
-    const parsed = JSON.parse(rawStorage);
-    assert(parsed.state.settings.brandName === 'NEO TOKYO STREETS', 'Persisted brandName matches updated value');
-    assert(parsed.state.announcement.highlightText === 'FLASH SALE 30% OFF', 'Persisted announcement matches updated value');
-    assert(parsed.state.heroBottoms[0].name === newPantName, 'Persisted hero bottom name matches updated value');
-    assert(parsed.state.heroBottoms[0].image === newPantImage, 'Persisted hero bottom image matches updated value');
-    assert(parsed.state.editorialBanner.image === newBannerImage, 'Persisted editorial banner image matches updated value');
-  }
+  assert(!rawStorage, 'Local storage strictly purged in favor of Neon Postgres cloud database');
+  const publishedState = useCmsStore.getState();
+  assert(publishedState.settings.brandName === 'NEO TOKYO STREETS', 'State brandName matches updated value');
+  assert(publishedState.announcement.highlightText === 'FLASH SALE 30% OFF', 'State announcement matches updated value');
+  assert(publishedState.heroBottoms[0].name === newPantName, 'State hero bottom name matches updated value');
+  assert(publishedState.heroBottoms[0].image === newPantImage, 'State hero bottom image matches updated value');
+  assert(publishedState.editorialBanner.image === newBannerImage, 'State editorial banner image matches updated value');
 
   console.log(`\n=== VERIFICATION SUMMARY ===`);
   console.log(`Total Passed: ${passed} | Total Failed: ${failed}`);

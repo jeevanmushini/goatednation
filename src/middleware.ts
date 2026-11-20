@@ -13,6 +13,10 @@ export function middleware(request: NextRequest) {
       'Permissions-Policy',
       'camera=(), microphone=(), geolocation=()'
     );
+    res.headers.set(
+      'Content-Security-Policy',
+      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://res.cloudinary.com https://cdn.shopify.com https://images.unsplash.com https://lh3.googleusercontent.com https://zenin.co.in https://www.zenin.co.in; connect-src 'self' https://api.razorpay.com https://lumberjack.razorpay.com; font-src 'self' data:; frame-src 'self' https://api.razorpay.com;"
+    );
     return res;
   };
 

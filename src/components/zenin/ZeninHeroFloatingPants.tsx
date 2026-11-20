@@ -40,9 +40,9 @@ const DESKTOP_POSITIONS: Record<number, { x: number; y: number; scale: number; r
 
 const MOBILE_POSITIONS: Record<number, { x: number; y: number; scale: number; rotate: number; zIndex: number; opacity: number }> = {
   [-2]: { x: -84, y: 22, scale: 0.58, rotate: -12, zIndex: 10, opacity: 0.25 },
-  [-1]: { x: -52, y: 14, scale: 0.82, rotate: -6, zIndex: 20, opacity: 0.75 },
+  [-1]: { x: -56, y: 14, scale: 0.82, rotate: -6, zIndex: 20, opacity: 0.75 },
   [0]: { x: 0, y: 0, scale: 1.12, rotate: 0, zIndex: 30, opacity: 1.0 },
-  [1]: { x: 52, y: 14, scale: 0.82, rotate: 6, zIndex: 20, opacity: 0.75 },
+  [1]: { x: 56, y: 14, scale: 0.82, rotate: 6, zIndex: 20, opacity: 0.75 },
   [2]: { x: 84, y: 22, scale: 0.58, rotate: 12, zIndex: 10, opacity: 0.25 },
 };
 

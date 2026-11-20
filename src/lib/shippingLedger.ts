@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { saveShippingOrderToNeon, getShippingOrderFromNeon } from './db/neon';
 
 export interface ShipmentRecord {
   orderId: string;
@@ -13,22 +14,40 @@ export interface ShipmentRecord {
 
 const LEDGER_FILE = path.join(process.cwd(), '.shipment_ledger.json');
 
+const globalForLedger = globalThis as unknown as {
+  __SHIPMENT_LEDGER__?: Record<string, ShipmentRecord>;
+};
+
+if (!globalForLedger.__SHIPMENT_LEDGER__) {
+  globalForLedger.__SHIPMENT_LEDGER__ = {};
+}
+
 function readLedger(): Record<string, ShipmentRecord> {
+  if (globalForLedger.__SHIPMENT_LEDGER__ && Object.keys(globalForLedger.__SHIPMENT_LEDGER__).length > 0) {
+    return globalForLedger.__SHIPMENT_LEDGER__;
+  }
   try {
     if (fs.existsSync(LEDGER_FILE)) {
-      return JSON.parse(fs.readFileSync(LEDGER_FILE, 'utf-8'));
+      const parsed = JSON.parse(fs.readFileSync(LEDGER_FILE, 'utf-8'));
+      globalForLedger.__SHIPMENT_LEDGER__ = parsed;
+      return parsed;
     }
   } catch {
     // fallback
   }
-  return {};
+  return globalForLedger.__SHIPMENT_LEDGER__ || {};
 }
 
 function writeLedger(data: Record<string, ShipmentRecord>) {
+  globalForLedger.__SHIPMENT_LEDGER__ = data;
+  if (process.env.NODE_ENV === 'production') {
+    // Serverless read-only filesystem: Neon Postgres is primary
+    return;
+  }
   try {
     fs.writeFileSync(LEDGER_FILE, JSON.stringify(data, null, 2), 'utf-8');
   } catch (err) {
-    console.warn('[ShipmentLedger] Failed to persist ledger:', err);
+    console.warn('[ShipmentLedger] Failed to persist local ledger backup:', err);
   }
 }
 
@@ -73,6 +92,14 @@ export function recordShipmentEvent(eventData: {
   ledger[canonicalKey] = existing;
 
   writeLedger(ledger);
+
+  // Asynchronously persist to Neon Postgres for durability across instances (BUG-08)
+  if (existing.orderId) {
+    saveShippingOrderToNeon(existing.orderId, existing).catch((err) => {
+      console.warn('[ShipmentLedger] Failed to sync shipping record to Neon:', err);
+    });
+  }
+
   return existing;
 }
 
@@ -83,4 +110,22 @@ export function getShipmentRecord(key: string): ShipmentRecord | null {
     (r) => r.orderId === key || r.awbCode === key || r.shipmentId === key
   );
   return found || null;
+}
+
+export async function getShipmentRecordAsync(key: string): Promise<ShipmentRecord | null> {
+  const local = getShipmentRecord(key);
+  if (local) return local;
+
+  try {
+    const neonRecord = await getShippingOrderFromNeon<ShipmentRecord>(key);
+    if (neonRecord) {
+      const ledger = readLedger();
+      const canonicalKey = neonRecord.orderId || key;
+      ledger[canonicalKey] = neonRecord;
+      return neonRecord;
+    }
+  } catch (err) {
+    console.warn('[ShipmentLedger] Failed to retrieve shipping record from Neon:', err);
+  }
+  return null;
 }
