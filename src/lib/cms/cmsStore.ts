@@ -551,6 +551,8 @@ if (typeof window !== 'undefined') {
     localStorage.removeItem('goatednation_cms_v1');
     localStorage.removeItem('gn_auth_user');
     localStorage.removeItem('gn_auth_token');
+    localStorage.removeItem('goatednation-cart-storage');
+    localStorage.removeItem('goatednation-wishlist-storage');
   } catch {
     // ignore
   }

@@ -36,7 +36,7 @@ export const useWishlistStore = create<WishlistState>()(
     }),
     {
       name: 'goatednation-wishlist-storage',
-      storage: createJSONStorage(() => (typeof window !== 'undefined' ? localStorage : {
+      storage: createJSONStorage(() => (typeof window !== 'undefined' ? sessionStorage : {
         getItem: () => null,
         setItem: () => {},
         removeItem: () => {},

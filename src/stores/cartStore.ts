@@ -135,7 +135,7 @@ export const useCartStore = create<CartState>()(
     }),
     {
       name: 'goatednation-cart-storage',
-      storage: createJSONStorage(() => (typeof window !== 'undefined' ? localStorage : {
+      storage: createJSONStorage(() => (typeof window !== 'undefined' ? sessionStorage : {
         getItem: () => null,
         setItem: () => {},
         removeItem: () => {},
