@@ -82,8 +82,8 @@ export default function AdminProductsPage() {
     setImage1(p.images[0] || '');
     setImage2(p.images[1] || '');
     setDescription(p.description);
-    setGsm(p.details.gsm);
-    setFabric(p.details.fabric);
+    setGsm(p.details?.gsm || '280 GSM Heavyweight French Terry');
+    setFabric(p.details?.fabric || '100% Combed Bio-Washed Cotton');
     setStockCount(p.stockCount.toString());
     setIsModalOpen(true);
   };
@@ -237,7 +237,7 @@ export default function AdminProductsPage() {
                       <div className="min-w-0">
                         <div className="font-bold text-black truncate max-w-xs font-mono text-[11px]">{p.title}</div>
                         <div className="text-[10px] text-[#777777] font-mono">
-                          {p.details.gsm.split(' ')[0]} GSM
+                          {p.details?.gsm ? `${p.details.gsm.split(' ')[0]} GSM` : 'Heavyweight'}
                         </div>
                       </div>
                     </div>

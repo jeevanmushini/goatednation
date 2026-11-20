@@ -568,19 +568,19 @@ export default function ProductDetailPage({
                 <div className="grid grid-cols-2 gap-3 text-xs font-mono">
                   <div>
                     <span className="text-[#888888] block text-[10px]">WEIGHT / GSM</span>
-                    <span className="font-semibold text-black">{product.details.gsm}</span>
+                    <span className="font-semibold text-black">{product.details?.gsm || '280 GSM Heavyweight'}</span>
                   </div>
                   <div>
                     <span className="text-[#888888] block text-[10px]">FABRIC COMPOSITION</span>
-                    <span className="font-semibold text-black">{product.details.fabric}</span>
+                    <span className="font-semibold text-black">{product.details?.fabric || '100% Combed Cotton'}</span>
                   </div>
                   <div>
                     <span className="text-[#888888] block text-[10px]">FIT SILHOUETTE</span>
-                    <span className="font-semibold text-black">{product.details.fit}</span>
+                    <span className="font-semibold text-black">{product.details?.fit || 'Signature Oversized Drop-Shoulder'}</span>
                   </div>
                   <div>
                     <span className="text-[#888888] block text-[10px]">PRINT TECHNIQUE</span>
-                    <span className="font-semibold text-black">{product.details.printType}</span>
+                    <span className="font-semibold text-black">{product.details?.printType || 'High-Density Screen Print'}</span>
                   </div>
                 </div>
               </div>
