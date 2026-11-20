@@ -15,7 +15,12 @@ interface SearchModalProps {
 export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
   const [query, setQuery] = useState('');
   const cmsProducts = useCmsStore((state) => state.products);
-  const allProducts = cmsProducts.length > 0 ? cmsProducts : PRODUCTS;
+  const deletedProductIds = useCmsStore((state) => state.deletedProductIds || []);
+  const allProducts = useMemo(() => {
+    const deletedSet = new Set(deletedProductIds);
+    const catalog = cmsProducts.length > 0 ? cmsProducts : PRODUCTS;
+    return catalog.filter((p) => !deletedSet.has(p.id));
+  }, [cmsProducts, deletedProductIds]);
 
   const results = useMemo(() => {
     if (!query.trim()) return [];

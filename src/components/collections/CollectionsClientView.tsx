@@ -91,24 +91,17 @@ export default function CollectionsClientView({
     useCmsStore.getState().syncFromServer(true);
   }, []);
 
-  // Combine default Zenin items with any CMS items edited in Admin
+  const deletedProductIds = useCmsStore((state) => state.deletedProductIds || []);
+
+  // Combine default Zenin items with any CMS items edited in Admin, strictly honoring deletions
   const sourceProducts: Product[] = useMemo(() => {
-    const list = [...ZENIN_ALL_PRODUCTS];
+    const deletedSet = new Set(deletedProductIds);
     const incoming = cmsProducts && cmsProducts.length > 0 ? cmsProducts : (initialProducts || []);
     if (incoming && incoming.length > 0) {
-      const customDrops: Product[] = [];
-      incoming.forEach((cp) => {
-        const existingIdx = list.findIndex((p) => p.id === cp.id || p.slug === cp.slug);
-        if (existingIdx !== -1) {
-          list[existingIdx] = cp;
-        } else {
-          customDrops.push(cp);
-        }
-      });
-      return [...customDrops, ...list];
+      return incoming.filter((p) => !deletedSet.has(p.id));
     }
-    return list;
-  }, [cmsProducts, initialProducts]);
+    return ZENIN_ALL_PRODUCTS.filter((p) => !deletedSet.has(p.id));
+  }, [cmsProducts, initialProducts, deletedProductIds]);
 
   // Max price among available products
   const highestProductPrice = useMemo(() => {

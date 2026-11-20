@@ -47,6 +47,7 @@ interface CmsState {
   stackCards: CmsStackCardItem[];
   editorialBanner: CmsEditorialBanner;
   announcement: CmsAnnouncement;
+  deletedProductIds: string[];
   lastPublishedAt: string;
   isDraft: boolean;
 
@@ -154,6 +155,7 @@ function triggerServerSync(state: Partial<CmsState>, immediate = false): Promise
           stackCards: state.stackCards,
           editorialBanner: state.editorialBanner,
           announcement: state.announcement,
+          deletedProductIds: state.deletedProductIds || [],
         }),
       });
 
@@ -202,6 +204,7 @@ const createCmsStore = () =>
       stackCards: INITIAL_STACK_ITEMS,
       editorialBanner: INITIAL_EDITORIAL_BANNER,
       announcement: INITIAL_ANNOUNCEMENT,
+      deletedProductIds: [],
       lastPublishedAt: '2026-11-06T12:00:00Z',
       isDraft: false,
 
@@ -354,8 +357,9 @@ const createCmsStore = () =>
 
       deleteProduct: (id) => {
         const updated = get().products.filter((p) => p.id !== id);
-        set({ products: updated, isDraft: true });
-        triggerServerSync({ ...get(), products: updated });
+        const updatedDeleted = Array.from(new Set([...(get().deletedProductIds || []), id]));
+        set({ products: updated, deletedProductIds: updatedDeleted, isDraft: true });
+        triggerServerSync({ ...get(), products: updated, deletedProductIds: updatedDeleted });
       },
 
       updateBanner: (id, banner) => {
@@ -446,7 +450,15 @@ const createCmsStore = () =>
           isDraft: false,
           lastPublishedAt: publishedAt,
         });
-        return await triggerServerSync({ ...get(), isDraft: false, lastPublishedAt: publishedAt }, true);
+        return await triggerServerSync(
+          {
+            ...get(),
+            isDraft: false,
+            lastPublishedAt: publishedAt,
+            deletedProductIds: get().deletedProductIds || [],
+          },
+          true
+        );
       },
 
       resetToDefaults: async () => {
@@ -485,17 +497,24 @@ const createCmsStore = () =>
               const serverData = json.data;
               const current = get();
 
-              // Defensive product merge: ALWAYS preserve custom drops from both server AND current client state
+              const deletedSet = new Set([
+                ...(serverData.deletedProductIds || []),
+                ...(current.deletedProductIds || []),
+              ]);
+
+              // Defensive product merge: ALWAYS preserve custom drops, but strictly EXCLUDE any deleted products
               const productMap = new Map<string, Product>();
               if (Array.isArray(serverData.products)) {
                 for (const p of serverData.products) {
-                  if (p?.id) productMap.set(p.id, p);
+                  if (p?.id && !deletedSet.has(p.id)) {
+                    productMap.set(p.id, p);
+                  }
                 }
               }
-              // Also ensure any custom drops created on client are not lost
+              // Also ensure any non-deleted custom drops in client memory are preserved
               if (Array.isArray(current.products)) {
                 for (const p of current.products) {
-                  if (p?.id && (!p.id.startsWith('zn-') || p.id.startsWith('as-'))) {
+                  if (p?.id && !deletedSet.has(p.id) && (!p.id.startsWith('zn-') || p.id.startsWith('as-'))) {
                     if (!productMap.has(p.id)) {
                       productMap.set(p.id, p);
                     }
@@ -505,13 +524,15 @@ const createCmsStore = () =>
               const customDrops: Product[] = [];
               const baseDrops: Product[] = [];
               for (const p of productMap.values()) {
-                if (!p.id.startsWith('zn-') || p.id.startsWith('as-')) {
-                  customDrops.push(p);
-                } else {
-                  baseDrops.push(p);
+                if (!deletedSet.has(p.id)) {
+                  if (!p.id.startsWith('zn-') || p.id.startsWith('as-')) {
+                    customDrops.push(p);
+                  } else {
+                    baseDrops.push(p);
+                  }
                 }
               }
-              const serverProducts = productMap.size > 0 ? [...customDrops, ...baseDrops] : current.products;
+              const serverProducts = productMap.size > 0 ? [...customDrops, ...baseDrops] : current.products.filter(p => !deletedSet.has(p.id));
 
               const serverHeroBottoms =
                 Array.isArray(serverData.heroBottoms) && serverData.heroBottoms.length > 0
@@ -546,6 +567,7 @@ const createCmsStore = () =>
                 stackCards: serverData.stackCards || prev.stackCards,
                 editorialBanner: serverData.editorialBanner || prev.editorialBanner,
                 announcement: serverData.announcement || prev.announcement,
+                deletedProductIds: Array.from(deletedSet),
                 lastPublishedAt: serverData.lastPublishedAt || prev.lastPublishedAt,
                 isDraft: false,
               }));
@@ -583,7 +605,7 @@ if (typeof window !== 'undefined') {
 
   (window as unknown as { __CMS_STORE__: CmsStoreType }).__CMS_STORE__ = useCmsStore;
   // Automatically sync with published server CMS state on device load
-  if (window.location?.origin) {
+  if (typeof window !== 'undefined' && typeof window.addEventListener === 'function' && window.location?.origin) {
     setTimeout(() => {
       try {
         useCmsStore.getState().syncFromServer?.();

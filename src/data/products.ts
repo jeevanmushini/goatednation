@@ -14,9 +14,9 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 30,
     "badge": "SAVE 65%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web1s.jpg?v=1793190214",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web3-6_7cf68fc5-bb42-4e91-acf6-665b418ba0c1.jpg?v=1793189196",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web2-6_0714c673-deaf-4f44-9e9c-588871472530.jpg?v=1793189196"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179397/goatednation/products/prod-migrated-1-95875.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179397/goatednation/products/prod-migrated-2-95898.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179397/goatednation/products/prod-migrated-3-95899.jpg"
     ],
     "description": "/ 280 GSM Woven Suiting Fabric with a jacquard-like finish . / Greenish-Black Shade with subtle green undertones. / Inner Lining for added comfort. / Two Functional Pockets for essentials. / Japanese Knot Closures for a traditional aesthetic. / In...",
     "details": {
@@ -62,11 +62,11 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 35,
     "badge": "SAVE 61%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W1-23.jpg?v=1791715144",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-25.jpg?v=1791715143",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-23.jpg?v=1791715143",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/s4.jpg?v=1791715144",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-23.jpg?v=1791715144"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179397/goatednation/products/prod-migrated-4-95899.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179397/goatednation/products/prod-migrated-5-95900.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179397/goatednation/products/prod-migrated-6-95900.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179397/goatednation/products/prod-migrated-7-95901.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179397/goatednation/products/prod-migrated-8-95902.jpg"
     ],
     "description": "WAFFLE CHERRY BLOSSOM / FULL SLEEVE FREE ANIME STICKERS Model Wearing - M size ( Height 5.6f ) Quality: FULL EMBROIDERY Back and Front. Over 200,000+ Embroidery Stitches Boxy Baggy Fit 240 GSM Heavy Fabric . Oversized fit, UNISEX",
     "details": {
@@ -112,12 +112,12 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 40,
     "badge": "SAVE 61%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/a1ss.jpg?v=1776087023",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/a4-3.jpg?v=1776087106",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/a7.jpg?v=1776087106",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/a8.jpg?v=1776087023",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/a3-3.jpg?v=1776087023",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/a6.jpg?v=1776087023"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179398/goatednation/products/prod-migrated-9-97683.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179398/goatednation/products/prod-migrated-10-97684.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179398/goatednation/products/prod-migrated-11-97684.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179398/goatednation/products/prod-migrated-12-97685.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179398/goatednation/products/prod-migrated-13-97685.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179398/goatednation/products/prod-migrated-14-97685.jpg"
     ],
     "description": "MODEL WEARING : M SIZE MODEL HEIGHT : 5.6F Quality: 350 GSM Heavyweight Fabric Unisex Fit (Designed for Both Men &amp; Women) 100% Pure Cotton Fleece (Soft &amp; Breathable) Heavy Cherry Blossom Embroidery Work Done in Front Baggy / Relaxed Fit fo...",
     "details": {
@@ -163,13 +163,13 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 45,
     "badge": "SAVE 36%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/berserkbagmock.jpg?v=1793100236",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/berserkbag1.jpg?v=1793099780",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W10.jpg?v=1793099665",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W9-4.jpg?v=1793099665",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W8-5.jpg?v=1793099665",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W7-5.jpg?v=1793099665",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W6-8.jpg?v=1793099665"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179398/goatednation/products/prod-migrated-15-97685.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179398/goatednation/products/prod-migrated-16-97685.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179400/goatednation/products/prod-migrated-17-99307.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179400/goatednation/products/prod-migrated-18-99308.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179400/goatednation/products/prod-migrated-19-99308.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179400/goatednation/products/prod-migrated-20-99308.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179400/goatednation/products/prod-migrated-21-99308.jpg"
     ],
     "description": "Height: 41.91 cms | Width: 34.29 cms | Depth: 7.62 cms Height: 16.5 INCH | Width: 13.5 INCH | Depth: 3 INCH Weight: 500 grams Capacity: 15L What’s in the box : - FREE WOVEN KEYCHAIN &amp; METAL KEYCHAIN - FREE ANIME STICKERS - FREE WATER-PROOF DRA...",
     "details": {
@@ -215,11 +215,11 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 50,
     "badge": "SAVE 64%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2s-2.jpg?v=1786656291",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-20.jpg?v=1786655641",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web3-3.jpg?v=1786656817",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web4_37b98e8d-7752-485e-a9ea-0f241f9fe953.jpg?v=1786656818",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web5-2.jpg?v=1786656819"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179400/goatednation/products/prod-migrated-22-99309.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179400/goatednation/products/prod-migrated-23-99309.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179400/goatednation/products/prod-migrated-24-99309.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179402/goatednation/products/prod-migrated-25-887.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179402/goatednation/products/prod-migrated-26-888.jpg"
     ],
     "description": "BUY AOT SUEDE / CROSSBODY BACKPACK. Height: 41.91 cms | Width: 34.29 cms | Depth: 7.62 cms Height: 17.5 INCH | Width: 13.5 INCH | Depth: 3 INCH Weight: 500 grams Capacity: 10L What’s in the box : - FREE STEEL KEYCHAIN ATTACHED - FREE ANIME STICKER...",
     "details": {
@@ -265,8 +265,8 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 55,
     "badge": "SAVE 48%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/aizenweb1.jpg?v=1793096538",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/aizenweb2.jpg?v=1793096538"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179401/goatednation/products/prod-migrated-27-888.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179401/goatednation/products/prod-migrated-28-888.jpg"
     ],
     "description": "Premium 14 OZ Denim Fabric – Heavyweight denim for a structured, durable, premium feel. Double-Layer Construction – Added layering for a substantial build and elevated finish. Satin Inner Lining – Smooth, comfortable satin lining on the inside. Fr...",
     "details": {
@@ -312,9 +312,9 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 60,
     "badge": "SAVE 37%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web1-2.jpg?v=1793096503",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web2-2.jpg?v=1793098314",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web3-2.jpg?v=1793098314"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179402/goatednation/products/prod-migrated-29-889.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179401/goatednation/products/prod-migrated-30-889.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179402/goatednation/products/prod-migrated-31-889.jpg"
     ],
     "description": "MODEL WEARING : M SIZE MODEL HEIGHT : 5.6F Quality: 350 GSM Heavyweight Fabric Unisex Fit (Designed for Both Men &amp; Women) 100% Pure Cotton (Soft &amp; Breathable) Love Embroidery Work Done in Front Baggy / Relaxed Fit for Maximum Comfort Draws...",
     "details": {
@@ -360,11 +360,11 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 65,
     "badge": "SAVE 53%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-52.jpg?v=1793096998",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-62.jpg?v=1793096998",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w82.jpg?v=1793096998",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w92.jpg?v=1793096998",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W102.jpg?v=1793096998"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179401/goatednation/products/prod-migrated-32-889.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179403/goatednation/products/prod-migrated-33-2535.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179403/goatednation/products/prod-migrated-34-2535.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179403/goatednation/products/prod-migrated-35-2535.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179403/goatednation/products/prod-migrated-36-2536.jpg"
     ],
     "description": "Height: 41.91 cms | Width: 34.29 cms | Depth: 7.62 cms Height: 17.5 INCH | Width: 13.5 INCH | Depth: 3 INCH Weight: 600 grams Capacity: 10L What’s in the box : - FREE ANIME STICKERS - FREE WATER-PROOF DRAWSTING BAG - PRODUCT. About this Bag : • Fi...",
     "details": {
@@ -410,10 +410,10 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 70,
     "badge": "SAVE 51%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/susukepantweb1.jpg?v=1793096527",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/susuke_pant_web2.jpg?v=1793110174",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/sasuke_web4_58b5b64d-5930-4310-8cb1-b5d73ea90088.jpg?v=1793110175",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web5_150a0dea-6f49-4825-b9b8-de9e33c60fa5.jpg?v=1793110175"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179403/goatednation/products/prod-migrated-37-2536.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179403/goatednation/products/prod-migrated-38-2536.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179403/goatednation/products/prod-migrated-39-2536.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179403/goatednation/products/prod-migrated-40-2536.jpg"
     ],
     "description": "MODEL WEARING : M SIZE MODEL HEIGHT : 5.6F Quality: 350 GSM Heavyweight Fabric Unisex Fit (Designed for Both Men &amp; Women) 100% Pure Cotton (Soft &amp; Breathable) Sasuke Curse Embroidery Work Done in Front Baggy / Relaxed Fit for Maximum Comfo...",
     "details": {
@@ -459,15 +459,15 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 75,
     "badge": "SAVE 36%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w11-min_c44d4678-00ca-4718-8438-2db30fdd23ee.jpg?v=1761481769",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w9-min_59d235fb-d700-4818-8de3-6a4991ed234c.jpg?v=1761481769",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-min_02c53483-94df-4ba2-ae27-52dfe29a7b85.jpg?v=1761481769",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-min_3c5d2e1a-b724-409b-9205-438a70dd6c7f.jpg?v=1761481769",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-min_93f2082b-1315-49cb-bf7e-4924374282cc.jpg?v=1761481769",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-min_7623515b-b94f-42bd-9fa3-4bd0e3ed957a.jpg?v=1761481769",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-min_676a679f-6690-4b21-a158-4466ff7aebb8.jpg?v=1761481769",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w7-min_2427ed80-ea05-4056-b250-36e22f524c27.jpg?v=1761481769",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w8-min_fecb2770-7617-49c8-b8b3-44d4c7530ff8.jpg?v=1761481769"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179405/goatednation/products/prod-migrated-41-3889.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179405/goatednation/products/prod-migrated-42-3890.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179405/goatednation/products/prod-migrated-43-3890.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179405/goatednation/products/prod-migrated-44-3890.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179405/goatednation/products/prod-migrated-45-3890.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179405/goatednation/products/prod-migrated-46-3891.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179405/goatednation/products/prod-migrated-47-3891.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179405/goatednation/products/prod-migrated-48-3891.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179407/goatednation/products/prod-migrated-49-5932.jpg"
     ],
     "description": "ZORO TACTICAL / BACKPACK Height: 41.91 cms | Width: 34.29 cms | Depth: 12.7 cms Height: 16.5 INCH | Width: 13.5 INCH | Depth: 5 INCH Weight: 800 grams Capacity: 20L What’s in the box : - FREE ZORO WOVEN KEYCHAIN - FREE ANIME STICKERS - FREE ZENIN ...",
     "details": {
@@ -513,9 +513,9 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 80,
     "badge": "SAVE 53%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-22.jpg?v=1788043383",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-22.jpg?v=1788048661",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-17.jpg?v=1788049067"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179406/goatednation/products/prod-migrated-50-5932.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179406/goatednation/products/prod-migrated-51-5933.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179406/goatednation/products/prod-migrated-52-5933.jpg"
     ],
     "description": "Built for everyday movement, the Grey Utility Baggy Shorts combine a relaxed oversized silhouette with functional utility details. Crafted from 35 0 GSM premium heavyweight cotton , they feature oversized cargo pockets, a wide-leg baggy fit, and a...",
     "details": {
@@ -561,9 +561,9 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 85,
     "badge": "SAVE 53%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-22.jpg?v=1788045141",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-19.jpg?v=1788048679",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w7-11.jpg?v=1788049049"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179406/goatednation/products/prod-migrated-53-5933.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179406/goatednation/products/prod-migrated-54-5933.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179406/goatednation/products/prod-migrated-55-5933.jpg"
     ],
     "description": "Built for everyday movement, the Black Utility Baggy Shorts combine a relaxed oversized silhouette with functional utility details. Crafted from 35 0 GSM premium heavyweight cotton , they feature oversized cargo pockets, a wide-leg baggy fit, and ...",
     "details": {
@@ -609,12 +609,12 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 90,
     "badge": "SAVE 60%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1s-2.jpg?v=1784849633",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-20.jpg?v=1784848964",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w7-10.jpg?v=1784848964",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-21.jpg?v=1784848964",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-16.jpg?v=1784848964",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-18.jpg?v=1784848964"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179406/goatednation/products/prod-migrated-56-5933.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179408/goatednation/products/prod-migrated-57-7391.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179408/goatednation/products/prod-migrated-58-7392.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179408/goatednation/products/prod-migrated-59-7392.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179408/goatednation/products/prod-migrated-60-7393.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179408/goatednation/products/prod-migrated-61-7393.jpg"
     ],
     "description": "PHANTOM TROUPE SUEDE / BACKPACK Height: 43.18 cms | Width: 27.94 cms | Depth: 12.7 cms Height: 17 INCH | Width: 11 INCH | Depth: 5 INCH Weight: 800 grams Capacity: 12L What’s in the box : - FREE STAINLESS STEEL CROSS KEYCHAIN ( ATTACHED WITH THE B...",
     "details": {
@@ -660,10 +660,10 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 30,
     "badge": "SAVE 45%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-18.jpg?v=1781256581",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W3-18.jpg?v=1781256224",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-17.jpg?v=1781255506",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W4-15.jpg?v=1781256224"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179408/goatednation/products/prod-migrated-62-7393.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179408/goatednation/products/prod-migrated-63-7393.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179408/goatednation/products/prod-migrated-64-7393.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179410/goatednation/products/prod-migrated-65-9203.jpg"
     ],
     "description": "- FREE ANIME STICKERS Quality: 100% Pure Terry cotton . Premium High Detail dragon embroidery on both sleeves HD screen print on the front premium 240 GSM cotton . Screen Print on Back. Oversized fit, UNISEX This Design is created by Zenin for fan...",
     "details": {
@@ -709,11 +709,11 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 35,
     "badge": "SAVE 44%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1_607bde10-f664-4bd4-82f5-589c5c6c3498.jpg?v=1773958832",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2_c62ecaa8-fb16-4580-82ed-d0d3a3c79ab9.jpg?v=1773958833",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W3-14.jpg?v=1773959658",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-15.jpg?v=1773959673",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-13.jpg?v=1773959673"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179409/goatednation/products/prod-migrated-66-9204.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179410/goatednation/products/prod-migrated-67-9204.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179410/goatednation/products/prod-migrated-68-9204.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179410/goatednation/products/prod-migrated-69-9205.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179410/goatednation/products/prod-migrated-70-9205.jpg"
     ],
     "description": "MODEL WEARING : M SIZE MODEL HEIGHT : 5.6F Description . Non-stretchy fabric . 2 functional pockets at side + 2 functional pockets at back . Wide legs . Low rise Color : BLACK",
     "details": {
@@ -759,13 +759,13 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 40,
     "badge": "SAVE 16%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W2-min_d3a50f54-bdd3-407f-af0f-09d2c130239f.jpg?v=1766193406",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W4-min_1c6af2b5-e91a-48d6-8e94-6560b9a7ab3d.jpg?v=1766193407",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W1-min_57fb87b9-dd2b-42e9-9076-069c8bdc27d9.jpg?v=1766193406",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W3-min_ff47a289-e944-4306-bf3a-8c82624bbb04.jpg?v=1766193407",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W5-min_df01b92e-12db-4745-894c-126b26e99650.jpg?v=1766193407",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/male_necklace_shape_web.jpg?v=1766193853",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/female_necklace_size_web.jpg?v=1766193853"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179410/goatednation/products/prod-migrated-71-9205.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179410/goatednation/products/prod-migrated-72-9205.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179411/goatednation/products/prod-migrated-73-10897.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179412/goatednation/products/prod-migrated-74-10897.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179412/goatednation/products/prod-migrated-75-10898.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179411/goatednation/products/prod-migrated-76-10898.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179411/goatednation/products/prod-migrated-77-10898.jpg"
     ],
     "description": "BUY CHROME CORE / PENDANT WITH CHAIN Chrome Core Pendant with Chain — Crafted from high-quality Stainless Steel , this striking pendant captures a bold, minimalist look. Pendant size: Height 40 mm × Width 30 mm × Thickness 1 mm Chain size: 22 inch...",
     "details": {
@@ -811,10 +811,10 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 17,
     "badge": "SAVE 50%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/ChatGPTImageMar14_2026at05_14_19AM.png?v=1793269355",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-12.jpg?v=1793269354",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-11.jpg?v=1793269354",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-13.jpg?v=1793269354"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179411/goatednation/products/prod-migrated-78-10898.png",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179411/goatednation/products/prod-migrated-79-10898.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179411/goatednation/products/prod-migrated-80-10898.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179413/goatednation/products/prod-migrated-81-12704.jpg"
     ],
     "description": "Note: Model is wearing an black inner, Total Length : 12 inch Type : Crew Length Gender : Unisex Size : Free Size (UK 5 to UK 9) Material : 74% Cotton, 24% Nylon, 2% Elastic Quantity : Pack of 1 Pairs (1N) This Design is created by Zenin for fans ...",
     "details": {
@@ -860,9 +860,9 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 24,
     "badge": "SAVE 50%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/ChatGPTImageMar14_2026at06_53_10AM.png?v=1793269209",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/c2.jpg?v=1793269208",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/c4.jpg?v=1793269208"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179413/goatednation/products/prod-migrated-82-12704.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179413/goatednation/products/prod-migrated-83-12704.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179413/goatednation/products/prod-migrated-84-12705.jpg"
     ],
     "description": "Note: Model is wearing an black inner, Total Length : 12 inch Type : Crew Length Gender : Unisex Size : Free Size (UK 5 to UK 9) Material : 74% Cotton, 24% Nylon, 2% Elastic Quantity : Pack of 1 Pairs (1N) This Design is created by Zenin for fans ...",
     "details": {
@@ -908,11 +908,11 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 31,
     "badge": "SAVE 47%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_4786web4-min.jpg?v=1793268797",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web10-min.jpg?v=1793268797",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_4786web2-min-2.jpg?v=1793268797",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web7-min.jpg?v=1793268797",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_16522web-min.jpg?v=1793268797"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179413/goatednation/products/prod-migrated-85-12705.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179413/goatednation/products/prod-migrated-86-12705.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179413/goatednation/products/prod-migrated-87-12705.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179413/goatednation/products/prod-migrated-88-12705.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179416/goatednation/products/prod-migrated-89-14973.jpg"
     ],
     "description": "350 GSM POLY COTTON ZIPPER DOUBLE HOOD FULL MASKED ZIP PUFF PRINTING ON SLEEVE AND BACK",
     "details": {
@@ -958,10 +958,10 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 38,
     "badge": "SAVE 53%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_5779WEB-min.jpg?v=1793268582",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_5765web-min.jpg?v=1793268581",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_5840web-min.jpg?v=1793268582",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_5790web-min.jpg?v=1793268582"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179415/goatednation/products/prod-migrated-90-14974.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179415/goatednation/products/prod-migrated-91-14974.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179416/goatednation/products/prod-migrated-92-14974.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179416/goatednation/products/prod-migrated-93-14974.jpg"
     ],
     "description": "FREE ANIME STICKERS Quality: 100% Pure Terry cotton Double Biowashed &amp; Siliconwashed 240 GSM density Puff and Screenprint quality This Design is created by Zenin for fans and not a licensed Product.",
     "details": {
@@ -1007,9 +1007,9 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 45,
     "badge": "SAVE 46%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/tojioutfita1.jpg?v=1793108763",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_8999.jpg?v=1793108390",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-min_47b0586c-167a-440c-8846-cc996b7c57ad.jpg?v=1793096461"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179415/goatednation/products/prod-migrated-94-14974.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179415/goatednation/products/prod-migrated-95-14975.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179415/goatednation/products/prod-migrated-96-14975.jpg"
     ],
     "description": "Premium stretchable compression fabric Body-hugging athletic fit Raglan short sleeves Minimal ZENIN chest logo Ideal for gym, workouts, and everyday wear",
     "details": {
@@ -1055,11 +1055,11 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 52,
     "badge": "SAVE 57%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/WEB7-min-2.jpg?v=1793108608",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/WEB1-min_87ff8e04-f135-4bf3-b3e2-4c20755f0dcf.jpg?v=1793108608",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/WEB5-min_2599cdbd-9a20-43b9-ae6b-991f7379273d.jpg?v=1793108608",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/WEB4-min_2977c024-7114-4f44-b49a-a0473c080eb3.jpg?v=1793108608",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/WEB3-min_897c6a9f-3e03-49eb-b75a-20ff535b6c4e.jpg?v=1793108608"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179417/goatednation/products/prod-migrated-97-16721.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179417/goatednation/products/prod-migrated-98-16721.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179417/goatednation/products/prod-migrated-99-16722.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179417/goatednation/products/prod-migrated-100-16722.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179417/goatednation/products/prod-migrated-101-16722.jpg"
     ],
     "description": "Premium stretchable compression fabric Body-hugging athletic fit Raglan short full sleeves Ideal for gym, workouts, and everyday wear",
     "details": {
@@ -1105,9 +1105,9 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 59,
     "badge": "SAVE 60%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/compression_front.jpg?v=1793109537",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_8999.jpg?v=1793108390",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/fullbodybackweb-min_8facb758-9ebb-40ff-a5a2-d2cffe7317c5.jpg?v=1714573006"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179417/goatednation/products/prod-migrated-102-16723.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179415/goatednation/products/prod-migrated-95-14975.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179417/goatednation/products/prod-migrated-103-16723.jpg"
     ],
     "description": "Premium stretchable compression fabric Body-hugging athletic fit Raglan short sleeves Minimal ZENIN chest logo Ideal for gym, workouts, and everyday wear",
     "details": {
@@ -1153,7 +1153,7 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 66,
     "badge": "SAVE 53%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/cyborgtshirt.jpg?v=1793107128"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179418/goatednation/products/prod-migrated-104-16723.jpg"
     ],
     "description": "- FREE ANIME STICKERS Quality: 100% Pure Terry cotton. Screen Print Logo in Front. Custom Pattern work. Double Biowashed &amp; Siliconwashed. 240 GSM density. Screen Print on Back. Custom work on the Sleeves. This Design is created by Zenin for fa...",
     "details": {
@@ -1199,10 +1199,10 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 18,
     "badge": "SAVE 50%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_6751RFRONTNEWWEV-min.jpg?v=1793106577",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_6751backweb-min.jpg?v=1793106577",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_6751bbweb-min.jpg?v=1793106577",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/post3-min.jpg?v=1793106577"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179419/goatednation/products/prod-migrated-105-18429.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179419/goatednation/products/prod-migrated-106-18430.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179419/goatednation/products/prod-migrated-107-18430.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179419/goatednation/products/prod-migrated-108-18430.jpg"
     ],
     "description": "- FREE ANIME STICKERS Quality: 100% Pure Terry cotton. Screen Print Logo in Front. Custom Pattern work. Double Biowashed &amp; Siliconwashed. 240 GSM density. Screen Print on Back. Custom work on the Sleeves. This Design is created by Zenin for fa...",
     "details": {
@@ -1248,9 +1248,9 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 25,
     "badge": "SAVE 50%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_7780WEB34-min.jpg?v=1793106290",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_7780sideweb-min.jpg?v=1793106290",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_7780backwebn-min.jpg?v=1793106290"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179419/goatednation/products/prod-migrated-109-18431.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179419/goatednation/products/prod-migrated-110-18431.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179419/goatednation/products/prod-migrated-111-18431.jpg"
     ],
     "description": "- FREE ANIME STICKERS Quality: 100% Pure Terry cotton. Screen Print Logo in Front. Custom Pattern work. Double Biowashed &amp; Siliconwashed. 240 GSM density. Screen Print on Back. Custom work on the Sleeves. This Design is created by Zenin for fa...",
     "details": {
@@ -1296,11 +1296,11 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 32,
     "badge": "SAVE 52%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_8953web-min.jpg?v=1793104627",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_8973web-min.jpg?v=1793104628",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_9072web-min.jpg?v=1793104628",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_9037WEB-min.jpg?v=1793104628",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_8953pWEBBN-min.jpg?v=1793104628"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179419/goatednation/products/prod-migrated-112-18431.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179421/goatednation/products/prod-migrated-113-19954.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179420/goatednation/products/prod-migrated-114-19954.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179421/goatednation/products/prod-migrated-115-19954.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179421/goatednation/products/prod-migrated-116-19954.jpg"
     ],
     "description": "About: DEMON ARMOUR / BACKPACK Height: 46.99 cms | Width: 35.56 cms | Depth: 12.7 cms Height: 18.5 INCH | Width: 14 INCH | Depth: 5 INCH Weight: 1000 grams Capacity: 25L Material: Premium-quality nylon construction for long-lasting durability. Fea...",
     "details": {
@@ -1346,10 +1346,10 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 39,
     "badge": "SAVE 57%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/astaWEB1.jpg?v=1793096540",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/astaWEB2.jpg?v=1793096632",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/aizenweb4.jpg?v=1793096640",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/astaWEB3.jpg?v=1793096639"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179421/goatednation/products/prod-migrated-117-19954.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179421/goatednation/products/prod-migrated-118-19955.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179421/goatednation/products/prod-migrated-119-19955.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179421/goatednation/products/prod-migrated-120-19955.jpg"
     ],
     "description": "- FREE ANIME STICKERS Model Height : 5.5F Wearing : M size About the Product: •⁠ ⁠Mild \"Acid Washed\". •⁠ ⁠leaf Logo on the front. •⁠ ⁠front side comes with Pattern. •⁠ ⁠Back side have goth style and Screen Printing is done. •⁠ ⁠Vest have Rib Fabri...",
     "details": {
@@ -1395,10 +1395,10 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 46,
     "badge": "SAVE 55%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/narutow1s.jpg?v=1793097080",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/narutow2.jpg?v=1793097080",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/narutoweb4.jpg?v=1793097080",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/NARUTOWEB6.jpg?v=1793097080"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179422/goatednation/products/prod-migrated-121-21596.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179422/goatednation/products/prod-migrated-122-21597.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179422/goatednation/products/prod-migrated-123-21597.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179422/goatednation/products/prod-migrated-124-21597.jpg"
     ],
     "description": "Height: 18.5 INCH | Width: 11.2 INCH | Depth: 5.9 INCH Weight: 900 grams Capacity: 18L What’s in the box: - FREE ANIME KEYCHAIN (ATTACHED WITH THE BAG) - FREE ZENIN DRAWSTRING BAG - FREE ANIME STICKERS - PRODUCT About this Bag: • Fits 16 inch Lapt...",
     "details": {
@@ -1444,8 +1444,8 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 53,
     "badge": "SAVE 17%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/k5wf.jpg?v=1793097109",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/k5wb.jpg?v=1793097108"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179422/goatednation/products/prod-migrated-125-21597.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179422/goatednation/products/prod-migrated-126-21598.jpg"
     ],
     "description": "Double-sided Woven Keychain Lx W- 6x 1.2 inch Wash &amp; Care: Machine wash in COLD water This Design is created by Zenin for fans and not a licensed Product.",
     "details": {
@@ -1491,8 +1491,8 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 60,
     "badge": "SAVE 17%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/k4wf.jpg?v=1793097142",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/k4wb.jpg?v=1793097142"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179422/goatednation/products/prod-migrated-127-21598.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179422/goatednation/products/prod-migrated-128-21598.jpg"
     ],
     "description": "Double-sided Woven Keychain Lx W- 6x 1.2 inch Wash &amp; Care: Machine wash in COLD water This Design is created by Zenin for fans and not a licensed Product.",
     "details": {
@@ -1538,8 +1538,8 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 67,
     "badge": "SAVE 17%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/k2wf.jpg?v=1793097184",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/k2wb.jpg?v=1793097185"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179424/goatednation/products/prod-migrated-129-22992.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179423/goatednation/products/prod-migrated-130-22993.jpg"
     ],
     "description": "Double-sided Woven Keychain Lx W- 6x 1.2 inch Wash &amp; Care: Machine wash in COLD water This Design is created by Zenin for fans and not a licensed Product.",
     "details": {
@@ -1585,9 +1585,9 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 19,
     "badge": "SAVE 51%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1s-3.jpg?v=1793096530",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web3s-3.jpg?v=1793104300",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-21.jpg?v=1793104301"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179423/goatednation/products/prod-migrated-131-22993.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179423/goatednation/products/prod-migrated-132-22993.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179423/goatednation/products/prod-migrated-133-22993.jpg"
     ],
     "description": "MODEL WEARING : M SIZE MODEL HEIGHT : 5.6F Quality: 350 GSM Heavyweight Fabric Unisex Fit (Designed for Both Men &amp; Women) 100% Pure Cotton (Soft &amp; Breathable) Berserk Embroidery logo in Front Baggy / Barrel Fit Drawstring are Added Inside ...",
     "details": {
@@ -1633,7 +1633,7 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 26,
     "badge": "SAVE 36%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web4s.jpg?v=1793097245"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179423/goatednation/products/prod-migrated-134-22993.jpg"
     ],
     "description": "Large 15x30 inch size fits keyboard, mouse, and desk accessories comfortably Premium anime-inspired gaming deskmat design Smooth surface for precise mouse movement and everyday use Anti-slip rubber base keeps the mat firmly in place during intense...",
     "details": {
@@ -1679,11 +1679,11 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 33,
     "badge": "SAVE 45%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1ss.jpg?v=1793097331",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-20.jpg?v=1793097331",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-20.jpg?v=1793097331",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-17.jpg?v=1793097331",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-19.jpg?v=1793097331"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179423/goatednation/products/prod-migrated-135-22994.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179423/goatednation/products/prod-migrated-136-22994.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179425/goatednation/products/prod-migrated-137-24493.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179425/goatednation/products/prod-migrated-138-24493.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179425/goatednation/products/prod-migrated-139-24493.jpg"
     ],
     "description": "- FREE ANIME STICKERS Quality: 100% Pure Terry cotton . Premium High Detail dragon embroidery on both sleeves HD screen print on the front premium 240 GSM cotton . Screen Print on Back. Oversized fit, UNISEX This Design is created by Zenin for fan...",
     "details": {
@@ -1729,7 +1729,7 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 40,
     "badge": "SAVE 46%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web1-3_054c4dcf-de8f-4c61-a74f-e1c87f7cda15.jpg?v=1793096523"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179425/goatednation/products/prod-migrated-140-24494.jpg"
     ],
     "description": "- FREE ANIME STICKERS Quality: FULL EMBROIDERY Back and Front. Over 200,000+ Embroidery Stitches EMBROIDERY On Left Hand Sleeve. 240 GSM Heavy Fabric . Oversized fit, UNISEX This Design is created by Zenin for fans and not a licensed Product.",
     "details": {
@@ -1775,8 +1775,8 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 47,
     "badge": "SAVE 58%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1_7a64a29d-81e3-4aba-8af0-03d4bc4c9433.jpg?v=1793096520",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W2_c73c0e9a-68a9-4ab7-ad83-2780a0d86305.jpg?v=1781960712"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179425/goatednation/products/prod-migrated-141-24494.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179425/goatednation/products/prod-migrated-142-24494.jpg"
     ],
     "description": "Details Premium Cotton Fabric 280GSM Fitting: One size fits most (Adjustable Strap - 53.5 to 59.5 cm) Structured 6-Panel Construction High-Density Embroidered Logo Curved Brim Adjustable Back Strap Soft Touch Interior Finish Unisex Fit Care Dry Cl...",
     "details": {
@@ -1822,9 +1822,9 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 54,
     "badge": "SAVE 58%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-5_2.jpg?v=1793097700",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W2-3_2.jpg?v=1793097832",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/ChatGPTImageJun25_2026at04_30_06AM.png?v=1793097634"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179425/goatednation/products/prod-migrated-143-24494.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179425/goatednation/products/prod-migrated-144-24494.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179427/goatednation/products/prod-migrated-145-26515.jpg"
     ],
     "description": "Details Premium Cotton Fabric 280GSM Fitting: One size fits most (Adjustable Strap - 53.5 to 59.5 cm) Structured 6-Panel Construction High-Density Embroidered Logo Curved Brim Adjustable Back Strap Soft Touch Interior Finish Unisex Fit Care Dry Cl...",
     "details": {
@@ -1870,8 +1870,8 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 61,
     "badge": "SAVE 58%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-62.jpg?v=1793097805",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-32.jpg?v=1793097805"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179427/goatednation/products/prod-migrated-146-26516.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179427/goatednation/products/prod-migrated-147-26516.jpg"
     ],
     "description": "Details Premium Cotton Fabric 280GSM Fitting: One size fits most (Adjustable Strap - 53.5 to 59.5 cm) Structured 5 panel baseball cap ( A FRAME ) High-Density Embroidered Logo Curved Brim Adjustable Back Strap Soft Touch Interior Finish Unisex Fit...",
     "details": {
@@ -1917,9 +1917,9 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 68,
     "badge": "SAVE 55%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-10_221529af-0766-450e-ba05-92642f0d817e.jpg?v=1793096514",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4_5b24e53a-23c3-4e01-a27d-5f91a1116a75.jpg?v=1793096514",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W2_6048f97c-7344-4633-be03-4078572c4ab3.jpg?v=1781956540"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179427/goatednation/products/prod-migrated-148-26516.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179427/goatednation/products/prod-migrated-149-26516.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179427/goatednation/products/prod-migrated-150-26517.jpg"
     ],
     "description": "Details Premium Suede Fabric Fitting: One size fits most (Adjustable Strap - 53.5 to 59.5 cm) Structured 6-Panel Construction High-Density Embroidered Logo Curved Brim Adjustable Back Strap Soft Touch Interior Finish Unisex Fit Care Dry Clean Only...",
     "details": {
@@ -1965,9 +1965,9 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 20,
     "badge": "SAVE 36%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web1-42.jpg?v=1793098008",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web2-5.jpg?v=1793098008",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web3-52.jpg?v=1793098008"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179427/goatednation/products/prod-migrated-151-26517.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179427/goatednation/products/prod-migrated-152-26517.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179429/goatednation/products/prod-migrated-153-27934.jpg"
     ],
     "description": "Large 15x30 inch size fits keyboard, mouse, and desk accessories comfortably Premium anime-inspired gaming deskmat design Smooth surface for precise mouse movement and everyday use Anti-slip rubber base keeps the mat firmly in place during intense...",
     "details": {
@@ -2013,9 +2013,9 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 27,
     "badge": "SAVE 36%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web22.jpg?v=1793098224",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web42.jpg?v=1793098224",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web3-42.jpg?v=1793098224"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179429/goatednation/products/prod-migrated-154-27934.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179428/goatednation/products/prod-migrated-155-27934.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179429/goatednation/products/prod-migrated-156-27935.jpg"
     ],
     "description": "Large 15x30 inch size fits keyboard, mouse, and desk accessories comfortably Premium anime-inspired gaming deskmat design Smooth surface for precise mouse movement and everyday use Anti-slip rubber base keeps the mat firmly in place during intense...",
     "details": {
@@ -2061,7 +2061,7 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 34,
     "badge": "SAVE 36%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web2-2_b3c3de76-73a8-4eba-b3d5-f29660800c2a.jpg?v=1779914833"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179428/goatednation/products/prod-migrated-157-27935.jpg"
     ],
     "description": "Large 15x30 inch size fits keyboard, mouse, and desk accessories comfortably Premium anime-inspired gaming deskmat design Smooth surface for precise mouse movement and everyday use Anti-slip rubber base keeps the mat firmly in place during intense...",
     "details": {
@@ -2107,11 +2107,11 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 41,
     "badge": "SAVE 45%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w7-9.jpg?v=1793107458",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-15.jpg?v=1793107417",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w8-7.jpg?v=1793107417",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-16.jpg?v=1779264189",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-16.jpg?v=1793107417"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179428/goatednation/products/prod-migrated-158-27935.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179428/goatednation/products/prod-migrated-159-27936.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179429/goatednation/products/prod-migrated-160-27936.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179430/goatednation/products/prod-migrated-161-29288.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179430/goatednation/products/prod-migrated-162-29289.jpg"
     ],
     "description": "- FREE ANIME STICKERS Quality: 100% Pure Terry cotton . Premium High Detail dragon embroidery on both sleeves HD screen print on the front Custom rib detailing on neck and sleeves premium 240 GSM cotton . Screen Print on Back. Oversized fit, UNISE...",
     "details": {
@@ -2157,11 +2157,11 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 48,
     "badge": "SAVE 38%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_1201.jpg?v=1793110944",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_1207.jpg?v=1793110945",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_1212.jpg?v=1793110945",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/male_necklace_shape_web.jpg?v=1766193853",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/female_necklace_size_web.jpg?v=1766193853"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179430/goatednation/products/prod-migrated-163-29289.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179430/goatednation/products/prod-migrated-164-29289.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179430/goatednation/products/prod-migrated-165-29290.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179411/goatednation/products/prod-migrated-76-10898.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179411/goatednation/products/prod-migrated-77-10898.jpg"
     ],
     "description": "Sunbreath Pendant with Chain — Crafted from high-quality Stainless Steel , this striking pendant captures a bold, minimalist look. Pendant size: Height 20 mm × Width 20 mm × Thickness 1 mm Chain size: 22 inch length × 2 mm thickness MODEL IS WEARI...",
     "details": {
@@ -2207,11 +2207,11 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 55,
     "badge": "SAVE 44%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-15.jpg?v=1776686389",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-16.jpg?v=1793098413",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-15.jpg?v=1793098413",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/male_necklace_shape_web.jpg?v=1766193853",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/female_necklace_size_web.jpg?v=1766193853"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179430/goatednation/products/prod-migrated-166-29290.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179430/goatednation/products/prod-migrated-167-29290.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179430/goatednation/products/prod-migrated-168-29291.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179411/goatednation/products/prod-migrated-76-10898.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179411/goatednation/products/prod-migrated-77-10898.jpg"
     ],
     "description": "Jujutsu High School Pendant with Chain — Crafted from high-quality Stainless Steel , this striking pendant captures a bold, minimalist look. Pendant size: Height 20 mm × Width 20 mm × Thickness 1 mm Chain size: 22 inch length × 2 mm thickness MODE...",
     "details": {
@@ -2257,11 +2257,11 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 62,
     "badge": "SAVE 30%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-13.jpg?v=1793099289",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-13.jpg?v=1793099289",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-13.jpg?v=1793099289",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-12.jpg?v=1793099289",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-14.jpg?v=1793099289"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179431/goatednation/products/prod-migrated-169-30770.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179431/goatednation/products/prod-migrated-170-30771.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179432/goatednation/products/prod-migrated-171-30771.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179431/goatednation/products/prod-migrated-172-30772.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179432/goatednation/products/prod-migrated-173-30772.jpg"
     ],
     "description": "- FREE ANIME STICKERS Quality: 100% Pure Terry cotton . Nexa washed finish , giving every piece a distinct faded-green tone — no two tees are identical. Front embroidery of a skull and swords. Double Biowashed &amp; Siliconwashed. premium 240 GSM ...",
     "details": {
@@ -2307,10 +2307,10 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 69,
     "badge": "SAVE 50%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/ChatGPTImageMar14_2026at06_37_55AM.png?v=1793099353",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/B1.jpg?v=1793099352",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/b4.jpg?v=1793099352",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/b3.jpg?v=1793099352"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179431/goatednation/products/prod-migrated-174-30772.png",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179431/goatednation/products/prod-migrated-175-30772.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179431/goatednation/products/prod-migrated-176-30773.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179433/goatednation/products/prod-migrated-177-32903.jpg"
     ],
     "description": "Note: Model is wearing an black inner, Total Length : 12 inch Type : Crew Length Gender : Unisex Size : Free Size (UK 5 to UK 9) Material : 74% Cotton, 24% Nylon, 2% Elastic Quantity : Pack of 1 Pairs (1N) This Design is created by Zenin for fans ...",
     "details": {
@@ -2356,11 +2356,11 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 21,
     "badge": "NEW DROP",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w8-6.jpg?v=1793099446",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W2-10.jpg?v=1793099446",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W3-10.jpg?v=1793099446",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-10.jpg?v=1793099446",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-10.jpg?v=1793099446"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179433/goatednation/products/prod-migrated-178-32904.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179433/goatednation/products/prod-migrated-179-32904.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179433/goatednation/products/prod-migrated-180-32904.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179433/goatednation/products/prod-migrated-181-32904.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179433/goatednation/products/prod-migrated-182-32904.jpg"
     ],
     "description": "BERSERK / SWEATSHIRT Premium 350 GSM heavyweight Terry Cotton Stone-washed finish for a rugged, worn-in look Front embroidery work with minimal symbolic detailing High-detail monochrome back artwork Theme inspired by “The One Who Left It All Behin...",
     "details": {
@@ -2406,12 +2406,12 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 28,
     "badge": "NEW DROP",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-9.jpg?v=1793099560",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-9.jpg?v=1793099560",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-9.jpg?v=1793099560",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-9.jpg?v=1793099560",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-9.jpg?v=1793099559",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w7-6.jpg?v=1793099560"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179433/goatednation/products/prod-migrated-183-32905.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179433/goatednation/products/prod-migrated-184-32905.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179434/goatednation/products/prod-migrated-185-34045.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179434/goatednation/products/prod-migrated-186-34046.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179434/goatednation/products/prod-migrated-187-34046.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179434/goatednation/products/prod-migrated-188-34046.jpg"
     ],
     "description": "Crafted from premium heavyweight 350 GSM Terry Cotton with soft fleece for superior warmth, structure, and long-lasting comfort Minimal front embroidery featuring a inverted spear of heaven , Striking back artwork with high-detail monochrome illus...",
     "details": {
@@ -2457,13 +2457,13 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 35,
     "badge": "SAVE 23%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w9-2-2-3.jpg?v=1793100502",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-4.jpg?v=1793100502",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w8-2.jpg?v=1793100502",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-5.jpg?v=1793100502",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-4.jpg?v=1793100503",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-5.jpg?v=1793100502",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-5.jpg?v=1793100503"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179435/goatednation/products/prod-migrated-189-34046.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179434/goatednation/products/prod-migrated-190-34046.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179435/goatednation/products/prod-migrated-191-34047.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179435/goatednation/products/prod-migrated-192-34047.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179437/goatednation/products/prod-migrated-193-36077.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179436/goatednation/products/prod-migrated-194-36078.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179437/goatednation/products/prod-migrated-195-36078.jpg"
     ],
     "description": "Crafted from premium heavyweight 350 GSM Terry Cotton for superior warmth, comfort, and durability Sasuke Uchiha (Naruto) inspired design featuring Sharingan embroidery with sleek contrast piping details Relaxed, street-ready fit for a sharp anime...",
     "details": {
@@ -2509,12 +2509,12 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 42,
     "badge": "SAVE 23%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-3.jpg?v=1793100717",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-4.jpg?v=1793100716",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-4.jpg?v=1793100716",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-4.jpg?v=1793100716",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-4.jpg?v=1793100716",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w8_88fff9bd-35e0-4d95-bd11-bf13029a6c69.jpg?v=1793100717"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179436/goatednation/products/prod-migrated-196-36078.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179436/goatednation/products/prod-migrated-197-36078.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179436/goatednation/products/prod-migrated-198-36078.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179437/goatednation/products/prod-migrated-199-36079.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179437/goatednation/products/prod-migrated-200-36079.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179438/goatednation/products/prod-migrated-201-37432.jpg"
     ],
     "description": "Crafted from premium heavyweight 350GSM Terry Cotton for warmth, comfort, and durability with contrast piping details Relaxed, street-ready fit for a modern anime-meets-urban look Unisex silhouette, designed for all genders High-quality zipper clo...",
     "details": {
@@ -2560,10 +2560,10 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 49,
     "badge": "SAVE 36%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/p3-min.jpg?v=1768044237",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_7766.jpg?v=1793100914",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_7778.jpg?v=1793100914",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_7770.jpg?v=1793100915"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179438/goatednation/products/prod-migrated-202-37433.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179438/goatednation/products/prod-migrated-203-37433.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179438/goatednation/products/prod-migrated-204-37433.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179438/goatednation/products/prod-migrated-205-37433.jpg"
     ],
     "description": "Model height : 5.6 Model Wearning : M size ( WITHOUT ANY INNER ) WILL GET FREE ANIME STICKERS IN BOX. Product Features: Made from premium mesh fabric that is soft, lightweight, and highly breathable for all-day comfort. Features high-definition su...",
     "details": {
@@ -2609,10 +2609,10 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 56,
     "badge": "SAVE 48%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-min_1b100a12-6ea2-41fa-bcd9-534c69d4d07a.jpg?v=1793096478",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-min_78caaf86-7ce5-43e6-9bb3-37f262fe4b6e.jpg?v=1793096477",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-min_3033be89-3ce3-4ab3-9f88-35912bb18331.jpg?v=1793096477",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-min_f4eb72ad-65c2-43df-8349-dd8699e3da3b.jpg?v=1793096478"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179438/goatednation/products/prod-migrated-206-37434.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179438/goatednation/products/prod-migrated-207-37434.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179438/goatednation/products/prod-migrated-208-37434.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179440/goatednation/products/prod-migrated-209-39175.jpg"
     ],
     "description": "Gaara Sherpa Jacket (LIMITED EDITION) Made from premium sherpa fabric for superior warmth and winter comfort Gaara (Naruto) inspired design with bold embroidery on front and back Baggy, relaxed fit for modern streetwear styling Unisex silhouette ,...",
     "details": {
@@ -2658,9 +2658,9 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 63,
     "badge": "SAVE 28%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web1-min.jpg?v=1793101493",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web2-min.jpg?v=1793101493",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web3-min.jpg?v=1793101494"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179440/goatednation/products/prod-migrated-210-39175.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179440/goatednation/products/prod-migrated-211-39175.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179440/goatednation/products/prod-migrated-212-39175.jpg"
     ],
     "description": "MODEL WEARING : M SIZE MODEL HEIGHT : 5.6F Quality: 350 GSM Heavyweight Fabric Unisex Fit (Designed for Both Men &amp; Women) 100% Pure Cotton (Soft &amp; Breathable) Baggy / Straight Fit for Maximum Comfort Removable Drawstring Rope Thick Elastic...",
     "details": {
@@ -2706,13 +2706,13 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 15,
     "badge": "SAVE 17%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web4-min.jpg?v=1793101572",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web1-min_53542c03-789b-4c2b-875a-96d71d9f2ad2.jpg?v=1793096472",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web5-min.jpg?v=1793101573",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web3-min_ba98229b-dda1-4f44-bd07-1ccc2a7084f5.jpg?v=1793101573",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web6-min.jpg?v=1793101573",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/male_necklace_shape_web.jpg?v=1766193853",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/female_necklace_size_web.jpg?v=1766193853"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179439/goatednation/products/prod-migrated-213-39176.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179440/goatednation/products/prod-migrated-214-39176.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179440/goatednation/products/prod-migrated-215-39176.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179440/goatednation/products/prod-migrated-216-39176.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179441/goatednation/products/prod-migrated-217-40537.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179411/goatednation/products/prod-migrated-76-10898.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179411/goatednation/products/prod-migrated-77-10898.jpg"
     ],
     "description": "Cloud Pendant with Chain — Crafted from high-quality Stainless Steel , this striking pendant captures a bold, minimalist look. Pendant size: Height 40 mm × Width 30 mm × Thickness 1 mm Chain size: 22 inch length × 2 mm thickness",
     "details": {
@@ -2758,11 +2758,11 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 22,
     "badge": "SAVE 17%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web6-min_89fd5d74-c109-40aa-8d9f-166068faae9e.jpg?v=1766178988",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web3-min_4362b56b-6536-47fc-81ac-2c15ae5946ee.jpg?v=1793096470",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web5-min_9bb784b2-bf92-4019-8405-edb11ee9af65.jpg?v=1793096470",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/male_necklace_shape_web.jpg?v=1766193853",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/female_necklace_size_web.jpg?v=1766193853"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179441/goatednation/products/prod-migrated-218-40537.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179441/goatednation/products/prod-migrated-219-40538.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179441/goatednation/products/prod-migrated-220-40538.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179411/goatednation/products/prod-migrated-76-10898.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179411/goatednation/products/prod-migrated-77-10898.jpg"
     ],
     "description": "Five Clover Pendant with Chain — Crafted from high-quality Stainless Steel , this striking pendant captures a bold, minimalist look. Pendant size: Height 40 mm × Width 30 mm × Thickness 1 mm Chain size: 22 inch length × 2 mm thickness",
     "details": {
@@ -2808,12 +2808,12 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 29,
     "badge": "SAVE 33%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-min.jpg?v=1793102076",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-min_a9466390-377d-4c7b-9b1c-0a6351742c6a.jpg?v=1793102077",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-min_d2f08917-697b-4da2-84ec-115547268fcb.jpg?v=1765540333",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-min_2ae8ad99-99fb-45ca-8a4f-7d7d8cf47d0b.jpg?v=1793102077",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-min.jpg?v=1793102078",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-min_381f5c25-d92a-4662-8835-52ffb75eafe5.jpg?v=1793102078"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179441/goatednation/products/prod-migrated-221-40538.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179441/goatednation/products/prod-migrated-222-40538.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179441/goatednation/products/prod-migrated-223-40538.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179441/goatednation/products/prod-migrated-224-40539.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179442/goatednation/products/prod-migrated-225-42013.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179443/goatednation/products/prod-migrated-226-42013.jpg"
     ],
     "description": "Model height : 5.6 Model Wearning : M size ( WITHOUT ANY INNER ) WILL GET FREE ANIME STICKERS IN BOX. Product Features: Made from premium mesh fabric that is soft, lightweight, and highly breathable for all-day comfort. Features high-definition su...",
     "details": {
@@ -2859,13 +2859,13 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 36,
     "badge": "SAVE 25%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-min_649588e1-5b23-4bd1-ac0c-64d00b2ed3a2.jpg?v=1793096466",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-min_8cbd9457-d314-4a32-9fb7-7802f8b5ff4a.jpg?v=1793096466",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-min_9789ad3b-ea8a-43a6-a83f-df40afcbab4b.jpg?v=1793102258",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-min_0b44d75f-1fe3-4129-950a-7a8f954c8ffa.jpg?v=1793102258",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-min_3855bdf1-13c0-4f36-b2ea-d4923905494d.jpg?v=1793102260",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-min_26d63bd5-5766-43fb-a21d-e10aa870a982.jpg?v=1793102258",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w7-min.jpg?v=1793102259"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179442/goatednation/products/prod-migrated-227-42013.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179443/goatednation/products/prod-migrated-228-42013.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179442/goatednation/products/prod-migrated-229-42014.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179442/goatednation/products/prod-migrated-230-42014.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179443/goatednation/products/prod-migrated-231-42014.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179443/goatednation/products/prod-migrated-232-42014.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179444/goatednation/products/prod-migrated-233-43738.jpg"
     ],
     "description": "MODEL WEARING : M SIZE MODEL HEIGHT : 5.6F Quality: •⁠ ⁠Adjustable Waist String – Customizable fit with a durable drawcord. •⁠ ⁠Adjustable Bottom Grip – Allows you to taper or widen the ankle opening for your preferred style. •⁠ ⁠Embroidered Berse...",
     "details": {
@@ -2911,12 +2911,12 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 43,
     "badge": "SAVE 25%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-min_14128286-2429-4c49-bdfe-59686b1b081d.jpg?v=1793102492",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-min_a586246d-d77d-46aa-902b-82f4087b288f.jpg?v=1793102492",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-min_6ac44b0c-e95a-4c9a-812e-cd1389144071.jpg?v=1793102492",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-min_da14cffc-3896-4cd9-9421-99aee065de82.jpg?v=1793102492",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-min_6a50b73f-ea90-48c5-afca-9e4a7edfb811.jpg?v=1793102492",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-min_d28627c7-6988-4f75-b4a6-636064a4cfe5.jpg?v=1793102492"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179444/goatednation/products/prod-migrated-234-43738.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179444/goatednation/products/prod-migrated-235-43739.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179444/goatednation/products/prod-migrated-236-43739.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179444/goatednation/products/prod-migrated-237-43739.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179444/goatednation/products/prod-migrated-238-43739.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179444/goatednation/products/prod-migrated-239-43739.jpg"
     ],
     "description": "Height: 29 cm | Width: 16 cm | Depth: 8 cm Height: 11 INCH | Width: 6.3 INCH | Depth: 3.1 INCH Weight: 300G Capacity: 2–3L (Small Sling Bag) What’s in the box : - FREE ACRYLIC KEYCHAIN - FREE ANIME STICKERS - PRODUCT. Key Features Dual Main Compar...",
     "details": {
@@ -2962,12 +2962,12 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 50,
     "badge": "SAVE 25%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-min_47b0586c-167a-440c-8846-cc996b7c57ad.jpg?v=1793096461",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-min_9ea80809-4444-4bd4-b226-f4b3d7ca647e.jpg?v=1793102576",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-min_d0b4510d-51b9-4e83-84ad-1a8d9319bcca.jpg?v=1793102576",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-min_c3523fae-c4a2-4fe2-abca-6f242a4af49b.jpg?v=1793102576",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-min_da2e4e0a-275d-40fc-9c62-27cfeca47a52.jpg?v=1793102576",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-min_a7ce2426-ae17-4aed-94da-a5b0b591c0ae.jpg?v=1793102576"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179415/goatednation/products/prod-migrated-96-14975.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179444/goatednation/products/prod-migrated-240-43739.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179446/goatednation/products/prod-migrated-241-45147.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179446/goatednation/products/prod-migrated-242-45147.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179446/goatednation/products/prod-migrated-243-45148.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179446/goatednation/products/prod-migrated-244-45148.jpg"
     ],
     "description": "MODEL WEARING : L SIZE MODEL HEIGHT : 5.6F Quality: 350 GSM Heavyweight Fabric Unisex Fit (Designed for Both Men &amp; Women) 100% Pure Cotton (Soft &amp; Breathable) Baggy / Straight Fit for Maximum Comfort Removable Drawstring Rope Thick Elastic...",
     "details": {
@@ -3013,13 +3013,13 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 57,
     "badge": "SAVE 10%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-min_ea3ec559-b306-44d3-a887-0caef736f094.jpg?v=1793102834",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-min_fb3a50f9-dd44-4d44-ab12-df7f75157452.jpg?v=1793102835",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-min_abbc5d2b-b06a-4b62-89a8-2cd842b3d976.jpg?v=1793102834",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-min_3b7f87c4-c9b1-4b96-b91b-7f5209751512.jpg?v=1793102835",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-min_6531f2a5-49db-41c8-a89d-0135988fe2a7.jpg?v=1793102835",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/male_necklace_shape_web.jpg?v=1766193853",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/female_necklace_size_web.jpg?v=1766193853"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179445/goatednation/products/prod-migrated-245-45148.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179446/goatednation/products/prod-migrated-246-45148.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179445/goatednation/products/prod-migrated-247-45148.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179445/goatednation/products/prod-migrated-248-45148.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179447/goatednation/products/prod-migrated-249-46512.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179411/goatednation/products/prod-migrated-76-10898.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179411/goatednation/products/prod-migrated-77-10898.jpg"
     ],
     "description": "Gaara Pendant with Chain — Crafted from high-quality Stainless Steel, this striking pendant captures a bold, minimalist look. Pendant size: Height 40 mm × Width 30 mm × Thickness 1 mm Chain size: 22 inch length × 2 mm thickness",
     "details": {
@@ -3065,13 +3065,13 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 64,
     "badge": "SAVE 36%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W3-min_84c62446-8861-46f1-8528-99d3a8b146b0.jpg?v=1793103019",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W2-min_d8febbc4-cc4d-4281-a967-a9ed15d9dd65.jpg?v=1793103019",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-min_718f42db-38f4-46ed-9040-9c38de8e1ad9.jpg?v=1793103020",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W4-min_0afcfc65-dbba-4d56-8d5f-dc1a42057975.jpg?v=1793103020",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W5-min_10e74766-cbc9-48b8-975d-bba04e0ba8cf.jpg?v=1793103019",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-min_ae0fc4e2-0370-48f9-9ef2-6a3b300fee32.jpg?v=1793103020",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w7-min_47f8cde2-f6cd-465d-94cb-3a17a0067c74.jpg?v=1793103020"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179447/goatednation/products/prod-migrated-250-46512.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179447/goatednation/products/prod-migrated-251-46512.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179447/goatednation/products/prod-migrated-252-46513.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179447/goatednation/products/prod-migrated-253-46513.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179447/goatednation/products/prod-migrated-254-46514.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179447/goatednation/products/prod-migrated-255-46514.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179447/goatednation/products/prod-migrated-256-46514.jpg"
     ],
     "description": "Model height : 5.6 Model Wearning : M size ( WITHOUT ANY INNER ) WILL GET FREE ANIME STICKERS IN BOX. Product Features: Made from premium mesh fabric that is soft, lightweight, and highly breathable for all-day comfort. Features high-definition su...",
     "details": {
@@ -3117,13 +3117,13 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 16,
     "badge": "SAVE 38%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-min_b189d741-41d7-425d-a90d-075b202b01e6.jpg?v=1793103247",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-min_bb9369ca-82d1-4c09-ae13-af432dbf7375.jpg?v=1793103247",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-min_4cae8aa0-86a2-4147-b54e-3a7a3a7ef317.jpg?v=1793103247",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-min_d30c3b17-cc9f-4e72-9321-1ee1e54229f8.jpg?v=1793103247",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-min_2b169d59-4013-47c7-8647-2b55f54879ce.jpg?v=1793103247",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-min_b884e269-5c7a-4b07-b89b-f6f5ce2e680a.jpg?v=1793103247",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w7-min_fef2977b-a6ad-465b-9be6-e98a6937e64e.jpg?v=1793103247"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179448/goatednation/products/prod-migrated-257-47853.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179449/goatednation/products/prod-migrated-258-47854.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179448/goatednation/products/prod-migrated-259-47854.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179448/goatednation/products/prod-migrated-260-47854.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179448/goatednation/products/prod-migrated-261-47854.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179448/goatednation/products/prod-migrated-262-47855.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179448/goatednation/products/prod-migrated-263-47855.jpg"
     ],
     "description": "Demon Pendant with Chain — a haunting emblem of unrelenting courage and strength. Forged from premium stainless steel , this pendant resists tarnish, rust, and fading, ensuring a lasting shine and a bold, dark allure. Paired with a matching chain,...",
     "details": {
@@ -3169,11 +3169,11 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 23,
     "badge": "SAVE 17%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-min_08e7d5be-dcff-4f0e-8f10-0489d140c9fd.jpg?v=1793103337",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-min_823f0067-f702-4c92-8d16-c96f1f5f0cb1.jpg?v=1793103336",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-min_aa332d49-efaf-4aea-9764-37bf13c2aba6.jpg?v=1793103336",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-min_25f96050-1cb2-41c2-9571-17ba22ce5365.jpg?v=1793103336",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-min_2774e819-77aa-45f7-9898-eeb0cd4d9874.jpg?v=1793103337"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179448/goatednation/products/prod-migrated-264-47855.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179450/goatednation/products/prod-migrated-265-49436.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179450/goatednation/products/prod-migrated-266-49437.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179450/goatednation/products/prod-migrated-267-49437.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179450/goatednation/products/prod-migrated-268-49437.jpg"
     ],
     "description": "Double-sided Woven Keychain Lx W- 6x 1.2 inch Wash &amp; Care: Machine wash in COLD water",
     "details": {
@@ -3219,10 +3219,10 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 30,
     "badge": "SAVE 17%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-min_c3d6fed4-5893-44f1-a1d8-794b954db40a.jpg?v=1793103570",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-min_8eb3bf1e-d5e0-4d7a-a919-1fde4157fc0a.jpg?v=1793103570",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w7-min_e99eb596-4a9a-4dfb-8efd-f484c00dd088.jpg?v=1793103570",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-min_c1043705-1a53-4815-8fc8-be51d7e855ba.jpg?v=1793103570"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179450/goatednation/products/prod-migrated-269-49437.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179450/goatednation/products/prod-migrated-270-49437.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179450/goatednation/products/prod-migrated-271-49437.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179450/goatednation/products/prod-migrated-272-49437.jpg"
     ],
     "description": "Double-sided Woven Keychain Lx W- 6x 1.2 inch Wash &amp; Care: Machine wash in COLD water",
     "details": {
@@ -3268,10 +3268,10 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 37,
     "badge": "SAVE 41%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-min-5.jpg?v=1793103664",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-min-4.jpg?v=1793103664",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-min-5.jpg?v=1793103664",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-min-5.jpg?v=1793096446"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179452/goatednation/products/prod-migrated-273-51732.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179452/goatednation/products/prod-migrated-274-51732.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179453/goatednation/products/prod-migrated-275-51732.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179452/goatednation/products/prod-migrated-276-51733.jpg"
     ],
     "description": "- FREE ANIME STICKERS Model Height : 5.5F Wearing : M size About the Product: •⁠ ⁠Mild \"Acid Washed\". •⁠ ⁠BERSERK Logo on the front. •⁠ ⁠front side comes with Pattern. •⁠ ⁠Back side have goth style and Screen Printing is done. •⁠ ⁠Vest have Rib Fa...",
     "details": {
@@ -3317,14 +3317,14 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 44,
     "badge": "SAVE 30%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w19-min.jpg?v=1793103860",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w13-min.jpg?v=1793103832",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-min_908ce854-bfd2-4a1f-b03f-cedb8b0d6d36.jpg?v=1793103832",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w11-min.jpg?v=1793103832",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w16-min.jpg?v=1793103832",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w14-min.jpg?v=1793103832",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-min_a0cb1de8-f963-4841-93f0-df8bc2751e87.jpg?v=1793103832",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w18-min.jpg?v=1793103832"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179452/goatednation/products/prod-migrated-277-51733.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179452/goatednation/products/prod-migrated-278-51733.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179452/goatednation/products/prod-migrated-279-51733.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179452/goatednation/products/prod-migrated-280-51734.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179454/goatednation/products/prod-migrated-281-53273.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179454/goatednation/products/prod-migrated-282-53273.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179454/goatednation/products/prod-migrated-283-53274.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179454/goatednation/products/prod-migrated-284-53274.jpg"
     ],
     "description": "Height: 41.91 cms | Width: 34.29 cms | Depth: 7.62 cms Height: 16.5 INCH | Width: 13.5 INCH | Depth: 3 INCH Weight: 500 grams Capacity: 10L What’s in the box : - FREE AKATSUKI WOVEN KEYCHAIN - FREE ANIME STICKERS - FREE WATER-PROOF DRAWSTING BAG -...",
     "details": {
@@ -3370,12 +3370,12 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 51,
     "badge": "SAVE 41%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1_-min.jpg?v=1793103953",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-min-4.jpg?v=1793103952",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W3-min-4.jpg?v=1793103953",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W6-min-3.jpg?v=1793103953",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W4-min-4.jpg?v=1793103953",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w7-min_a5ba1219-01d0-4ca8-8352-f8a1c36653b2.jpg?v=1793103953"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179454/goatednation/products/prod-migrated-285-53274.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179454/goatednation/products/prod-migrated-286-53274.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179454/goatednation/products/prod-migrated-287-53274.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179454/goatednation/products/prod-migrated-288-53274.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179456/goatednation/products/prod-migrated-289-55140.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179456/goatednation/products/prod-migrated-290-55140.jpg"
     ],
     "description": "THIS PRODUCT HAVE A BOXY FIT ( PLEASE HAVE A LOOK AT THE SIZE CHART ) - GET FREE STICKERS IN THE BOX ! Quality: 100% Pure Terry cotton. Screen printed Logo in Front. Double Biowashed &amp; Siliconwashed. Contrast Stitched all over t-shirt. 240 GSM...",
     "details": {
@@ -3421,11 +3421,11 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 58,
     "badge": "SAVE 36%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W1-min-2.jpg?v=1793104043",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-min-2.jpg?v=1793104043",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-min-2.jpg?v=1793104044",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-min-2.jpg?v=1793104044",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-min-2.jpg?v=1793104044"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179455/goatednation/products/prod-migrated-291-55141.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179456/goatednation/products/prod-migrated-292-55141.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179456/goatednation/products/prod-migrated-293-55141.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179456/goatednation/products/prod-migrated-294-55141.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179456/goatednation/products/prod-migrated-295-55141.jpg"
     ],
     "description": "- FREE ANIME STICKERS Quality: 100% Pure Terry cotton. Embroidery Logo in Front. Mild Acid Washed. Double Biowashed &amp; Siliconwashed. 240 GSM density. Screen Print on Back. Custom work on the Sleeves. This Design is created by Zenin for fans an...",
     "details": {
@@ -3471,11 +3471,11 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 65,
     "badge": "SAVE 36%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web2-min-2.jpg?v=1793104115",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web4-min-2.jpg?v=1793104115",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web5-min-2.jpg?v=1793104115",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web3-min-2.jpg?v=1793104114",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web6-min-2.jpg?v=1793104115"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179456/goatednation/products/prod-migrated-296-55141.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179457/goatednation/products/prod-migrated-297-57024.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179458/goatednation/products/prod-migrated-298-57025.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179458/goatednation/products/prod-migrated-299-57025.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179458/goatednation/products/prod-migrated-300-57025.jpg"
     ],
     "description": "- FREE ANIME STICKERS Quality: 100% Pure Terry cotton. Embroidery Logo in Front. Mild Acid Washed. Double Biowashed &amp; Siliconwashed. 240 GSM density. Screen Print on Back. Custom work on the Sleeves. This Design is created by Zenin for fans an...",
     "details": {
@@ -3521,8 +3521,8 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 17,
     "badge": "SAVE 33%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_9074web2-min.jpg?v=1732889027",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_9090webnew-min.jpg?v=1732889027"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179457/goatednation/products/prod-migrated-301-57025.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179457/goatednation/products/prod-migrated-302-57026.jpg"
     ],
     "description": "BUY NAGI / BLUELOCK FULL SLEEVES T-SHIRT Quality: 100% Pure Terry cotton Double Biowashed &amp; Siliconwashed 260 GSM density Puff and Screenprint quality This Design is created by Zenin for fans and not a licensed Product.",
     "details": {
@@ -3568,8 +3568,8 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 24,
     "badge": "SAVE 17%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/k3wf.jpg?v=1788655544",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3kb.jpg?v=1788655544"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179457/goatednation/products/prod-migrated-303-57026.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179457/goatednation/products/prod-migrated-304-57026.jpg"
     ],
     "description": "BUY ACE / WOVEN KEYCHAIN Double-sided Woven Keychain Lx W- 6x 1.2 inch Wash &amp; Care: Machine wash in COLD water",
     "details": {
@@ -3615,8 +3615,8 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 31,
     "badge": "SAVE 17%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/k1wf.jpg?v=1788654706",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/k1wb.jpg?v=1788653638"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179460/goatednation/products/prod-migrated-305-59521.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179460/goatednation/products/prod-migrated-306-59521.jpg"
     ],
     "description": "BUY LUFFY / WOVEN KEYCHAIN Double-sided Woven Keychain Lx W- 6x 1.2 inch Wash &amp; Care: Machine wash in COLD water",
     "details": {
@@ -3662,7 +3662,7 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 38,
     "badge": "SAVE 36%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web2-4.jpg?v=1787449864"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179460/goatednation/products/prod-migrated-307-59521.jpg"
     ],
     "description": "WEAPON GRID / ANTI SLIP / DESK MAT / MOUSE PAD Large 15x30 inch size fits keyboard, mouse, and desk accessories comfortably Premium anime-inspired gaming deskmat design Smooth surface for precise mouse movement and everyday use Anti-slip rubber ba...",
     "details": {
@@ -3708,8 +3708,8 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 45,
     "badge": "SAVE 36%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web1-4_3e786929-1a1b-4a7c-83c1-b4d4373e275f.jpg?v=1787448272",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web5-3.jpg?v=1787454345"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179460/goatednation/products/prod-migrated-308-59521.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179460/goatednation/products/prod-migrated-309-59522.jpg"
     ],
     "description": "CHERRY BLOSSOM / ANTI SLIP / DESK MAT / MOUSE PAD Large 15x30 inch size fits keyboard, mouse, and desk accessories comfortably Premium anime-inspired gaming deskmat design Smooth surface for precise mouse movement and everyday use Anti-slip rubber...",
     "details": {
@@ -3755,10 +3755,10 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 52,
     "badge": "SAVE 55%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-11_a7bfbcfb-0ee8-44de-b8fc-3e729767d66e.jpg?v=1781966217",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-5_ac8c7a2a-f71e-41f8-926c-9a89e9c2cc01.jpg?v=1781961069",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-4_2d58c9cd-76e8-4a2b-ad23-7da950aa2cb0.jpg?v=1781961070",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-4_656f2aaf-18b2-4465-a8ce-30cdade14bfe.jpg?v=1781961070"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179460/goatednation/products/prod-migrated-310-59522.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179460/goatednation/products/prod-migrated-311-59522.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179460/goatednation/products/prod-migrated-312-59522.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179462/goatednation/products/prod-migrated-313-60932.jpg"
     ],
     "description": "Details Premium Suede Fabric Fitting: One size fits most (Adjustable Strap - 53.5 to 59.5 cm) Structured 6-Panel Construction High-Density Embroidered Logo Curved Brim Adjustable Back Strap Soft Touch Interior Finish Unisex Fit Attack On Titan Cap...",
     "details": {
@@ -3804,9 +3804,9 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 59,
     "badge": "SAVE 36%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web1-5.jpg?v=1779914383",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web2-6.jpg?v=1779915935",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web3-6.jpg?v=1779915934"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179461/goatednation/products/prod-migrated-314-60933.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179462/goatednation/products/prod-migrated-315-60933.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179461/goatednation/products/prod-migrated-316-60933.jpg"
     ],
     "description": "DRAGON / ANTI SLIP / DESK MAT / MOUSE PAD Large 15x30 inch size fits keyboard, mouse, and desk accessories comfortably Premium anime-inspired gaming deskmat design Smooth surface for precise mouse movement and everyday use Anti-slip rubber base ke...",
     "details": {
@@ -3852,9 +3852,9 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 66,
     "badge": "SAVE 36%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web1-3.jpg?v=1779913714",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web2_9402c0d0-8135-4219-935a-5c4a1e9a281a.jpg?v=1779915347",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web3_d16d0839-c9fe-4cb3-830d-bf4eb161c224.jpg?v=1779915346"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179462/goatednation/products/prod-migrated-317-60933.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179462/goatednation/products/prod-migrated-318-60933.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179462/goatednation/products/prod-migrated-319-60934.jpg"
     ],
     "description": "ZORO / ANTI SLIP / DESK MAT / MOUSE PAD Large 15x30 inch size fits keyboard, mouse, and desk accessories comfortably Premium anime-inspired gaming deskmat design Smooth surface for precise mouse movement and everyday use Anti-slip rubber base keep...",
     "details": {
@@ -3900,10 +3900,10 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 18,
     "badge": "SAVE 36%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web5.jpg?v=1779916572",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web1-2_c08a6ef0-da7e-4975-9d2d-2a4aa51632ed.jpg?v=1779913218",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web3-2_129dc5f6-0f55-45cd-bcde-0c6d0d37ad65.jpg?v=1779915139",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web2-3.jpg?v=1779915139"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179462/goatednation/products/prod-migrated-320-60934.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179463/goatednation/products/prod-migrated-321-62656.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179463/goatednation/products/prod-migrated-322-62657.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179463/goatednation/products/prod-migrated-323-62657.jpg"
     ],
     "description": "CYBERPUNK / ANTI SLIP / DESK MAT / MOUSE PAD Large 15x30 inch size fits keyboard, mouse, and desk accessories comfortably Premium anime-inspired gaming deskmat design Smooth surface for precise mouse movement and everyday use Anti-slip rubber base...",
     "details": {
@@ -3949,12 +3949,12 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 25,
     "badge": "SAVE 38%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_1217.jpg?v=1776688279",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_1213.jpg?v=1776688279",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_1224.jpg?v=1776688279",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-14_3e732e0b-de71-4f99-87fd-ff28ac28fa89.jpg?v=1776688279",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/malenecklaceshapeweb_efebf8d4-f496-4d0b-9c63-c7c415993137.jpg?v=1776688279",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/femalenecklacesizeweb_37db9ca6-b1b8-4603-b4bc-5ec89dfb9946.jpg?v=1776688279"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179463/goatednation/products/prod-migrated-324-62657.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179463/goatednation/products/prod-migrated-325-62657.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179463/goatednation/products/prod-migrated-326-62657.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179463/goatednation/products/prod-migrated-327-62658.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179463/goatednation/products/prod-migrated-328-62658.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179464/goatednation/products/prod-migrated-329-64104.jpg"
     ],
     "description": "BUY ZORO / PENDANT WITH CHAIN Zoro Pendant with Chain — Crafted from high-quality Stainless Steel , this striking pendant captures a bold, minimalist look. Pendant size: Height 20 mm × Width 20 mm × Thickness 1 mm Chain size: 22 inch length × 2 mm...",
     "details": {
@@ -4000,10 +4000,10 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 32,
     "badge": "SAVE 46%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/a4-2.jpg?v=1776765934",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/a2-2.jpg?v=1776765934",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/a3-2.jpg?v=1774906173",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/a5.jpg?v=1774906055"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179464/goatednation/products/prod-migrated-330-64104.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179465/goatednation/products/prod-migrated-331-64105.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179464/goatednation/products/prod-migrated-332-64105.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179465/goatednation/products/prod-migrated-333-64105.jpg"
     ],
     "description": "BUY AOT GEAR / OVERSIZED T-SHIRT - FREE ANIME STICKERS Quality: 100% Pure Terry cotton . Front embroidery. Double Biowashed &amp; Siliconwashed. premium 240 GSM cotton . Note: Due to studio lighting, the color or embroidery may appear brighter or ...",
     "details": {
@@ -4049,11 +4049,11 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 39,
     "badge": "SAVE 44%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-14.jpg?v=1774821979",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-14.jpg?v=1774821979",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-14.jpg?v=1774821982",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-16.jpg?v=1774821983",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-15.jpg?v=1774821983"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179465/goatednation/products/prod-migrated-334-64105.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179465/goatednation/products/prod-migrated-335-64105.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179465/goatednation/products/prod-migrated-336-64105.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179467/goatednation/products/prod-migrated-337-65829.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179466/goatednation/products/prod-migrated-338-65830.jpg"
     ],
     "description": "BUY SCOUT REGIMENT / AOT / T-SHIRT - FREE ANIME STICKERS Quality: 100% Pure Terry cotton . Front &amp; Back Full embroidery. Double Biowashed &amp; Siliconwashed. premium 240 GSM cotton . Note: Due to studio lighting, the color or embroidery may a...",
     "details": {
@@ -4099,10 +4099,10 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 46,
     "badge": "SAVE 50%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/A1.jpg?v=1773449871",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/a3.jpg?v=1773449872",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/a2.jpg?v=1773449872",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/a4.jpg?v=1773449872"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179466/goatednation/products/prod-migrated-339-65830.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179467/goatednation/products/prod-migrated-340-65830.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179467/goatednation/products/prod-migrated-341-65831.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179467/goatednation/products/prod-migrated-342-65831.jpg"
     ],
     "description": "Note: Model is wearing an black inner, Total Length : 12 inch Type : Crew Length Gender : Unisex Size : Free Size (UK 5 to UK 9) Material : 74% Cotton, 24% Nylon, 2% Elastic Quantity : Pack of 1 Pairs (1N) This Design is created by Zenin for fans ...",
     "details": {
@@ -4148,11 +4148,11 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 53,
     "badge": "SAVE 42%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-12.jpg?v=1772799226",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-12.jpg?v=1772799227",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-11.jpg?v=1772799227",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-12.jpg?v=1772799227",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w7-8.jpg?v=1772799226"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179466/goatednation/products/prod-migrated-343-65831.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179466/goatednation/products/prod-migrated-344-65831.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179468/goatednation/products/prod-migrated-345-67461.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179468/goatednation/products/prod-migrated-346-67461.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179468/goatednation/products/prod-migrated-347-67462.jpg"
     ],
     "description": "MODEL WEARING : M SIZE MODEL HEIGHT : 5.6F Quality: 350 GSM Heavyweight Fabric Unisex Fit (Designed for Both Men &amp; Women) 100% Pure Cotton (Soft &amp; Breathable) Heavy Quality Puff Printed Baggy / Relaxed Fit for Maximum Comfort Drawstring ar...",
     "details": {
@@ -4198,11 +4198,11 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 60,
     "badge": "SAVE 38%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2s.jpg?v=1772328763",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-11.jpg?v=1772328763",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-11.jpg?v=1772328763",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w34.jpg?v=1772328763",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-11.jpg?v=1772328763"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179468/goatednation/products/prod-migrated-348-67462.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179468/goatednation/products/prod-migrated-349-67462.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179468/goatednation/products/prod-migrated-350-67462.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179468/goatednation/products/prod-migrated-351-67462.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179468/goatednation/products/prod-migrated-352-67462.jpg"
     ],
     "description": "BUY ZORO ONE PIECE THREE SWORD OVERSIZED TSHIRT Quality: 100% cotton Pique Matty Fabric Double Biowashed &amp; Siliconwashed 240 GSM density Puff and Screenprint quality This Design is created by Zenin for fans and not a licensed Product.",
     "details": {
@@ -4248,9 +4248,9 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 67,
     "badge": "SAVE 24%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/bluelcokweb4.jpg?v=1777215340",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/bluelockweb3.jpg?v=1777215177",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/bluelockweb5.jpg?v=1777215782"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179469/goatednation/products/prod-migrated-353-68904.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179469/goatednation/products/prod-migrated-354-68905.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179469/goatednation/products/prod-migrated-355-68905.jpg"
     ],
     "description": "Crafted from premium parachute fabric for a lightweight, wind-resistant, and durable build Inner mesh lining for enhanced breathability and all-day comfort Blue Lock (Japanese Manga) inspired design featuring bold typography, emblem detailing, and...",
     "details": {
@@ -4296,14 +4296,14 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 19,
     "badge": "SAVE 24%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w8-4.jpg?v=1769732314",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w7-3.jpg?v=1769732312",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-7.jpg?v=1769732313",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w9-3.jpg?v=1769732313",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-7.jpg?v=1769732313",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-6.jpg?v=1769732313",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-6.jpg?v=1769732313",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-6.jpg?v=1769732313"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179469/goatednation/products/prod-migrated-356-68905.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179469/goatednation/products/prod-migrated-357-68905.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179469/goatednation/products/prod-migrated-358-68905.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179469/goatednation/products/prod-migrated-359-68905.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179470/goatednation/products/prod-migrated-360-68905.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179471/goatednation/products/prod-migrated-361-70699.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179471/goatednation/products/prod-migrated-362-70699.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179471/goatednation/products/prod-migrated-363-70700.jpg"
     ],
     "description": "Crafted from premium parachute fabric for a lightweight, wind-resistant, and durable build Inner mesh lining for enhanced breathability and all-day comfort Blue Lock (Japanese Manga) inspired design featuring bold typography, emblem detailing, and...",
     "details": {
@@ -4349,12 +4349,12 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 26,
     "badge": "SAVE 31%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-9.jpg?v=1769743205",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-5.jpg?v=1769743205",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-6.jpg?v=1769743205",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w7-2.jpg?v=1769743205",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-6.jpg?v=1769743205",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w8-3.jpg?v=1769743205"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179471/goatednation/products/prod-migrated-364-70700.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179471/goatednation/products/prod-migrated-365-70700.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179471/goatednation/products/prod-migrated-366-70700.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179471/goatednation/products/prod-migrated-367-70700.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179471/goatednation/products/prod-migrated-368-70701.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179473/goatednation/products/prod-migrated-369-72264.jpg"
     ],
     "description": "Crafted from premium heavyweight 350GSM Cotton Fleece for warmth, structure, and long-lasting comfort Cyberpunk-inspired design featuring tech-armor style embroidery across the back for a bold futuristic aesthetic Relaxed, street-ready fit designe...",
     "details": {
@@ -4400,11 +4400,11 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 33,
     "badge": "SAVE 50%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-3.jpg?v=1768431469",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-2.jpg?v=1768431469",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-3.jpg?v=1768431469",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-3.jpg?v=1768431469",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-3.jpg?v=1768431469"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179472/goatednation/products/prod-migrated-370-72265.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179473/goatednation/products/prod-migrated-371-72265.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179473/goatednation/products/prod-migrated-372-72265.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179473/goatednation/products/prod-migrated-373-72265.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179473/goatednation/products/prod-migrated-374-72265.jpg"
     ],
     "description": "Designed in a straight, traditional Japanese style , unlike the curved shape of regular umbrellas. Slim and compact in size , giving it an elegant Japanese aesthetic rather than a large, bulky look. 📏 Size of the umbrella (from the Amazon listing...",
     "details": {
@@ -4450,11 +4450,11 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 40,
     "badge": "SAVE 45%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-2.jpg?v=1768428989",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-2.jpg?v=1768428989",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-2.jpg?v=1768428989",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-2.jpg?v=1768428989",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5_35803e1b-8163-46f4-8702-7ad9a071d785.jpg?v=1768428989"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179473/goatednation/products/prod-migrated-375-72266.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179473/goatednation/products/prod-migrated-376-72266.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179474/goatednation/products/prod-migrated-377-73703.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179474/goatednation/products/prod-migrated-378-73703.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179474/goatednation/products/prod-migrated-379-73703.jpg"
     ],
     "description": "Designed in a straight, traditional Japanese style , unlike the curved shape of regular umbrellas. Slim and compact in size , giving it an elegant Japanese aesthetic rather than a large, bulky look. 📏 Size of the umbrella (from the Amazon listing...",
     "details": {
@@ -4500,13 +4500,13 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 47,
     "badge": "SAVE 44%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1_8e4de588-aa86-433e-bd35-188b03aeb921.jpg?v=1766229348",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web1.jpg?v=1768435682",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-min_28c5818c-a4cd-4559-8cbd-51b6a1db845d.jpg?v=1768435682",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w8-min_b06fb0b0-6d53-4b19-a0f9-5275d081d592.jpg?v=1768435682",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-min-6.jpg?v=1768435682",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web8-min-2_866af478-5193-412f-89d8-f9a80a0bdd48.jpg?v=1768435682",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-min_97d9dd5f-9913-4ca5-a62b-8fdd0fe12d42.jpg?v=1768435682"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179474/goatednation/products/prod-migrated-380-73704.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179474/goatednation/products/prod-migrated-381-73704.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179474/goatednation/products/prod-migrated-382-73704.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179474/goatednation/products/prod-migrated-383-73704.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179474/goatednation/products/prod-migrated-384-73704.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179476/goatednation/products/prod-migrated-385-75338.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179476/goatednation/products/prod-migrated-386-75339.jpg"
     ],
     "description": "“Limited Edition — 300 units produced” MODEL WEARNING : M SIZE MODEL HEIGHT : 5.6 Product Description Crafted from premium imported faux leather fabric with a smooth, structured finish Heavyweight 400 GSM construction for durability, warmth, and a...",
     "details": {
@@ -4552,14 +4552,14 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 54,
     "badge": "SAVE 17%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W2-min_ad1ea2df-2799-4273-8cd0-a7a0ac8dcf01.jpg?v=1766190182",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W5-min_9833ca42-da1a-4b68-a98e-ffe4c1bedf4a.jpg?v=1766190183",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W4-min_b873a5ff-f800-44cd-bfa0-3c0a034f6d0c.jpg?v=1766190184",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W3-min_b34ab3ba-6662-4583-b862-ca01515210f2.jpg?v=1766190183",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W1-min_8a2bbbbb-cbcb-460f-bbd2-b100f6ec98c7.jpg?v=1766190183",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-min_fe897981-5d1b-4e39-8e54-866947017e08.jpg?v=1766190184",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/female_necklace_size_web.jpg?v=1766193853",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/male_necklace_shape_web.jpg?v=1766193853"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179476/goatednation/products/prod-migrated-387-75339.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179476/goatednation/products/prod-migrated-388-75339.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179476/goatednation/products/prod-migrated-389-75339.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179476/goatednation/products/prod-migrated-390-75339.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179476/goatednation/products/prod-migrated-391-75340.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179476/goatednation/products/prod-migrated-392-75340.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179411/goatednation/products/prod-migrated-77-10898.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179411/goatednation/products/prod-migrated-76-10898.jpg"
     ],
     "description": "BUY SAKURA / PENDANT WITH CHAIN Sakura Pendant with Chain — Crafted from high-quality Stainless Steel , this striking pendant captures a bold, minimalist look. Pendant size: Height 40 mm × Width 30 mm × Thickness 1 mm Chain size: 22 inch length × ...",
     "details": {
@@ -4605,12 +4605,12 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 61,
     "badge": "SAVE 17%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-min_56bd42ac-d806-42da-90ef-5adab125347c.jpg?v=1766188514",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-min_ec4a156e-7b69-4f97-9c97-68445fca7990.jpg?v=1766188515",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-min_cd306046-9bfb-461d-9bda-679d9a119363.jpg?v=1766188514",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-min_cec83ddc-f361-4c0b-a5b5-2fa2dfd487b4.jpg?v=1766188514",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/male_necklace_shape_web.jpg?v=1766193853",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/female_necklace_size_web.jpg?v=1766193853"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179478/goatednation/products/prod-migrated-393-77395.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179478/goatednation/products/prod-migrated-394-77396.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179478/goatednation/products/prod-migrated-395-77396.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179478/goatednation/products/prod-migrated-396-77396.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179411/goatednation/products/prod-migrated-76-10898.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179411/goatednation/products/prod-migrated-77-10898.jpg"
     ],
     "description": "BUY SPIDER / PENDANT WITH CHAIN Spider Pendant with Chain — Crafted from high-quality Stainless Steel , this striking pendant captures a bold, minimalist look. Pendant size: Height 40 mm × Width 30 mm × Thickness 1 mm Chain size: 22 inch length × ...",
     "details": {
@@ -4656,14 +4656,14 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 68,
     "badge": "SAVE 17%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w7.jpg?v=1766193853",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W3-min_8801f875-f69e-4e7f-9875-a8ebeb0dc9c3.jpg?v=1766193853",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W2-min_a66d5c18-7862-40a3-9dcd-9c5ee3e91233.jpg?v=1766193853",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-min_0e9fdb71-6315-4a59-baf6-16bc0b592cff.jpg?v=1766193853",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W4-min_d0d87b7f-9a50-4164-acb6-bc04f09e2a88.jpg?v=1766193853",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-min_75c7ba3d-220f-4407-9df2-4dc0d45fe3ba.jpg?v=1766193853",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/male_necklace_shape_web.jpg?v=1766193853",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/female_necklace_size_web.jpg?v=1766193853"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179478/goatednation/products/prod-migrated-397-77396.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179478/goatednation/products/prod-migrated-398-77397.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179478/goatednation/products/prod-migrated-399-77397.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179478/goatednation/products/prod-migrated-400-77397.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179480/goatednation/products/prod-migrated-401-78943.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179479/goatednation/products/prod-migrated-402-78944.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179411/goatednation/products/prod-migrated-76-10898.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179411/goatednation/products/prod-migrated-77-10898.jpg"
     ],
     "description": "BUY CROSS CHROME / PENDANT WITH CHAIN Cross Chrome Pendant with Chain — Crafted from high-quality Stainless Steel , this striking pendant captures a bold, minimalist look. Pendant size: Height 40 mm × Width 30 mm × Thickness 1 mm Chain size: 22 in...",
     "details": {
@@ -4709,13 +4709,13 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 20,
     "badge": "SAVE 17%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web10.jpg?v=1766190977",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web6-min_3e906e0f-1c88-40f4-aed4-3d4c461ddc1d.jpg?v=1766190977",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/WEB1-min_2518ba92-10f5-4c3b-823c-63934be38d5f.jpg?v=1766190977",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/WEB4-min_812d7efc-9063-4992-9b2d-2bc202640056.jpg?v=1766190977",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web5-min_e1694b88-40c9-477a-ad5b-c7de4582833f.jpg?v=1766190977",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/male_necklace_shape_web.jpg?v=1766193853",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/female_necklace_size_web.jpg?v=1766193853"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179479/goatednation/products/prod-migrated-403-78944.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179480/goatednation/products/prod-migrated-404-78944.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179480/goatednation/products/prod-migrated-405-78944.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179480/goatednation/products/prod-migrated-406-78945.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179480/goatednation/products/prod-migrated-407-78945.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179411/goatednation/products/prod-migrated-76-10898.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179411/goatednation/products/prod-migrated-77-10898.jpg"
     ],
     "description": "BUY L DEATH NOTE / PENDANT WITH CHAIN L Death Note Pendant with Chain — Crafted from high-quality Stainless Steel , this striking pendant captures a bold, minimalist look. Pendant size: Height 40 mm × Width 30 mm × Thickness 1 mm Chain size: 22 in...",
     "details": {
@@ -4761,13 +4761,13 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 27,
     "badge": "SAVE 17%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w8.jpg?v=1766191788",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-min_204d9cf3-fe40-4c72-985f-9412b8d32bd7.jpg?v=1766191788",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-min_84161d49-3bfd-4051-a0a7-22a53554126c.jpg?v=1766191788",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-min_c73e54dd-6407-4d63-bd95-a15d401dd4e8.jpg?v=1766191788",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-min_d932ac04-c9fa-4bb6-95ea-81a06bc0eb90.jpg?v=1766191788",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/male_necklace_shape_web.jpg?v=1766193853",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/female_necklace_size_web.jpg?v=1766193853"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179479/goatednation/products/prod-migrated-408-78945.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179481/goatednation/products/prod-migrated-409-80570.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179481/goatednation/products/prod-migrated-410-80570.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179481/goatednation/products/prod-migrated-411-80570.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179481/goatednation/products/prod-migrated-412-80571.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179411/goatednation/products/prod-migrated-76-10898.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179411/goatednation/products/prod-migrated-77-10898.jpg"
     ],
     "description": "BUY CHROME HEART / PENDANT WITH CHAIN Chrome Heart Pendant with Chain — Crafted from high-quality Stainless Steel , this striking pendant captures a bold, minimalist look. Pendant size: Height 40 mm × Width 30 mm × Thickness 1 mm Chain size: 22 in...",
     "details": {
@@ -4813,13 +4813,13 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 34,
     "badge": "NEW DROP",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-min_3a4e3b70-1472-4098-a844-5682acae8de4.jpg?v=1764493396",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w8-min_670db2f3-10d3-4246-93cc-61862f9e763e.jpg?v=1764493849",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w7-min_d5f4dec3-1e62-4558-bc4b-82047b7095f4.jpg?v=1764493849",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-min_00910929-9ba6-48ef-942a-7043dc32703e.jpg?v=1764493849",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-min_1f69bcbd-5de5-4f56-98b0-5884c2acb4a1.jpg?v=1764493849",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-min_74f5c16f-2aa6-443a-8453-a13d2f4eb92b.jpg?v=1764493849",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-min_c0ae4868-a00d-4b3c-a1e5-7c2dcd26042a.jpg?v=1764493849"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179481/goatednation/products/prod-migrated-413-80572.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179481/goatednation/products/prod-migrated-414-80572.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179481/goatednation/products/prod-migrated-415-80572.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179481/goatednation/products/prod-migrated-416-80572.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179483/goatednation/products/prod-migrated-417-82169.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179483/goatednation/products/prod-migrated-418-82170.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179483/goatednation/products/prod-migrated-419-82170.jpg"
     ],
     "description": "BUY DRAGON EMBROIDERY / ZIPPER NOTE : DUE TO HEAVY DEMAND DELIVERY WILL BE DELAYED ‼️ FREE ANIME STICKERS Quality: 350 GSM density 100% PURE Cotton Fleece Fabric Full Embroidery Sleeves",
     "details": {
@@ -4865,13 +4865,13 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 41,
     "badge": "SAVE 33%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-min_d54bc371-b2a7-44bf-b64f-7de4293e2776.jpg?v=1762778016",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-min_a2270e1f-b746-49c4-b522-43f061429f91.jpg?v=1762778017",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-min_0d21dd44-c691-4be1-bace-6c5e409d4144.jpg?v=1762778017",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-min_4aeab941-1c87-48df-98f2-9faea0f7878e.jpg?v=1762778016",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w34-min.jpg?v=1762778017",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/z7-min.jpg?v=1762778017",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-min_98e0bfda-77a9-4e99-9dd0-11882f1e9be7.jpg?v=1762778017"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179482/goatednation/products/prod-migrated-420-82170.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179483/goatednation/products/prod-migrated-421-82170.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179483/goatednation/products/prod-migrated-422-82170.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179483/goatednation/products/prod-migrated-423-82170.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179483/goatednation/products/prod-migrated-424-82171.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179485/goatednation/products/prod-migrated-425-84097.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179485/goatednation/products/prod-migrated-426-84097.jpg"
     ],
     "description": "BUY ZORO / SHADOW WASH / T-SHIRT - FREE ANIME STICKERS Quality: 100% Pure Terry cotton . Nexa washed finish , giving every piece a distinct faded-green tone — no two tees are identical. Front embroidery of a skull and swords. Double Biowashed &amp...",
     "details": {
@@ -4917,10 +4917,10 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 48,
     "badge": "SAVE 17%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-min_c977111b-d9d5-4ccb-9589-7eac4b5c323a.jpg?v=1762593368",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-min_aaceeb0d-36f4-480b-8ea8-c287a956ac8e.jpg?v=1762593369",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-min_10442e60-5737-4de5-b555-c46f057220c5.jpg?v=1762593368",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-min_9577f3a5-fd0c-4906-9b1b-2871a7eb32ae.jpg?v=1762593368"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179485/goatednation/products/prod-migrated-427-84098.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179485/goatednation/products/prod-migrated-428-84098.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179485/goatednation/products/prod-migrated-429-84098.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179485/goatednation/products/prod-migrated-430-84098.jpg"
     ],
     "description": "BUY ZORO / WOVEN KEYCHAIN Double-sided Woven Keychain Lx W- 6x 1.2 inch Wash &amp; Care: Machine wash in COLD water",
     "details": {
@@ -4966,14 +4966,14 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 55,
     "badge": "SAVE 36%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w1-min_7994e9dd-bbd5-40a5-a28d-2d7930fa7850.jpg?v=1760096320",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-min_eaee09e1-e881-4561-a710-7572ca3e54a6.jpg?v=1760096320",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w9-min.jpg?v=1760096042",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w2-min_6f8cb10b-9d49-47db-8397-1e7a254615d0.jpg?v=1760096041",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w3-min_1f8c8aa6-8c06-41d2-8c4f-050289e2237c.jpg?v=1760096041",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-min_4f8a0407-f349-4313-ab18-b9e5978e0d02.jpg?v=1760096041",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w7-min_ee159708-c986-4dd6-92da-a2962afbb65a.jpg?v=1760096041",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w10-min.jpg?v=1760096042"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179485/goatednation/products/prod-migrated-431-84098.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179485/goatednation/products/prod-migrated-432-84098.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179486/goatednation/products/prod-migrated-433-85716.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179486/goatednation/products/prod-migrated-434-85716.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179486/goatednation/products/prod-migrated-435-85716.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179486/goatednation/products/prod-migrated-436-85716.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179486/goatednation/products/prod-migrated-437-85717.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179486/goatednation/products/prod-migrated-438-85717.jpg"
     ],
     "description": "PRODUCT IS IN HIGH DEMAND AND CURRENTLY AVAILABLE ON “PREORDER”. Model height : 5.6 Model Wearning : M size - FREE WOVEN KEYCHAIN &amp; ANIME STICKERS Quality: ⁠ FABRIC - Premium Polyester Fabric Used for Jackets. INNER FABRIC - ZERO MESH GSM - 35...",
     "details": {
@@ -5019,12 +5019,12 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 62,
     "badge": "SAVE 45%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w5-min_9be04a17-08f2-4aa7-a89a-5654fcc244ea.jpg?v=1760092014",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w7-min_6fb59d62-3867-4f51-a700-5fa40fc7996b.jpg?v=1760092014",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w4-min_dfcd1dc2-6ca2-4b04-80ff-832437fcc027.jpg?v=1760092014",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/w6-min_b7a06833-9f8e-4338-98f4-ef0e316e74ca.jpg?v=1760092014",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W2-min_559cc0d0-d6eb-4f7c-9867-a0df515d4a69.jpg?v=1760092015",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/W1-min_6f72be5b-9c30-46dc-a807-00722b527d83.jpg?v=1760092014"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179486/goatednation/products/prod-migrated-439-85717.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179486/goatednation/products/prod-migrated-440-85717.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179488/goatednation/products/prod-migrated-441-87012.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179488/goatednation/products/prod-migrated-442-87013.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179488/goatednation/products/prod-migrated-443-87013.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179488/goatednation/products/prod-migrated-444-87013.jpg"
     ],
     "description": "BUY ASTA BLACK CLOVER VEST - FREE ANIME STICKERS Model Height : 5.5F Wearing : M size About the Product: •⁠ ⁠Mild \"Acid Washed\". •⁠ ⁠Five Clover Embroidery Logo on the front. •⁠ ⁠front side comes with Pattern. •⁠ ⁠Back side have Asta's Sword givin...",
     "details": {
@@ -5070,14 +5070,14 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 69,
     "badge": "SAVE 36%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web1-min_926dd5bb-8813-4dc1-8e6c-757913af057b.jpg?v=1755427903",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web9-min.jpg?v=1755427903",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web6-min_ab05ba44-32d4-48bf-aeda-4a67301383b1.jpg?v=1755427903",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web4-min_ba33b86f-5b4f-45fb-80f2-8a2832d3a426.jpg?v=1755427902",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web5-min_81113130-d181-47eb-954d-2c7fb9220f4e.jpg?v=1755427903",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web7-min_4d1c3a18-a458-43a7-9b01-b100ace39f1f.jpg?v=1755427903",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/web8-min_2f2d02b6-74b2-493e-be78-117d6015922a.jpg?v=1755427903",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/WEB10-min-2.jpg?v=1755428077"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179487/goatednation/products/prod-migrated-445-87013.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179487/goatednation/products/prod-migrated-446-87014.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179488/goatednation/products/prod-migrated-447-87014.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179488/goatednation/products/prod-migrated-448-87014.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179490/goatednation/products/prod-migrated-449-88846.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179489/goatednation/products/prod-migrated-450-88847.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179490/goatednation/products/prod-migrated-451-88847.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179489/goatednation/products/prod-migrated-452-88847.jpg"
     ],
     "description": "- FREE ANIME STICKERS IN BOX Quality: Water-Resistant Fabric – designed to keep you dry in unexpected weather. ⁠ Crafted from advanced TPU -coated polyester nylon for durability &amp; water resistance. GSM : 280. Techwear-Inspired Design – futuris...",
     "details": {
@@ -5123,9 +5123,9 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 21,
     "badge": "SAVE 24%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG-2976.jpg?v=1738702100",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG-2978.jpg?v=1738702193",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG-2975.jpg?v=1738702193"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179489/goatednation/products/prod-migrated-453-88847.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179489/goatednation/products/prod-migrated-454-88848.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179490/goatednation/products/prod-migrated-455-88848.jpg"
     ],
     "description": "FREE ANIME STICKERS Quality: 100% Pure Terry cotton Double Biowashed &amp; Siliconwashed 240 GSM density Puff and Screenprint quality This Design is created by Zenin for fans and not a licensed Product.",
     "details": {
@@ -5171,10 +5171,10 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 28,
     "badge": "SAVE 24%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_6055web-min_1.jpg?v=1728572747",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_6036web-min.jpg?v=1728572023",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_5990web-min.jpg?v=1728572023",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_5978web-min.jpg?v=1728572023"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179489/goatednation/products/prod-migrated-456-88848.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179491/goatednation/products/prod-migrated-457-90819.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179491/goatednation/products/prod-migrated-458-90820.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179491/goatednation/products/prod-migrated-459-90820.jpg"
     ],
     "description": "BUY F1 / RACING OVERSIZED TSHIRT Quality: 100% Pure Terry cotton Double Biowashed &amp; Siliconwashed 240 GSM density Puff and Screenprint quality This Design is created by Zenin for fans and not a licensed Product.",
     "details": {
@@ -5220,10 +5220,10 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 35,
     "badge": "SAVE 24%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_2342web-min.jpg?v=1725116404",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_2328webs-min.jpg?v=1725117176",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_2369web-min.jpg?v=1725116404",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_2359pweb-min.jpg?v=1725116404"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179491/goatednation/products/prod-migrated-460-90820.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179491/goatednation/products/prod-migrated-461-90821.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179491/goatednation/products/prod-migrated-462-90821.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179491/goatednation/products/prod-migrated-463-90821.jpg"
     ],
     "description": "BUY INITIAL D / RACING OVERSIZED T-SHIRT Quality: 100% Pure Terry cotton Double Biowashed &amp; Siliconwashed 240 GSM density Screenprint quality Black T-shirt with grey Sleeves. This Design is created by Zenin for fans and not a licensed Product.",
     "details": {
@@ -5269,8 +5269,8 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     "reviewCount": 42,
     "badge": "SAVE 31%",
     "images": [
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/bottomscollectionweb-min.jpg?v=1768923802",
-      "https://cdn.shopify.com/s/files/1/0651/5215/5705/files/IMG_1761web-min.jpg?v=1768923802"
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179491/goatednation/products/prod-migrated-464-90821.jpg",
+      "https://res.cloudinary.com/bu4oxldy/image/upload/v1795179492/goatednation/products/prod-migrated-465-92151.jpg"
     ],
     "description": "BUY ZENIN JAPANESE / TRACKPANT Quality: Double Biowashed &amp; Siliconwashed 300 GSM density Black Color Zenin Model is 5\"5' feet tall, 62 kgs wearing \"M\" Size for the shoot.",
     "details": {

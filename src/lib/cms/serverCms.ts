@@ -17,7 +17,7 @@ import {
 } from './initialCmsData';
 import { PRODUCTS } from '../../data/products';
 import { Product } from '../../types/product';
-import { getCmsDataFromNeon, saveCmsDataToNeon } from '../db/neon';
+import { getCmsDataFromNeon, saveCmsDataToNeon, deleteProductInNeon, upsertProductInNeon, getProductBySlugFromNeon } from '../db/neon';
 
 export interface PublishedCmsData {
   heroSlides: typeof INITIAL_HERO_SLIDES;
@@ -34,6 +34,7 @@ export interface PublishedCmsData {
   stackCards: typeof INITIAL_STACK_ITEMS;
   editorialBanner: typeof INITIAL_EDITORIAL_BANNER;
   announcement: typeof INITIAL_ANNOUNCEMENT;
+  deletedProductIds?: string[];
   lastPublishedAt?: string;
 }
 
@@ -54,6 +55,7 @@ export const DEFAULT_STATE: PublishedCmsData = {
   stackCards: INITIAL_STACK_ITEMS,
   editorialBanner: INITIAL_EDITORIAL_BANNER,
   announcement: INITIAL_ANNOUNCEMENT,
+  deletedProductIds: [],
   lastPublishedAt: new Date().toISOString(),
 };
 
@@ -104,21 +106,26 @@ export async function saveToKvStore(data: PublishedCmsData): Promise<boolean> {
   }
 }
 
-function sanitizePublishedCmsData(data: PublishedCmsData): PublishedCmsData {
+export function sanitizePublishedCmsData(data: PublishedCmsData): PublishedCmsData {
   if (!data.heroBottoms || data.heroBottoms.length === 0) {
     data.heroBottoms = INITIAL_HERO_BOTTOMS;
   }
 
-  // Ensure products list ALWAYS preserves all default catalog products + all custom admin drops
+  const deletedSet = new Set(data.deletedProductIds || []);
+
+  // Ensure products list ALWAYS preserves all default catalog products + all custom admin drops,
+  // while strictly EXCLUDING any products that have been explicitly deleted!
   const catalogMap = new Map<string, Product>();
-  // 1. Seed base catalog
+  // 1. Seed base catalog (skipping deleted items)
   for (const p of PRODUCTS) {
-    catalogMap.set(p.id, p);
+    if (!deletedSet.has(p.id)) {
+      catalogMap.set(p.id, p);
+    }
   }
-  // 2. Overlay / prepend server/admin products
+  // 2. Overlay / prepend server/admin products (skipping deleted items)
   if (Array.isArray(data.products) && data.products.length > 0) {
     for (const p of data.products) {
-      if (p && p.id) {
+      if (p && p.id && !deletedSet.has(p.id)) {
         catalogMap.set(p.id, p);
       }
     }
@@ -126,15 +133,17 @@ function sanitizePublishedCmsData(data: PublishedCmsData): PublishedCmsData {
     const customDrops: Product[] = [];
     const baseDrops: Product[] = [];
     for (const p of catalogMap.values()) {
-      if (!p.id.startsWith('zn-') || p.id.startsWith('as-')) {
-        customDrops.push(p);
-      } else {
-        baseDrops.push(p);
+      if (!deletedSet.has(p.id)) {
+        if (!p.id.startsWith('zn-') || p.id.startsWith('as-')) {
+          customDrops.push(p);
+        } else {
+          baseDrops.push(p);
+        }
       }
     }
     data.products = [...customDrops, ...baseDrops];
   } else {
-    data.products = PRODUCTS;
+    data.products = PRODUCTS.filter((p) => !deletedSet.has(p.id));
   }
 
   return data;
@@ -213,10 +222,16 @@ export async function savePublishedCmsData(data: Partial<PublishedCmsData>): Pro
     }
   }
 
+  const mergedDeletedIds = Array.from(new Set([
+    ...(existingData.deletedProductIds || []),
+    ...(data.deletedProductIds || []),
+  ]));
+
   const payload: PublishedCmsData = sanitizePublishedCmsData({
     ...DEFAULT_STATE,
     ...existingData,
     ...data,
+    deletedProductIds: mergedDeletedIds,
     lastPublishedAt: new Date().toISOString(),
   });
 
@@ -227,6 +242,22 @@ export async function savePublishedCmsData(data: Partial<PublishedCmsData>): Pro
   let savedToNeon = false;
   try {
     savedToNeon = await saveCmsDataToNeon(payload);
+    // Sync individual products to dedicated app_products table in Neon
+    if (Array.isArray(payload.products)) {
+      for (const p of payload.products) {
+        upsertProductInNeon(p).catch((err) => {
+          console.warn(`[CMS Server] Failed to upsert product ${p.id} in Neon:`, err);
+        });
+      }
+    }
+    // Delete explicitly removed products from app_products in Neon
+    if (Array.isArray(payload.deletedProductIds)) {
+      for (const id of payload.deletedProductIds) {
+        deleteProductInNeon(id).catch((err) => {
+          console.warn(`[CMS Server] Failed to delete product ${id} in Neon:`, err);
+        });
+      }
+    }
   } catch (err) {
     console.warn('[CMS Server] Neon Postgres save failed:', err);
   }
@@ -252,8 +283,21 @@ export async function savePublishedCmsData(data: Partial<PublishedCmsData>): Pro
  */
 export async function getPublishedProductBySlug(slug: string): Promise<Product | null> {
   const { data } = await getPublishedCmsData();
+  const deletedSet = new Set(data.deletedProductIds || []);
   const found = data.products.find((p) => p.slug === slug || p.id === slug);
-  if (found) return found;
-  return PRODUCTS.find((p) => p.slug === slug || p.id === slug) || null;
+  if (found && !deletedSet.has(found.id)) return found;
+
+  // Direct lookup in Neon Postgres app_products table
+  try {
+    const neonProduct = await getProductBySlugFromNeon(slug);
+    if (neonProduct && !deletedSet.has(neonProduct.id)) return neonProduct;
+  } catch {
+    // ignore
+  }
+
+  const base = PRODUCTS.find((p) => p.slug === slug || p.id === slug);
+  if (base && !deletedSet.has(base.id)) return base;
+
+  return null;
 }
 

@@ -1,5 +1,6 @@
 import { neon, neonConfig, NeonQueryFunction } from '@neondatabase/serverless';
 import { UserRole } from '../../types/auth';
+import { Product } from '../../types/product';
 
 // Enable connection caching for optimal latency and reuse across serverless requests (NEO-04)
 neonConfig.fetchConnectionCache = true;
@@ -107,6 +108,38 @@ export async function initDatabaseSchema(): Promise<boolean> {
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
     `;
+
+    // 7. Dedicated Products Table
+    await sql`
+      CREATE TABLE IF NOT EXISTS app_products (
+        id TEXT PRIMARY KEY,
+        slug TEXT UNIQUE NOT NULL,
+        title TEXT NOT NULL,
+        anime TEXT NOT NULL,
+        category TEXT NOT NULL,
+        price NUMERIC NOT NULL,
+        original_price NUMERIC NOT NULL,
+        discount_percent INTEGER DEFAULT 0,
+        rating NUMERIC DEFAULT 4.9,
+        review_count INTEGER DEFAULT 0,
+        badge TEXT,
+        is_new_drop BOOLEAN DEFAULT FALSE,
+        images JSONB NOT NULL DEFAULT '[]'::jsonb,
+        description TEXT,
+        details JSONB NOT NULL DEFAULT '{}'::jsonb,
+        sizes JSONB NOT NULL DEFAULT '["S","M","L","XL","XXL"]'::jsonb,
+        colors JSONB NOT NULL DEFAULT '[]'::jsonb,
+        in_stock BOOLEAN DEFAULT TRUE,
+        stock_count INTEGER DEFAULT 10,
+        is_active BOOLEAN DEFAULT TRUE,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+    `;
+
+    await sql`CREATE INDEX IF NOT EXISTS idx_products_category ON app_products(category);`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_products_slug ON app_products(slug);`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_products_is_new_drop ON app_products(is_new_drop);`;
 
     schemaInitialized = true;
     return true;
@@ -473,6 +506,190 @@ export async function addReviewToNeon(review: ReviewRecord): Promise<boolean> {
     return true;
   } catch (error) {
     console.error(`[Neon Postgres] Error adding review for ${review.productId}:`, error);
+    return false;
+  }
+}
+
+/**
+ * Fetches all active products directly from Neon Postgres.
+ */
+export async function getProductsFromNeon(): Promise<Product[]> {
+  const sql = getDb();
+  if (!sql) return [];
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+    const rows = await sql`
+      SELECT 
+        id, 
+        slug, 
+        title, 
+        anime, 
+        category, 
+        price, 
+        original_price as "originalPrice", 
+        discount_percent as "discountPercent", 
+        rating, 
+        review_count as "reviewCount", 
+        badge, 
+        is_new_drop as "isNewDrop", 
+        images, 
+        description, 
+        details, 
+        sizes, 
+        colors, 
+        in_stock as "inStock", 
+        stock_count as "stockCount"
+      FROM app_products
+      WHERE is_active = TRUE
+      ORDER BY is_new_drop DESC, created_at DESC;
+    `;
+    return rows.map((r) => ({
+      ...r,
+      price: Number(r.price),
+      originalPrice: Number(r.originalPrice),
+      rating: Number(r.rating),
+      reviews: [],
+    })) as unknown as Product[];
+  } catch (error) {
+    console.error('[Neon Postgres] Error reading products:', error);
+    return [];
+  }
+}
+
+/**
+ * Retrieves a single product by slug or id from Neon Postgres.
+ */
+export async function getProductBySlugFromNeon(slugOrId: string): Promise<Product | null> {
+  const sql = getDb();
+  if (!sql) return null;
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+    const rows = await sql`
+      SELECT 
+        id, 
+        slug, 
+        title, 
+        anime, 
+        category, 
+        price, 
+        original_price as "originalPrice", 
+        discount_percent as "discountPercent", 
+        rating, 
+        review_count as "reviewCount", 
+        badge, 
+        is_new_drop as "isNewDrop", 
+        images, 
+        description, 
+        details, 
+        sizes, 
+        colors, 
+        in_stock as "inStock", 
+        stock_count as "stockCount"
+      FROM app_products
+      WHERE (slug = ${slugOrId} OR id = ${slugOrId}) AND is_active = TRUE
+      LIMIT 1;
+    `;
+    if (rows && rows.length > 0) {
+      const r = rows[0];
+      return {
+        ...r,
+        price: Number(r.price),
+        originalPrice: Number(r.originalPrice),
+        rating: Number(r.rating),
+        reviews: [],
+      } as unknown as Product;
+    }
+    return null;
+  } catch (error) {
+    console.error(`[Neon Postgres] Error reading product ${slugOrId}:`, error);
+    return null;
+  }
+}
+
+/**
+ * Inserts or updates an individual product in Neon Postgres.
+ */
+export async function upsertProductInNeon(product: Product): Promise<boolean> {
+  const sql = getDb();
+  if (!sql) return false;
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+    await sql`
+      INSERT INTO app_products (
+        id, slug, title, anime, category, price, original_price, discount_percent, rating, review_count,
+        badge, is_new_drop, images, description, details, sizes, colors, in_stock, stock_count, is_active, updated_at
+      )
+      VALUES (
+        ${product.id},
+        ${product.slug},
+        ${product.title},
+        ${product.anime},
+        ${product.category},
+        ${product.price},
+        ${product.originalPrice || product.price},
+        ${product.discountPercent || 0},
+        ${product.rating || 4.9},
+        ${product.reviewCount || 0},
+        ${product.badge || null},
+        ${product.isNewDrop ?? false},
+        ${JSON.stringify(product.images || [])}::jsonb,
+        ${product.description || ''},
+        ${JSON.stringify(product.details || {})}::jsonb,
+        ${JSON.stringify(product.sizes || ['S', 'M', 'L', 'XL'])}::jsonb,
+        ${JSON.stringify(product.colors || [])}::jsonb,
+        ${product.inStock ?? true},
+        ${product.stockCount || 10},
+        TRUE,
+        CURRENT_TIMESTAMP
+      )
+      ON CONFLICT (id) DO UPDATE SET
+        slug = EXCLUDED.slug,
+        title = EXCLUDED.title,
+        anime = EXCLUDED.anime,
+        category = EXCLUDED.category,
+        price = EXCLUDED.price,
+        original_price = EXCLUDED.original_price,
+        discount_percent = EXCLUDED.discount_percent,
+        rating = EXCLUDED.rating,
+        review_count = EXCLUDED.review_count,
+        badge = EXCLUDED.badge,
+        is_new_drop = EXCLUDED.is_new_drop,
+        images = EXCLUDED.images,
+        description = EXCLUDED.description,
+        details = EXCLUDED.details,
+        sizes = EXCLUDED.sizes,
+        colors = EXCLUDED.colors,
+        in_stock = EXCLUDED.in_stock,
+        stock_count = EXCLUDED.stock_count,
+        is_active = TRUE,
+        updated_at = CURRENT_TIMESTAMP;
+    `;
+    return true;
+  } catch (error) {
+    console.error(`[Neon Postgres] Error upserting product ${product.id}:`, error);
+    return false;
+  }
+}
+
+/**
+ * Permanently deletes or marks inactive a product in Neon Postgres.
+ */
+export async function deleteProductInNeon(productId: string): Promise<boolean> {
+  const sql = getDb();
+  if (!sql) return false;
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+    await sql`
+      DELETE FROM app_products
+      WHERE id = ${productId};
+    `;
+    return true;
+  } catch (error) {
+    console.error(`[Neon Postgres] Error deleting product ${productId}:`, error);
     return false;
   }
 }

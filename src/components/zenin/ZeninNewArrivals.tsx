@@ -23,126 +23,6 @@ interface ZeninNewArrivalsProps {
   initialProducts?: Product[];
 }
 
-const NEW_ARRIVALS: ZeninProduct[] = [
-  {
-    id: 'zn-49',
-    slug: 'demon-sweatshirt',
-    title: 'DEMON WASHED / SWEATSHIRT',
-    price: 1799,
-    originalPrice: 2999,
-    badge: 'NEW DROP',
-    images: [
-      '/images/hero/berserk-hoodie.jpg',
-      '/images/hero/berserk-hoodie.jpg',
-    ],
-    category: 'hoodies',
-  },
-  {
-    id: 'zn-50',
-    slug: 'nocursed-embroidery-sweatshirt',
-    title: 'NO CURSED SPIRIT / EMBROIDERY SWEATSHIRT',
-    price: 1799,
-    originalPrice: 2799,
-    badge: 'NEW DROP',
-    images: [
-      '/images/hero/sukuna-jacket.jpg',
-      '/images/hero/sukuna-jacket.jpg',
-    ],
-    category: 'hoodies',
-  },
-  {
-    id: 'zn-98',
-    slug: 'dragon-embroidery-zipper',
-    title: 'DRAGON EMBROIDERY / ZIPPER',
-    price: 2199,
-    originalPrice: 2899,
-    badge: 'NEW DROP',
-    images: [
-      '/images/hero/berserk-hoodie.jpg',
-      '/images/hero/sukuna-jacket.jpg',
-    ],
-    category: 'hoodies',
-  },
-  {
-    id: 'zn-01',
-    slug: 'ryujin-dragon-jacquard-jacket',
-    title: 'RYUJIN DRAGON / JACQUARD JACKET',
-    price: 2099,
-    originalPrice: 5999,
-    badge: 'SAVE 65%',
-    images: [
-      '/images/hero/ryujin-jacket.jpg',
-      '/images/hero/ryujin-jacket.jpg',
-    ],
-    category: 'jackets',
-  },
-  {
-    id: 'zn-02',
-    slug: 'waffle-cherry-blossom-full-sleeve',
-    title: 'WAFFLE CHERRY BLOSSOM / FULL SLEEVE',
-    price: 1549,
-    originalPrice: 3999,
-    badge: 'SAVE 61%',
-    images: [
-      '/images/hero/cherry-blossom-waffle.jpg',
-      '/images/hero/cherry-blossom-waffle.jpg',
-    ],
-    category: 'tees',
-  },
-  {
-    id: 'zn-03',
-    slug: 'cherry-blossom-barrel-sweatpants',
-    title: 'CHERRY BLOSSOM / BARREL SWEATPANTS',
-    price: 1949,
-    originalPrice: 4999,
-    badge: 'SAVE 61%',
-    images: [
-      '/images/hero/cherry-blossom-waffle.jpg',
-      '/images/hero/cherry-blossom-waffle.jpg',
-    ],
-    category: 'bottoms',
-  },
-  {
-    id: 'zn-04',
-    slug: 'demon-denim-crossbody-backpack',
-    title: 'DEMON DENIM / CROSSBODY BACKPACK',
-    price: 1999,
-    originalPrice: 3999,
-    badge: 'SAVE 50%',
-    images: [
-      '/images/hero/zoro-crossbody.jpg',
-      '/images/hero/zoro-crossbody.jpg',
-    ],
-    category: 'accessories',
-  },
-  {
-    id: 'zn-05',
-    slug: 'aot-suede-crossbody-backpack',
-    title: 'AOT SUEDE / CROSSBODY BACKPACK',
-    price: 1799,
-    originalPrice: 3999,
-    badge: 'SAVE 55%',
-    images: [
-      '/images/hero/zoro-crossbody.jpg',
-      '/images/hero/zoro-crossbody.jpg',
-    ],
-    category: 'accessories',
-  },
-  {
-    id: 'zn-06',
-    slug: 'illusion-white-denim-jacket',
-    title: 'ILLUSION WHITE DENIM / JACKET',
-    price: 2699,
-    originalPrice: 4999,
-    badge: 'SAVE 46%',
-    images: [
-      '/images/hero/valhalla-bomber.jpg',
-      '/images/hero/valhalla-bomber.jpg',
-    ],
-    category: 'jackets',
-  },
-];
-
 export const ZeninNewArrivals: React.FC<ZeninNewArrivalsProps> = ({ initialProducts }) => {
   const addItem = useCartStore((state) => state.addItem);
   const openDrawer = useCartStore((state) => state.openDrawer);
@@ -192,85 +72,21 @@ export const ZeninNewArrivals: React.FC<ZeninNewArrivalsProps> = ({ initialProdu
     return [...priorityList, ...regularList];
   }, [cmsProducts, initialProducts]);
 
-  // Compute products to display in the New Arrivals grid
+  // Compute products to display in the New Arrivals grid dynamically from active Neon DB / CMS products
   const products: ZeninProduct[] = React.useMemo(() => {
-    // 1. Priority drops: The updated hoodies and any custom admin drops
-    const priorityDrops: ZeninProduct[] = activeProducts
-      .filter((p: Product) => {
-        const isCustom = !p.id.startsWith('zn-') || p.id.startsWith('as-');
-        const isHoodie =
-          p.category === 'hoodies' ||
-          p.id === 'zn-49' ||
-          p.id === 'zn-50' ||
-          p.id === 'zn-98' ||
-          /hoodie|sweatshirt/i.test(p.title);
-        const isMarkedNew = p.isNewDrop === true && !p.id.startsWith('zn-');
-        return isCustom || isHoodie || isMarkedNew;
-      })
-      .map((p: Product) => ({
-        id: p.id,
-        slug: p.slug,
-        title: p.title,
-        price: p.price,
-        originalPrice: p.originalPrice || Math.round(p.price * 1.4),
-        badge: p.badge || 'NEW DROP',
-        images: [
-          p.images[0] || '/images/placeholder-product.svg',
-          p.images[1] || p.images[0] || '/images/placeholder-product.svg',
-        ] as [string, string],
-        category: p.category,
-      }));
-
-    // 2. Curated baseline New Arrivals (updated with any edits made in admin)
-    const updatedNewArrivals: ZeninProduct[] = NEW_ARRIVALS.map((na) => {
-      const matchingCms = activeProducts.find((p: Product) => p.slug === na.slug || p.id === na.id);
-      if (!matchingCms) return na;
-      return {
-        ...na,
-        title: matchingCms.title,
-        price: matchingCms.price,
-        originalPrice: matchingCms.originalPrice,
-        images: [
-          matchingCms.images[0] || na.images[0],
-          matchingCms.images[1] || matchingCms.images[0] || na.images[1],
-        ] as [string, string],
-        badge: matchingCms.badge || na.badge,
-        category: matchingCms.category || na.category,
-      };
-    });
-
-    // 3. Put priority drops (the 3 hoodies & custom drops) first at the very beginning of New Arrivals!
-    const combined: ZeninProduct[] = [...priorityDrops];
-    updatedNewArrivals.forEach((na) => {
-      if (!combined.some((item) => item.id === na.id || item.slug === na.slug)) {
-        combined.push(na);
-      }
-    });
-
-    // 4. If fewer than 8 items, backfill with remaining active products to maintain a balanced grid
-    if (combined.length < 8) {
-      activeProducts.forEach((p: Product) => {
-        if (!combined.some((item) => item.id === p.id || item.slug === p.slug)) {
-          combined.push({
-            id: p.id,
-            slug: p.slug,
-            title: p.title,
-            price: p.price,
-            originalPrice: p.originalPrice || Math.round(p.price * 1.4),
-            badge: p.badge || 'NEW DROP',
-            images: [
-              p.images[0] || '/images/placeholder-product.svg',
-              p.images[1] || p.images[0] || '/images/placeholder-product.svg',
-            ] as [string, string],
-            category: p.category,
-          });
-        }
-      });
-    }
-
-    // Keep all priority drops visible at the top, plus baseline items up to max(8, combined.length)
-    const targetCount = Math.max(8, combined.length);
-    return combined.slice(0, Math.min(24, targetCount));
+    return activeProducts.slice(0, 12).map((p: Product) => ({
+      id: p.id,
+      slug: p.slug,
+      title: p.title,
+      price: p.price,
+      originalPrice: p.originalPrice || Math.round(p.price * 1.4),
+      badge: p.badge || (p.isNewDrop ? 'NEW DROP' : 'FEATURED'),
+      images: [
+        p.images[0] || '/images/placeholder-product.svg',
+        p.images[1] || p.images[0] || '/images/placeholder-product.svg',
+      ] as [string, string],
+      category: p.category,
+    }));
   }, [activeProducts]);
 
   const handleQuickAdd = (p: ZeninProduct, e: React.MouseEvent) => {

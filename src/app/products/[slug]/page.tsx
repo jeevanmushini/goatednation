@@ -41,13 +41,17 @@ export default function ProductDetailPage({
 }) {
   const { slug } = use(params);
   const cmsProducts = useCmsStore((state) => state.products);
+  const deletedProductIds = useCmsStore((state) => state.deletedProductIds || []);
   const [fetchedProduct, setFetchedProduct] = useState<Product | null>(null);
   const [isResolving, setIsResolving] = useState(true);
 
-  const product =
+  const deletedSet = new Set(deletedProductIds);
+  const candidate =
     cmsProducts.find((p) => p.slug === slug || p.id === slug) ||
     PRODUCTS.find((p) => p.slug === slug || p.id === slug) ||
     fetchedProduct;
+
+  const product = candidate && !deletedSet.has(candidate.id) ? candidate : null;
 
   React.useEffect(() => {
     let active = true;

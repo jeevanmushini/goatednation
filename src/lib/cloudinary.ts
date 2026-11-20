@@ -122,3 +122,75 @@ export async function uploadToCloudinary(
     bytes: result.bytes,
   };
 }
+
+/**
+ * Uploads an image by remote URL directly to Cloudinary.
+ * Returns the permanent global HTTPS Cloudinary CDN URL.
+ */
+export async function uploadRemoteUrlToCloudinary(
+  remoteUrl: string,
+  category: string = 'products',
+  publicId?: string
+): Promise<{ url: string; publicId: string }> {
+  const { cloudName, apiKey, apiSecret, uploadPreset } = getCloudinaryCredentials();
+
+  if (!cloudName) {
+    throw new Error('Cloudinary cloudName missing.');
+  }
+
+  const formData = new FormData();
+  formData.append('file', remoteUrl);
+
+  const hasValidSecret = Boolean(apiKey && apiSecret && !apiSecret.includes('*'));
+
+  if (hasValidSecret && apiKey && apiSecret) {
+    const timestamp = Math.floor(Date.now() / 1000);
+    const folder = `goatednation/${category}`;
+
+    const params: Record<string, string> = {
+      folder,
+      timestamp: String(timestamp),
+    };
+
+    if (publicId) {
+      params.public_id = publicId.replace(/\.[^.]+$/, '');
+    }
+
+    const sortedKeys = Object.keys(params).sort();
+    const stringToSign = sortedKeys.map((k) => `${k}=${params[k]}`).join('&') + apiSecret;
+    const signature = crypto.createHash('sha1').update(stringToSign).digest('hex');
+
+    Object.entries(params).forEach(([k, v]) => {
+      formData.append(k, v);
+    });
+    formData.append('api_key', apiKey);
+    formData.append('signature', signature);
+  } else if (uploadPreset) {
+    formData.append('upload_preset', uploadPreset);
+    if (publicId) {
+      formData.append('public_id', publicId.replace(/\.[^.]+$/, ''));
+    }
+  } else {
+    throw new Error('Cloudinary credentials missing or masked.');
+  }
+
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const errorJson = (await res.json().catch(() => ({}))) as { error?: { message?: string } };
+    throw new Error(errorJson.error?.message || `Cloudinary API returned HTTP ${res.status}`);
+  }
+
+  const result = (await res.json()) as {
+    secure_url: string;
+    public_id: string;
+  };
+
+  return {
+    url: result.secure_url,
+    publicId: result.public_id,
+  };
+}

@@ -281,7 +281,13 @@ export default function AdminProductsPage() {
                         onClick={async () => {
                           if (confirm(`Delete "${p.title}"?`)) {
                             deleteProduct(p.id);
-                            await publishChanges();
+                            const res = await publishChanges();
+                            if (!res.success) {
+                              setToastMessage(`Failed to delete: ${res.error || 'Server error'}`);
+                              setShowToast(true);
+                              setTimeout(() => setShowToast(false), 4000);
+                              return;
+                            }
                             if (typeof window !== 'undefined') {
                               window.dispatchEvent(new Event('cms-published'));
                             }

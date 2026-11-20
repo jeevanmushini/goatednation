@@ -84,6 +84,7 @@ export default function CategoryCollectionPage({
   const { slug } = use(params);
   const cmsCategories = useCmsStore((state) => state.categories);
   const cmsProducts = useCmsStore((state) => state.products);
+  const deletedProductIds = useCmsStore((state) => state.deletedProductIds || []);
 
   React.useEffect(() => {
     useCmsStore.getState().syncFromServer(true);
@@ -95,21 +96,12 @@ export default function CategoryCollectionPage({
 
   const allCategories = cmsCategories.length > 0 ? cmsCategories : CATEGORIES;
   const allProducts = React.useMemo(() => {
-    const list = [...PRODUCTS];
+    const deletedSet = new Set(deletedProductIds);
     if (cmsProducts && cmsProducts.length > 0) {
-      const customDrops: Product[] = [];
-      cmsProducts.forEach((cp) => {
-        const idx = list.findIndex((p) => p.id === cp.id || p.slug === cp.slug);
-        if (idx !== -1) {
-          list[idx] = cp;
-        } else {
-          customDrops.push(cp);
-        }
-      });
-      return [...customDrops, ...list];
+      return cmsProducts.filter((p) => !deletedSet.has(p.id));
     }
-    return list;
-  }, [cmsProducts]);
+    return PRODUCTS.filter((p) => !deletedSet.has(p.id));
+  }, [cmsProducts, deletedProductIds]);
 
   const mapped = CATEGORY_MAP[slug.toLowerCase()];
   const fallbackCat = allCategories.find((c) => c.slug === slug);

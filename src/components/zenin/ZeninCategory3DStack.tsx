@@ -26,7 +26,7 @@ const STACK_ITEMS: CardStackItem[] = [
     category: 'BACKPACK',
     title: 'ZORO TACTICAL // CROSSBODY',
     subtitle: 'MODULAR MOLLE SYSTEM • 1000D CORDURA',
-    image: '/images/hero/zoro-crossbody.jpg',
+    image: 'https://res.cloudinary.com/bu4oxldy/image/upload/v1795179479/zoro-crossbody/ikbras4fhohlznvmbsnk.jpg',
     link: '/collections/backpack',
   },
   {
@@ -34,7 +34,7 @@ const STACK_ITEMS: CardStackItem[] = [
     category: 'JACKETS',
     title: 'SUKUNA DOMAIN // JACQUARD JACKET',
     subtitle: 'METALLIC THREAD EMBROIDERY • BOX FIT',
-    image: '/images/hero/sukuna-jacket.jpg',
+    image: 'https://res.cloudinary.com/bu4oxldy/image/upload/v1795179477/sukuna-jacket/yjwhc1wk3tqlce77975i.jpg',
     link: '/collections/jacket',
   },
   {
@@ -42,7 +42,7 @@ const STACK_ITEMS: CardStackItem[] = [
     category: 'HOODIES',
     title: 'BERSERK ECLIPSE // 420 GSM HOODIE',
     subtitle: 'DOUBLE-LAYER HOOD • PUFF SCREEN PRINT',
-    image: '/images/hero/berserk-hoodie.jpg',
+    image: 'https://res.cloudinary.com/bu4oxldy/image/upload/v1795179472/berserk-hoodie/oycsjwff2wkzukvqhjom.jpg',
     link: '/collections/hoodie',
   },
   {
@@ -50,7 +50,7 @@ const STACK_ITEMS: CardStackItem[] = [
     category: 'VEST',
     title: 'TACTICAL UTILITY // COMBAT VEST',
     subtitle: 'MULTI-POCKET HARNESS • REFLECTIVE WEBBING',
-    image: '/images/hero/tactical-vest.jpg',
+    image: 'https://res.cloudinary.com/bu4oxldy/image/upload/v1795179477/tactical-vest/d1qbbxrdj2ckkcxif6il.jpg',
     link: '/collections/vest',
   },
 ];
