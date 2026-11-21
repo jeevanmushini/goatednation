@@ -61,11 +61,11 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 bg-black/85 backdrop-blur-md px-4">
+    <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 bg-black/60 px-4">
       <div className="relative w-full max-w-2xl bg-[#121212] border border-[#2A2A2A] rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         {/* Search Input Bar */}
         <div className="flex items-center px-6 py-4 border-b border-[#222222]">
-          <Search className="w-5 h-5 text-[#E8FF00] mr-3 shrink-0" />
+          <Search className="w-5 h-5 text-[#FF4D00] mr-3 shrink-0" />
           <input
             type="text"
             value={query}
@@ -91,15 +91,15 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
         </div>
 
         {/* Quick Suggestion Pills */}
-        <div className="px-6 py-3 bg-[#0E0E0E] border-b border-[#1E1E1E] flex items-center space-x-2 overflow-x-auto text-xs">
+        <div className="px-6 py-3 bg-[#0E0E0E] border-b border-[#1E1E1E] flex items-center space-x-2 overflow-x-auto text-xs font-mono">
           <span className="text-[#666666] shrink-0 flex items-center">
-            <Flame className="w-3 h-3 text-[#E8FF00] mr-1" /> Trending:
+            <Flame className="w-3 h-3 text-[#FF4D00] mr-1" /> Trending:
           </span>
           {quickTags.map((tag) => (
             <button
               key={tag}
               onClick={() => setQuery(tag)}
-              className="px-2.5 py-1 rounded-full bg-[#1A1A1A] text-[#A0A0A0] hover:text-[#E8FF00] hover:bg-[#252525] transition-colors shrink-0"
+              className="px-2.5 py-1 rounded-full bg-[#1A1A1A] text-[#A0A0A0] hover:text-[#FF4D00] hover:bg-[#252525] transition-colors shrink-0"
             >
               {tag}
             </button>
@@ -137,10 +137,10 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
                     />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <span className="text-[10px] font-mono uppercase text-[#E8FF00] tracking-wider">
+                    <span className="text-[10px] font-mono uppercase text-[#FF4D00] tracking-wider font-bold">
                       {product.anime}
                     </span>
-                    <h4 className="text-sm font-semibold text-white truncate group-hover:text-[#E8FF00] transition-colors">
+                    <h4 className="text-sm font-semibold text-white truncate group-hover:text-[#FF4D00] transition-colors">
                       {product.title}
                     </h4>
                     <div className="flex items-center space-x-2 mt-1">
@@ -150,12 +150,12 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
                       <span className="text-xs text-[#666666] line-through font-mono">
                         ₹{product.originalPrice.toLocaleString('en-IN')}
                       </span>
-                      <span className="text-[10px] font-mono bg-[#E8FF00]/10 text-[#E8FF00] px-1.5 py-0.5 rounded">
+                      <span className="text-[10px] font-mono bg-[#FF4D00]/10 text-[#FF4D00] px-1.5 py-0.5 rounded font-bold">
                         {product.discountPercent}% OFF
                       </span>
                     </div>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-[#555555] group-hover:text-[#E8FF00] transition-colors shrink-0" />
+                  <ArrowRight className="w-4 h-4 text-[#555555] group-hover:text-[#FF4D00] transition-colors shrink-0" />
                 </Link>
               ))}
             </div>

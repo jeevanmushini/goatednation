@@ -173,21 +173,18 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     ],
     "description": "Height: 41.91 cms | Width: 34.29 cms | Depth: 7.62 cms Height: 16.5 INCH | Width: 13.5 INCH | Depth: 3 INCH Weight: 500 grams Capacity: 15L What’s in the box : - FREE WOVEN KEYCHAIN &amp; METAL KEYCHAIN - FREE ANIME STICKERS - FREE WATER-PROOF DRA...",
     "details": {
-      "gsm": "280 GSM Combed Heavy Cotton",
-      "fabric": "100% Premium Bio-Washed Ring-Spun Cotton",
-      "fit": "Relaxed Drop-Shoulder Tokyo Silhouette",
-      "printType": "High-Density Embroidery & Screen",
+      "gsm": "1000D Ballistic Cordura",
+      "fabric": "Weatherproof Composite & 1000D Cordura Nylon",
+      "fit": "Modular Molle Tactical Crossbody Sling",
+      "printType": "Matte High-Density Woven Patch + Metal Hardware",
       "care": [
-        "Machine wash cold inside-out",
-        "Line dry in shade",
-        "Do not iron on print"
+        "Wipe clean with a damp cloth",
+        "Do not machine wash or tumble dry",
+        "Air dry in shade"
       ]
     },
     "sizes": [
-      "S",
-      "M",
-      "L",
-      "XL"
+      "ONE SIZE"
     ],
     "colors": [
       {
@@ -223,21 +220,18 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     ],
     "description": "BUY AOT SUEDE / CROSSBODY BACKPACK. Height: 41.91 cms | Width: 34.29 cms | Depth: 7.62 cms Height: 17.5 INCH | Width: 13.5 INCH | Depth: 3 INCH Weight: 500 grams Capacity: 10L What’s in the box : - FREE STEEL KEYCHAIN ATTACHED - FREE ANIME STICKER...",
     "details": {
-      "gsm": "280 GSM Combed Heavy Cotton",
-      "fabric": "100% Premium Bio-Washed Ring-Spun Cotton",
-      "fit": "Relaxed Drop-Shoulder Tokyo Silhouette",
-      "printType": "High-Density Embroidery & Screen",
+      "gsm": "1000D Ballistic Cordura",
+      "fabric": "Weatherproof Composite & 1000D Cordura Nylon",
+      "fit": "Modular Molle Tactical Crossbody Sling",
+      "printType": "Matte High-Density Woven Patch + Metal Hardware",
       "care": [
-        "Machine wash cold inside-out",
-        "Line dry in shade",
-        "Do not iron on print"
+        "Wipe clean with a damp cloth",
+        "Do not machine wash or tumble dry",
+        "Air dry in shade"
       ]
     },
     "sizes": [
-      "S",
-      "M",
-      "L",
-      "XL"
+      "ONE SIZE"
     ],
     "colors": [
       {
@@ -368,21 +362,18 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     ],
     "description": "Height: 41.91 cms | Width: 34.29 cms | Depth: 7.62 cms Height: 17.5 INCH | Width: 13.5 INCH | Depth: 3 INCH Weight: 600 grams Capacity: 10L What’s in the box : - FREE ANIME STICKERS - FREE WATER-PROOF DRAWSTING BAG - PRODUCT. About this Bag : • Fi...",
     "details": {
-      "gsm": "280 GSM Combed Heavy Cotton",
-      "fabric": "100% Premium Bio-Washed Ring-Spun Cotton",
-      "fit": "Relaxed Drop-Shoulder Tokyo Silhouette",
-      "printType": "High-Density Embroidery & Screen",
+      "gsm": "1000D Ballistic Cordura",
+      "fabric": "Weatherproof Composite & 1000D Cordura Nylon",
+      "fit": "Modular Molle Tactical Crossbody Sling",
+      "printType": "Matte High-Density Woven Patch + Metal Hardware",
       "care": [
-        "Machine wash cold inside-out",
-        "Line dry in shade",
-        "Do not iron on print"
+        "Wipe clean with a damp cloth",
+        "Do not machine wash or tumble dry",
+        "Air dry in shade"
       ]
     },
     "sizes": [
-      "S",
-      "M",
-      "L",
-      "XL"
+      "ONE SIZE"
     ],
     "colors": [
       {
@@ -471,21 +462,18 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     ],
     "description": "ZORO TACTICAL / BACKPACK Height: 41.91 cms | Width: 34.29 cms | Depth: 12.7 cms Height: 16.5 INCH | Width: 13.5 INCH | Depth: 5 INCH Weight: 800 grams Capacity: 20L What’s in the box : - FREE ZORO WOVEN KEYCHAIN - FREE ANIME STICKERS - FREE ZENIN ...",
     "details": {
-      "gsm": "280 GSM Combed Heavy Cotton",
-      "fabric": "100% Premium Bio-Washed Ring-Spun Cotton",
-      "fit": "Relaxed Drop-Shoulder Tokyo Silhouette",
-      "printType": "High-Density Embroidery & Screen",
+      "gsm": "1000D Cordura Heavy-Duty Spec",
+      "fabric": "1000D Ballistic Cordura Nylon & Suede Accents",
+      "fit": "Ergonomic Padded Shoulder Straps & Molle Loops",
+      "printType": "Matte High-Density Woven Patch + Metal Hardware",
       "care": [
-        "Machine wash cold inside-out",
-        "Line dry in shade",
-        "Do not iron on print"
+        "Wipe clean with a damp cloth",
+        "Do not machine wash or tumble dry",
+        "Air dry in shade"
       ]
     },
     "sizes": [
-      "S",
-      "M",
-      "L",
-      "XL"
+      "ONE SIZE"
     ],
     "colors": [
       {
@@ -618,21 +606,18 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     ],
     "description": "PHANTOM TROUPE SUEDE / BACKPACK Height: 43.18 cms | Width: 27.94 cms | Depth: 12.7 cms Height: 17 INCH | Width: 11 INCH | Depth: 5 INCH Weight: 800 grams Capacity: 12L What’s in the box : - FREE STAINLESS STEEL CROSS KEYCHAIN ( ATTACHED WITH THE B...",
     "details": {
-      "gsm": "280 GSM Combed Heavy Cotton",
-      "fabric": "100% Premium Bio-Washed Ring-Spun Cotton",
-      "fit": "Relaxed Drop-Shoulder Tokyo Silhouette",
-      "printType": "High-Density Embroidery & Screen",
+      "gsm": "1000D Cordura Heavy-Duty Spec",
+      "fabric": "1000D Ballistic Cordura Nylon & Suede Accents",
+      "fit": "Ergonomic Padded Shoulder Straps & Molle Loops",
+      "printType": "Matte High-Density Woven Patch + Metal Hardware",
       "care": [
-        "Machine wash cold inside-out",
-        "Line dry in shade",
-        "Do not iron on print"
+        "Wipe clean with a damp cloth",
+        "Do not machine wash or tumble dry",
+        "Air dry in shade"
       ]
     },
     "sizes": [
-      "S",
-      "M",
-      "L",
-      "XL"
+      "ONE SIZE"
     ],
     "colors": [
       {
@@ -1304,21 +1289,18 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     ],
     "description": "About: DEMON ARMOUR / BACKPACK Height: 46.99 cms | Width: 35.56 cms | Depth: 12.7 cms Height: 18.5 INCH | Width: 14 INCH | Depth: 5 INCH Weight: 1000 grams Capacity: 25L Material: Premium-quality nylon construction for long-lasting durability. Fea...",
     "details": {
-      "gsm": "280 GSM Combed Heavy Cotton",
-      "fabric": "100% Premium Bio-Washed Ring-Spun Cotton",
-      "fit": "Relaxed Drop-Shoulder Tokyo Silhouette",
-      "printType": "High-Density Embroidery & Screen",
+      "gsm": "1000D Cordura Heavy-Duty Spec",
+      "fabric": "1000D Ballistic Cordura Nylon & Suede Accents",
+      "fit": "Ergonomic Padded Shoulder Straps & Molle Loops",
+      "printType": "Matte High-Density Woven Patch + Metal Hardware",
       "care": [
-        "Machine wash cold inside-out",
-        "Line dry in shade",
-        "Do not iron on print"
+        "Wipe clean with a damp cloth",
+        "Do not machine wash or tumble dry",
+        "Air dry in shade"
       ]
     },
     "sizes": [
-      "S",
-      "M",
-      "L",
-      "XL"
+      "ONE SIZE"
     ],
     "colors": [
       {
@@ -1402,21 +1384,18 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     ],
     "description": "Height: 18.5 INCH | Width: 11.2 INCH | Depth: 5.9 INCH Weight: 900 grams Capacity: 18L What’s in the box: - FREE ANIME KEYCHAIN (ATTACHED WITH THE BAG) - FREE ZENIN DRAWSTRING BAG - FREE ANIME STICKERS - PRODUCT About this Bag: • Fits 16 inch Lapt...",
     "details": {
-      "gsm": "280 GSM Combed Heavy Cotton",
-      "fabric": "100% Premium Bio-Washed Ring-Spun Cotton",
-      "fit": "Relaxed Drop-Shoulder Tokyo Silhouette",
-      "printType": "High-Density Embroidery & Screen",
+      "gsm": "1000D Cordura Heavy-Duty Spec",
+      "fabric": "1000D Ballistic Cordura Nylon & Suede Accents",
+      "fit": "Ergonomic Padded Shoulder Straps & Molle Loops",
+      "printType": "Matte High-Density Woven Patch + Metal Hardware",
       "care": [
-        "Machine wash cold inside-out",
-        "Line dry in shade",
-        "Do not iron on print"
+        "Wipe clean with a damp cloth",
+        "Do not machine wash or tumble dry",
+        "Air dry in shade"
       ]
     },
     "sizes": [
-      "S",
-      "M",
-      "L",
-      "XL"
+      "ONE SIZE"
     ],
     "colors": [
       {
@@ -2920,21 +2899,18 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     ],
     "description": "Height: 29 cm | Width: 16 cm | Depth: 8 cm Height: 11 INCH | Width: 6.3 INCH | Depth: 3.1 INCH Weight: 300G Capacity: 2–3L (Small Sling Bag) What’s in the box : - FREE ACRYLIC KEYCHAIN - FREE ANIME STICKERS - PRODUCT. Key Features Dual Main Compar...",
     "details": {
-      "gsm": "280 GSM Combed Heavy Cotton",
-      "fabric": "100% Premium Bio-Washed Ring-Spun Cotton",
-      "fit": "Relaxed Drop-Shoulder Tokyo Silhouette",
-      "printType": "High-Density Embroidery & Screen",
+      "gsm": "1000D Ballistic Cordura",
+      "fabric": "Weatherproof Composite & 1000D Cordura Nylon",
+      "fit": "Modular Molle Tactical Crossbody Sling",
+      "printType": "Matte High-Density Woven Patch + Metal Hardware",
       "care": [
-        "Machine wash cold inside-out",
-        "Line dry in shade",
-        "Do not iron on print"
+        "Wipe clean with a damp cloth",
+        "Do not machine wash or tumble dry",
+        "Air dry in shade"
       ]
     },
     "sizes": [
-      "S",
-      "M",
-      "L",
-      "XL"
+      "ONE SIZE"
     ],
     "colors": [
       {
@@ -3328,21 +3304,18 @@ export const ZENIN_ALL_PRODUCTS: Product[] = [
     ],
     "description": "Height: 41.91 cms | Width: 34.29 cms | Depth: 7.62 cms Height: 16.5 INCH | Width: 13.5 INCH | Depth: 3 INCH Weight: 500 grams Capacity: 10L What’s in the box : - FREE AKATSUKI WOVEN KEYCHAIN - FREE ANIME STICKERS - FREE WATER-PROOF DRAWSTING BAG -...",
     "details": {
-      "gsm": "280 GSM Combed Heavy Cotton",
-      "fabric": "100% Premium Bio-Washed Ring-Spun Cotton",
-      "fit": "Relaxed Drop-Shoulder Tokyo Silhouette",
-      "printType": "High-Density Embroidery & Screen",
+      "gsm": "1000D Ballistic Cordura",
+      "fabric": "Weatherproof Composite & 1000D Cordura Nylon",
+      "fit": "Modular Molle Tactical Crossbody Sling",
+      "printType": "Matte High-Density Woven Patch + Metal Hardware",
       "care": [
-        "Machine wash cold inside-out",
-        "Line dry in shade",
-        "Do not iron on print"
+        "Wipe clean with a damp cloth",
+        "Do not machine wash or tumble dry",
+        "Air dry in shade"
       ]
     },
     "sizes": [
-      "S",
-      "M",
-      "L",
-      "XL"
+      "ONE SIZE"
     ],
     "colors": [
       {

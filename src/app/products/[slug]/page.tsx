@@ -498,22 +498,26 @@ export default function ProductDetailPage({
               {/* Size Selection */}
               <div className="mt-6">
                 <div className="flex items-center justify-between text-xs font-mono mb-2">
-                  <span className="text-[#888888]">SELECT SIZE (OVERSIZED FIT):</span>
-                  <button
-                    onClick={() => setIsSizeGuideOpen(true)}
-                    className="text-black hover:underline flex items-center font-bold"
-                  >
-                    <Ruler className="w-3.5 h-3.5 mr-1" /> Size Guide
-                  </button>
+                  <span className="text-[#888888]">
+                    {product.category === 'accessories' ? 'TACTICAL SPEC / CAPACITY:' : 'SELECT SIZE (OVERSIZED FIT):'}
+                  </span>
+                  {product.category !== 'accessories' && (
+                    <button
+                      onClick={() => setIsSizeGuideOpen(true)}
+                      className="text-black hover:underline flex items-center font-bold"
+                    >
+                      <Ruler className="w-3.5 h-3.5 mr-1" /> Size Guide
+                    </button>
+                  )}
                 </div>
-                <div className="grid grid-cols-5 gap-2">
+                <div className={`grid gap-2 ${product.sizes.length === 1 ? 'grid-cols-2 sm:grid-cols-3' : 'grid-cols-5'}`}>
                   {product.sizes.map((size: ProductSize) => (
                     <button
                       key={size}
                       onClick={() => setSelectedSize(size)}
-                      className={`py-2 rounded text-center font-mono text-xs font-bold transition-all border ${
+                      className={`py-2 px-3 rounded text-center font-mono text-xs font-bold transition-all border ${
                         selectedSize === size
-                          ? 'bg-black text-white border-black'
+                          ? 'bg-black text-white border-black shadow-sm'
                           : 'bg-white text-black border-[#D5D5D5] hover:border-black'
                       }`}
                     >
@@ -564,27 +568,35 @@ export default function ProductDetailPage({
                 <PincodeChecker />
               </div>
 
-              {/* Garment Specifications List */}
+              {/* Garment / Tactical Specifications List */}
               <div className="mt-8 p-5 rounded-lg bg-[#FAFAFA] border border-[#EAEAEA] space-y-3">
                 <h4 className="text-xs font-mono font-bold text-black uppercase tracking-wider">
-                  GARMENT SPECIFICATIONS
+                  {product.category === 'accessories' ? 'TACTICAL GEAR SPECIFICATIONS' : 'GARMENT SPECIFICATIONS'}
                 </h4>
                 <div className="grid grid-cols-2 gap-3 text-xs font-mono">
                   <div>
-                    <span className="text-[#888888] block text-[10px]">WEIGHT / GSM</span>
-                    <span className="font-semibold text-black">{product.details?.gsm || '280 GSM Heavyweight'}</span>
+                    <span className="text-[#888888] block text-[10px]">
+                      {product.category === 'accessories' ? 'MATERIAL SPEC / DENIER' : 'WEIGHT / GSM'}
+                    </span>
+                    <span className="font-semibold text-black">{product.details?.gsm || (product.category === 'accessories' ? '1000D Cordura Nylon' : '280 GSM Heavyweight')}</span>
                   </div>
                   <div>
-                    <span className="text-[#888888] block text-[10px]">FABRIC COMPOSITION</span>
-                    <span className="font-semibold text-black">{product.details?.fabric || '100% Combed Cotton'}</span>
+                    <span className="text-[#888888] block text-[10px]">
+                      {product.category === 'accessories' ? 'SHELL / HARDWARE' : 'FABRIC COMPOSITION'}
+                    </span>
+                    <span className="font-semibold text-black">{product.details?.fabric || (product.category === 'accessories' ? '1000D Ballistic Cordura' : '100% Combed Cotton')}</span>
                   </div>
                   <div>
-                    <span className="text-[#888888] block text-[10px]">FIT SILHOUETTE</span>
-                    <span className="font-semibold text-black">{product.details?.fit || 'Signature Oversized Drop-Shoulder'}</span>
+                    <span className="text-[#888888] block text-[10px]">
+                      {product.category === 'accessories' ? 'STRAP / CARRY SYSTEM' : 'FIT SILHOUETTE'}
+                    </span>
+                    <span className="font-semibold text-black">{product.details?.fit || (product.category === 'accessories' ? 'Tactical Crossbody Molle Strap' : 'Signature Oversized Drop-Shoulder')}</span>
                   </div>
                   <div>
-                    <span className="text-[#888888] block text-[10px]">PRINT TECHNIQUE</span>
-                    <span className="font-semibold text-black">{product.details?.printType || 'High-Density Screen Print'}</span>
+                    <span className="text-[#888888] block text-[10px]">
+                      {product.category === 'accessories' ? 'PATCH / FINISH' : 'PRINT TECHNIQUE'}
+                    </span>
+                    <span className="font-semibold text-black">{product.details?.printType || (product.category === 'accessories' ? 'Rubberized Patch + YKK Zippers' : 'High-Density Screen Print')}</span>
                   </div>
                 </div>
               </div>

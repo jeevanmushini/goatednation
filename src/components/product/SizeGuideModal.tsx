@@ -32,11 +32,11 @@ export const SizeGuideModal: React.FC<SizeGuideModalProps> = ({ isOpen, onClose 
   const activeChart = unit === 'inches' ? sizeChartInches : sizeChartCm;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
       <div className="relative w-full max-w-lg bg-[#121212] border border-[#262626] rounded-2xl shadow-2xl overflow-hidden p-6">
         <div className="flex items-center justify-between pb-4 border-b border-[#222222]">
           <div className="flex items-center space-x-2">
-            <Ruler className="w-5 h-5 text-[#E8FF00]" />
+            <Ruler className="w-5 h-5 text-[#FF4D00]" />
             <h3 className="font-bold text-base text-white tracking-wide">
               OVERSIZED STREETWEAR SIZE GUIDE
             </h3>
@@ -59,7 +59,7 @@ export const SizeGuideModal: React.FC<SizeGuideModalProps> = ({ isOpen, onClose 
               onClick={() => setUnit('inches')}
               className={`px-3 py-1 rounded-md transition-all ${
                 unit === 'inches'
-                  ? 'bg-[#E8FF00] text-black font-bold'
+                  ? 'bg-[#FF4D00] text-white font-bold'
                   : 'text-[#888888] hover:text-white'
               }`}
             >
@@ -69,7 +69,7 @@ export const SizeGuideModal: React.FC<SizeGuideModalProps> = ({ isOpen, onClose 
               onClick={() => setUnit('cm')}
               className={`px-3 py-1 rounded-md transition-all ${
                 unit === 'cm'
-                  ? 'bg-[#E8FF00] text-black font-bold'
+                  ? 'bg-[#FF4D00] text-white font-bold'
                   : 'text-[#888888] hover:text-white'
               }`}
             >
@@ -92,7 +92,7 @@ export const SizeGuideModal: React.FC<SizeGuideModalProps> = ({ isOpen, onClose 
             <tbody className="divide-y divide-[#1C1C1C] font-mono">
               {activeChart.map((row) => (
                 <tr key={row.size} className="hover:bg-[#161616]">
-                  <td className="py-2.5 px-3 font-bold text-[#E8FF00]">{row.size}</td>
+                  <td className="py-2.5 px-3 font-bold text-[#FF4D00]">{row.size}</td>
                   <td className="py-2.5 px-3">{row.chest}</td>
                   <td className="py-2.5 px-3">{row.length}</td>
                   <td className="py-2.5 px-3">{row.shoulder}</td>

@@ -1,5 +1,5 @@
 export type ProductCategory = 'tees' | 'hoodies' | 'jackets' | 'cargo' | 'acid-wash' | 'accessories';
-export type ProductSize = 'S' | 'M' | 'L' | 'XL' | 'XXL';
+export type ProductSize = 'S' | 'M' | 'L' | 'XL' | 'XXL' | 'ONE SIZE';
 
 export interface ProductColor {
   name: string;
