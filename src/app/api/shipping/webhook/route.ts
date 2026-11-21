@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyShiprocketWebhook } from '../../../../lib/shiprocket';
 import { recordShipmentEvent } from '../../../../lib/shippingLedger';
+import { getOrderByIdFromNeon } from '../../../../lib/db/neon';
+import { sendShippingUpdateEmail } from '../../../../lib/email/mailer';
 
 /**
  * Shiprocket Webhook Handler
@@ -66,6 +68,52 @@ export async function POST(req: NextRequest) {
       currentStatus,
       timestamp: new Date().toISOString(),
     });
+
+    // Dispatches live logistics update emails for milestones: in_transit, out_for_delivery, delivered
+    const statusLower = currentStatus.toLowerCase();
+    const isLogisticsMilestone =
+      statusLower.includes('in_transit') ||
+      statusLower.includes('in transit') ||
+      statusLower.includes('out_for_delivery') ||
+      statusLower.includes('out for delivery') ||
+      statusLower.includes('delivered');
+
+    if (isLogisticsMilestone) {
+      const directEmail = (event.customer_email as string) || (event.email as string);
+      const courierName =
+        (event.courier_name as string) || (event.courier as string) || 'Shiprocket Express';
+
+      if (directEmail) {
+        sendShippingUpdateEmail({
+          to: directEmail,
+          orderId: orderId || awbCode,
+          customerName: (event.customer_name as string) || 'Collector',
+          awbCode,
+          courierName,
+          status: currentStatus,
+        }).catch((err) => {
+          console.warn('[Shiprocket Webhook] Shipping email dispatch notice:', err);
+        });
+      } else if (orderId || awbCode) {
+        getOrderByIdFromNeon(orderId || awbCode)
+          .then((order) => {
+            if (order && order.userEmail) {
+              sendShippingUpdateEmail({
+                to: order.userEmail,
+                orderId: order.id,
+                customerName:
+                  (order.shippingAddress as Record<string, string>)?.customerName || 'Collector',
+                awbCode: awbCode || order.awbCode,
+                courierName,
+                status: currentStatus,
+              }).catch((err) => {
+                console.warn('[Shiprocket Webhook] Shipping email dispatch notice:', err);
+              });
+            }
+          })
+          .catch(() => {});
+      }
+    }
 
     // Always return 200 to acknowledge receipt
     return NextResponse.json({ received: true, event: eventType, record });

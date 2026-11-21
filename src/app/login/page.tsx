@@ -15,6 +15,7 @@ function LoginForm() {
   const redirectPath = searchParams.get('redirect') || searchParams.get('redirectTo') || '';
   const errorParam = searchParams.get('error');
   const detailsParam = searchParams.get('details');
+  const resetParam = searchParams.get('reset');
 
   const initialError = errorParam
     ? errorParam === 'GoogleCredentialsMissing'
@@ -34,7 +35,11 @@ function LoginForm() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(initialError);
-  const [success, setSuccess] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(
+    resetParam === 'success'
+      ? 'Password updated successfully. Please sign in with your new credentials.'
+      : null
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -202,9 +207,12 @@ function LoginForm() {
                   <label className="text-[11px] font-mono uppercase tracking-wider text-[#444444] font-bold">
                     Password
                   </label>
-                  <span className="text-[10px] font-mono text-[#888888] hover:text-black cursor-pointer transition-colors">
+                  <Link
+                    href="/forgot-password"
+                    className="text-[10px] font-mono text-[#888888] hover:text-black cursor-pointer transition-colors"
+                  >
                     Forgot password?
-                  </span>
+                  </Link>
                 </div>
                 <div className="relative">
                   <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#888888]" />

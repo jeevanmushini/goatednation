@@ -1,4 +1,5 @@
 import { neon, neonConfig, NeonQueryFunction } from '@neondatabase/serverless';
+import crypto from 'crypto';
 import { UserRole } from '../../types/auth';
 import { Product } from '../../types/product';
 
@@ -149,6 +150,21 @@ export async function initDatabaseSchema(): Promise<boolean> {
     await sql`CREATE INDEX IF NOT EXISTS idx_products_category ON app_products(category);`;
     await sql`CREATE INDEX IF NOT EXISTS idx_products_slug ON app_products(slug);`;
     await sql`CREATE INDEX IF NOT EXISTS idx_products_is_new_drop ON app_products(is_new_drop);`;
+
+    // 8. Password Reset OTP Table
+    await sql`
+      CREATE TABLE IF NOT EXISTS app_password_resets (
+        id TEXT PRIMARY KEY,
+        email TEXT NOT NULL,
+        otp_hash TEXT NOT NULL,
+        attempts INTEGER DEFAULT 0,
+        expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+        used BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+    `;
+
+    await sql`CREATE INDEX IF NOT EXISTS idx_pwd_resets_email ON app_password_resets(email);`;
 
     schemaInitialized = true;
     return true;
@@ -700,5 +716,213 @@ export async function deleteProductInNeon(productId: string): Promise<boolean> {
   } catch (error) {
     console.error(`[Neon Postgres] Error deleting product ${productId}:`, error);
     return false;
+  }
+}
+
+/**
+ * Hashes a 6-digit OTP using SHA-256 and records it in app_password_resets table.
+ * Invalidates any previous unconsumed OTPs for this email.
+ */
+export async function createPasswordResetOtp(
+  email: string,
+  otp: string,
+  ttlMinutes = 10
+): Promise<boolean> {
+  const sql = getDb();
+  if (!sql) return false;
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+    const normalizedEmail = email.toLowerCase().trim();
+    const otpHash = crypto.createHash('sha256').update(otp).digest('hex');
+    const id = `rst_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+    const expiresAt = new Date(Date.now() + ttlMinutes * 60 * 1000).toISOString();
+
+    // Invalidate existing unused tokens for this email
+    await sql`
+      UPDATE app_password_resets
+      SET used = TRUE
+      WHERE LOWER(email) = ${normalizedEmail} AND used = FALSE;
+    `;
+
+    // Insert new OTP record
+    await sql`
+      INSERT INTO app_password_resets (id, email, otp_hash, attempts, expires_at, used, created_at)
+      VALUES (${id}, ${normalizedEmail}, ${otpHash}, 0, ${expiresAt}, FALSE, CURRENT_TIMESTAMP);
+    `;
+
+    return true;
+  } catch (error) {
+    console.error('[Neon Postgres] Error creating password reset OTP:', error);
+    return false;
+  }
+}
+
+/**
+ * Verifies and consumes a password reset OTP.
+ * Enforces expiration, attempt thresholds (max 5), and matching SHA-256 hash.
+ */
+export async function verifyAndConsumeOtp(
+  email: string,
+  rawOtp: string
+): Promise<{ success: boolean; error?: string }> {
+  const sql = getDb();
+  if (!sql) {
+    return { success: false, error: 'Database service is temporarily unavailable.' };
+  }
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+    const normalizedEmail = email.toLowerCase().trim();
+    const cleanOtp = rawOtp.trim();
+
+    // Fetch the latest active OTP record for this email
+    const rows = await sql`
+      SELECT id, otp_hash as "otpHash", attempts, expires_at as "expiresAt", used
+      FROM app_password_resets
+      WHERE LOWER(email) = ${normalizedEmail} AND used = FALSE
+      ORDER BY created_at DESC
+      LIMIT 1;
+    `;
+
+    if (!rows || rows.length === 0) {
+      return { success: false, error: 'No active verification code found. Please request a new code.' };
+    }
+
+    const record = rows[0] as { id: string; otpHash: string; attempts: number; expiresAt: string; used: boolean };
+
+    // Check expiration
+    if (new Date(record.expiresAt).getTime() < Date.now()) {
+      await sql`UPDATE app_password_resets SET used = TRUE WHERE id = ${record.id};`;
+      return { success: false, error: 'Verification code has expired. Please request a new code.' };
+    }
+
+    // Check rate limit threshold (max 5 attempts)
+    if (record.attempts >= 5) {
+      await sql`UPDATE app_password_resets SET used = TRUE WHERE id = ${record.id};`;
+      return { success: false, error: 'Too many failed attempts. Code has been invalidated. Please request a new code.' };
+    }
+
+    // Compute incoming OTP hash
+    const inputHash = crypto.createHash('sha256').update(cleanOtp).digest('hex');
+
+    if (inputHash !== record.otpHash) {
+      const updatedAttempts = record.attempts + 1;
+      await sql`
+        UPDATE app_password_resets
+        SET attempts = ${updatedAttempts}
+        WHERE id = ${record.id};
+      `;
+
+      const remaining = 5 - updatedAttempts;
+      return {
+        success: false,
+        error: remaining > 0
+          ? `Invalid verification code. ${remaining} attempt${remaining === 1 ? '' : 's'} remaining.`
+          : 'Too many failed attempts. Please request a new code.',
+      };
+    }
+
+    // Mark code as used
+    await sql`
+      UPDATE app_password_resets
+      SET used = TRUE
+      WHERE id = ${record.id};
+    `;
+
+    return { success: true };
+  } catch (error) {
+    console.error('[Neon Postgres] Error verifying OTP:', error);
+    return { success: false, error: 'An error occurred while verifying the code.' };
+  }
+}
+
+/**
+ * Updates a user's password hash and salt in app_users table.
+ */
+export async function updateUserPassword(
+  email: string,
+  newPasswordHash: string,
+  newSalt: string
+): Promise<boolean> {
+  const sql = getDb();
+  if (!sql) return false;
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+    const normalizedEmail = email.toLowerCase().trim();
+    await sql`
+      UPDATE app_users
+      SET password_hash = ${newPasswordHash}, salt = ${newSalt}
+      WHERE LOWER(email) = ${normalizedEmail};
+    `;
+    return true;
+  } catch (error) {
+    console.error('[Neon Postgres] Error updating user password:', error);
+    return false;
+  }
+}
+
+/**
+ * Retrieves an order by ID or Razorpay Order ID or AWB from Neon Postgres.
+ */
+export async function getOrderByIdFromNeon(
+  orderIdOrAwb: string
+): Promise<{
+  id: string;
+  userEmail?: string;
+  razorpayOrderId?: string;
+  razorpayPaymentId?: string;
+  shiprocketOrderId?: string;
+  awbCode?: string;
+  status?: string;
+  items?: unknown[];
+  shippingAddress?: Record<string, unknown>;
+  totalAmount?: number;
+  createdAt?: string;
+} | null> {
+  const sql = getDb();
+  if (!sql) return null;
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+    const rows = await sql`
+      SELECT 
+        id, 
+        user_email as "userEmail", 
+        razorpay_order_id as "razorpayOrderId", 
+        razorpay_payment_id as "razorpayPaymentId", 
+        shiprocket_order_id as "shiprocketOrderId", 
+        awb_code as "awbCode", 
+        status, 
+        items, 
+        shipping_address as "shippingAddress", 
+        total_amount as "totalAmount", 
+        created_at as "createdAt"
+      FROM app_orders
+      WHERE id = ${orderIdOrAwb} 
+         OR razorpay_order_id = ${orderIdOrAwb} 
+         OR awb_code = ${orderIdOrAwb}
+      LIMIT 1;
+    `;
+    if (rows && rows.length > 0) {
+      return rows[0] as unknown as {
+        id: string;
+        userEmail?: string;
+        razorpayOrderId?: string;
+        razorpayPaymentId?: string;
+        shiprocketOrderId?: string;
+        awbCode?: string;
+        status?: string;
+        items?: unknown[];
+        shippingAddress?: Record<string, unknown>;
+        totalAmount?: number;
+        createdAt?: string;
+      };
+    }
+    return null;
+  } catch (error) {
+    console.error(`[Neon Postgres] Error reading order ${orderIdOrAwb}:`, error);
+    return null;
   }
 }

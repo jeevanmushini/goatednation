@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createUser, findUserByEmail } from '../../../../lib/auth/userDb';
 import { signJwt } from '../../../../lib/auth/jwt';
 import { UserRole } from '../../../../types/auth';
+import { sendWelcomeEmail } from '../../../../lib/email/mailer';
 
 const ADMIN_INVITE_CODE = process.env.ADMIN_INVITE_CODE || 'GOATED_ADMIN_2026';
 
@@ -62,6 +63,11 @@ export async function POST(req: NextRequest) {
       password,
       role: assignedRole,
       provider: 'credentials',
+    });
+
+    // Asynchronously dispatch Syndicate Welcome Email with 10% discount coupon (non-blocking)
+    sendWelcomeEmail(user.email, user.name).catch((err) => {
+      console.error('[Auth Register] Welcome email dispatch error:', err);
     });
 
     const token = signJwt({

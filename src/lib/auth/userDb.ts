@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { User, UserRecord, UserRole, AuthProvider } from '../../types/auth';
 import { generateSalt, hashPassword, verifyPassword } from './jwt';
-import { getUsersFromNeon, getSingleUserByEmailFromNeon, upsertUserInNeon } from '../db/neon';
+import { getUsersFromNeon, getSingleUserByEmailFromNeon, upsertUserInNeon, updateUserPassword } from '../db/neon';
 
 const USERS_FILE = path.join(process.cwd(), '.users_data.json');
 
@@ -256,4 +256,27 @@ export async function findOrCreateOAuthUser(params: {
   });
 
   return toPublicUser(newUser);
+}
+
+/**
+ * Resets a user's password with a fresh cryptographic salt and hash.
+ * Synchronizes both the local cached/file representation and Neon Postgres.
+ */
+export async function resetUserPassword(email: string, newPassword: string): Promise<boolean> {
+  const normalized = email.toLowerCase().trim();
+  const salt = generateSalt();
+  const passwordHash = hashPassword(newPassword, salt);
+
+  // Update memory / local cache
+  const localList = loadUsersFromLocal();
+  const found = localList.find((u) => u.email.toLowerCase().trim() === normalized);
+  if (found) {
+    found.salt = salt;
+    found.passwordHash = passwordHash;
+    saveLocalUsersBackup(localList);
+  }
+
+  // Update in Neon database
+  const success = await updateUserPassword(normalized, passwordHash, salt);
+  return success || !!found;
 }
