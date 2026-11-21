@@ -37,7 +37,7 @@ export const ZeninNewArrivals: React.FC<ZeninNewArrivalsProps> = ({ initialProdu
     const processItem = (p: Product) => {
       if (!p || !p.id || seen.has(p.id)) return;
       seen.add(p.id);
-      const isCustomDrop = !p.id.startsWith('zn-') || p.id.startsWith('as-');
+      const isCustomDrop = !p.id.startsWith('zn-') || p.id.startsWith('as-') || Boolean(p.isNewDrop);
       const isHoodieOrFeatured =
         p.category === 'hoodies' ||
         p.id === 'zn-49' ||

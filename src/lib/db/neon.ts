@@ -13,10 +13,19 @@ let schemaInitialized = false;
  * Returns null if DATABASE_URL is not set.
  */
 export function getDb(): NeonQueryFunction<false, false> | null {
-  const dbUrl = process.env.DATABASE_URL;
+  let dbUrl =
+    process.env.DATABASE_URL ||
+    process.env.POSTGRES_URL ||
+    process.env.DATABASE_URL_UNPOOLED ||
+    process.env.POSTGRES_PRISMA_URL ||
+    process.env.NEON_DATABASE_URL;
+
   if (!dbUrl) {
     return null;
   }
+
+  // Strip wrapping quotes if string was copied with quotes into Vercel dashboard
+  dbUrl = dbUrl.trim().replace(/^["']|["']$/g, '');
 
   if (!cachedSql) {
     cachedSql = neon(dbUrl);

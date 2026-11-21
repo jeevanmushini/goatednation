@@ -47,7 +47,10 @@ function getRedisConfig() {
   const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
   const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
   if (!url || !token) return null;
-  return { url, token };
+  return {
+    url: url.trim().replace(/^["']|["']$/g, ''),
+    token: token.trim().replace(/^["']|["']$/g, ''),
+  };
 }
 
 async function redisGet<T>(key: string): Promise<T | null> {
