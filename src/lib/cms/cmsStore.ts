@@ -15,7 +15,6 @@ import {
   CmsAnnouncement,
 } from '../../types/cms';
 import { Product } from '../../types/product';
-import { PRODUCTS } from '../../data/products';
 import {
   INITIAL_HERO_SLIDES,
   INITIAL_CATEGORIES,
@@ -192,7 +191,7 @@ const createCmsStore = () =>
   create<CmsState>()((set, get) => ({
       heroSlides: INITIAL_HERO_SLIDES,
       categories: INITIAL_CATEGORIES,
-      products: PRODUCTS,
+      products: [],
       banners: INITIAL_BANNERS,
       brandStory: INITIAL_BRAND_STORY,
       newsletter: INITIAL_NEWSLETTER,
@@ -465,7 +464,7 @@ const createCmsStore = () =>
         const defaultState = {
           heroSlides: INITIAL_HERO_SLIDES,
           categories: INITIAL_CATEGORIES,
-          products: PRODUCTS,
+          products: get().products,
           banners: INITIAL_BANNERS,
           brandStory: INITIAL_BRAND_STORY,
           newsletter: INITIAL_NEWSLETTER,

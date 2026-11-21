@@ -4,7 +4,6 @@ import React, { useState, useMemo, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronDown } from 'lucide-react';
-import { ZENIN_ALL_PRODUCTS } from '../../data/products';
 import { useCmsStore } from '../../lib/cms/cmsStore';
 import { Product } from '../../types/product';
 import { ZeninAnnouncementBar } from '../../components/zenin/ZeninAnnouncementBar';
@@ -100,7 +99,7 @@ export default function CollectionsClientView({
     if (incoming && incoming.length > 0) {
       return incoming.filter((p) => !deletedSet.has(p.id));
     }
-    return ZENIN_ALL_PRODUCTS.filter((p) => !deletedSet.has(p.id));
+    return [];
   }, [cmsProducts, initialProducts, deletedProductIds]);
 
   // Max price among available products

@@ -40,6 +40,30 @@ async function runTests() {
     }
   }
 
+  if (!useCmsStore.getState().products.length) {
+    useCmsStore.getState().addProduct({
+      id: 'zn-49',
+      slug: 'test-baseline-drop',
+      title: 'Test Baseline Drop',
+      anime: 'Berserk',
+      category: 'hoodies',
+      price: 4999,
+      originalPrice: 6999,
+      discountPercent: 28,
+      rating: 5,
+      reviewCount: 1,
+      badge: 'FEATURED',
+      isNewDrop: false,
+      images: ['/images/placeholder-product.svg'],
+      description: 'Test',
+      details: {},
+      sizes: ['M'],
+      colors: [],
+      inStock: true,
+      stockCount: 10,
+      reviews: [],
+    });
+  }
   const initialProducts = useCmsStore.getState().products;
   assert(initialProducts.length > 0, `Initial catalog loaded (${initialProducts.length} items)`);
 

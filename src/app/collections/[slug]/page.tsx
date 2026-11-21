@@ -3,7 +3,6 @@
 import React, { use } from 'react';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
-import { PRODUCTS, CATEGORIES } from '../../../data/products';
 import { useCmsStore } from '../../../lib/cms/cmsStore';
 import { Product, ProductCategory } from '../../../types/product';
 import { ZeninAnnouncementBar } from '../../../components/zenin/ZeninAnnouncementBar';
@@ -94,13 +93,13 @@ export default function CategoryCollectionPage({
     return <CollectionsClientView />;
   }
 
-  const allCategories = cmsCategories.length > 0 ? cmsCategories : CATEGORIES;
+  const allCategories = cmsCategories;
   const allProducts = React.useMemo(() => {
     const deletedSet = new Set(deletedProductIds);
     if (cmsProducts && cmsProducts.length > 0) {
       return cmsProducts.filter((p) => !deletedSet.has(p.id));
     }
-    return PRODUCTS.filter((p) => !deletedSet.has(p.id));
+    return [];
   }, [cmsProducts, deletedProductIds]);
 
   const mapped = CATEGORY_MAP[slug.toLowerCase()];

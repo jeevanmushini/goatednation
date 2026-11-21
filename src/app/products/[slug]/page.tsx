@@ -19,7 +19,6 @@ import {
   MoveHorizontal,
 } from 'lucide-react';
 
-import { PRODUCTS } from '../../../data/products';
 import { useCmsStore } from '../../../lib/cms/cmsStore';
 import { Product, ProductSize, ProductColor } from '../../../types/product';
 import { useCartStore } from '../../../stores/cartStore';
@@ -48,7 +47,6 @@ export default function ProductDetailPage({
   const deletedSet = new Set(deletedProductIds);
   const candidate =
     cmsProducts.find((p) => p.slug === slug || p.id === slug) ||
-    PRODUCTS.find((p) => p.slug === slug || p.id === slug) ||
     fetchedProduct;
 
   const product = candidate && !deletedSet.has(candidate.id) ? candidate : null;
@@ -91,12 +89,10 @@ export default function ProductDetailPage({
     };
   }, [slug, product]);
 
-  const activeProduct = product || PRODUCTS[0];
-
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [slideDirection, setSlideDirection] = useState(1);
-  const [selectedSize, setSelectedSize] = useState<ProductSize>(activeProduct.sizes[0] || 'M');
-  const [selectedColor, setSelectedColor] = useState(activeProduct.colors[0]?.name || 'Standard');
+  const [selectedSize, setSelectedSize] = useState<ProductSize>((product?.sizes?.[0] as ProductSize) || 'M');
+  const [selectedColor, setSelectedColor] = useState(product?.colors?.[0]?.name || 'Standard');
   const [quantity, setQuantity] = useState(1);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
@@ -115,7 +111,7 @@ export default function ProductDetailPage({
   const isHorizontalDrag = useRef(false);
   const isVerticalScroll = useRef(false);
 
-  const totalImages = activeProduct.images.length || 1;
+  const totalImages = product?.images?.length || 1;
 
   const slideNext = useCallback(() => {
     setSlideDirection(1);
@@ -245,9 +241,9 @@ export default function ProductDetailPage({
     }
   };
 
-  const allProducts = cmsProducts.length > 0 ? cmsProducts : PRODUCTS;
+  const allProducts = cmsProducts;
   const relatedProducts = allProducts.filter(
-    (p) => p.id !== product.id && (p.category === product.category || p.anime === product.anime)
+    (p: Product) => p.id !== product.id && (p.category === product.category || p.anime === product.anime)
   ).slice(0, 4);
 
   const discountPercent =

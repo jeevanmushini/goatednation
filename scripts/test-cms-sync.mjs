@@ -136,6 +136,28 @@ async function runTests() {
 
   // --- TEST 5: PRODUCT CATALOG (IMAGE, TITLE, PRICE UPDATES) ---
   console.log('\nTest 5: Admin Products (Image, Title, Price)');
+  if (!useCmsStore.getState().products.length) {
+    useCmsStore.getState().addProduct({
+      id: 'zn-test-1',
+      slug: 'ryujin-dragon-gold',
+      title: 'INITIAL TEST PRODUCT',
+      price: 4999,
+      originalPrice: 6999,
+      badge: 'FEATURED',
+      images: ['https://images.unsplash.com/photo-1556905055-8f358a7a47b2'],
+      category: 'hoodies',
+      anime: 'Cyberpunk Tokyo',
+      description: 'Test hoodie',
+      sizes: ['M', 'L'],
+      colors: [{ name: 'Black', hex: '#000000' }],
+      rating: 5,
+      reviewCount: 1,
+      inStock: true,
+      features: [],
+      isNewDrop: true,
+      isStreetwearBag: false,
+    });
+  }
   const productToEdit = useCmsStore.getState().products[0];
   console.log(`  Initial Product: "${productToEdit.title}" | Price: Rs. ${productToEdit.price}`);
 

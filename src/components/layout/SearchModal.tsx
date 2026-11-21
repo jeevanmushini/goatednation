@@ -4,7 +4,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Search, X, ArrowRight, Flame } from 'lucide-react';
-import { PRODUCTS } from '../../data/products';
 import { useCmsStore } from '../../lib/cms/cmsStore';
 
 interface SearchModalProps {
@@ -18,8 +17,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
   const deletedProductIds = useCmsStore((state) => state.deletedProductIds || []);
   const allProducts = useMemo(() => {
     const deletedSet = new Set(deletedProductIds);
-    const catalog = cmsProducts.length > 0 ? cmsProducts : PRODUCTS;
-    return catalog.filter((p) => !deletedSet.has(p.id));
+    return cmsProducts.filter((p) => !deletedSet.has(p.id));
   }, [cmsProducts, deletedProductIds]);
 
   const results = useMemo(() => {

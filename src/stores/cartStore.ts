@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { CartItem, CouponDiscount } from '../types/cart';
-import { COUPONS } from '../data/products';
+import { CartItem, CouponDiscount, DEFAULT_COUPONS } from '../types/cart';
 
 interface CartState {
   items: CartItem[];
@@ -90,7 +89,7 @@ export const useCartStore = create<CartState>()(
 
       applyCoupon: (code: string) => {
         const normalized = code.trim().toUpperCase();
-        const found = COUPONS.find((c) => c.code === normalized);
+        const found = DEFAULT_COUPONS.find((c) => c.code === normalized);
 
         if (found) {
           set({ appliedCoupon: found, couponError: null });

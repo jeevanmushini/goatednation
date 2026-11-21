@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { useCartStore } from '../../stores/cartStore';
 import { useCmsStore } from '../../lib/cms/cmsStore';
 import { Product } from '../../types/product';
-import { PRODUCTS } from '../../data/products';
 
 interface ZeninProduct {
   id: string;
@@ -61,11 +60,6 @@ export const ZeninNewArrivals: React.FC<ZeninNewArrivalsProps> = ({ initialProdu
     // 2. Merge client store drops
     if (cmsProducts && cmsProducts.length > 0) {
       cmsProducts.forEach(processItem);
-    }
-
-    // Fallback if empty
-    if (priorityList.length === 0 && regularList.length === 0) {
-      PRODUCTS.forEach(processItem);
     }
 
     // Priority drops (3 hoodies & admin custom drops) ALWAYS stay at the very beginning!

@@ -13,7 +13,6 @@ import {
   CmsEditorialBanner,
   CmsAnnouncement,
 } from '../../types/cms';
-import { CATEGORIES } from '../../data/products';
 
 export const INITIAL_HERO_SLIDES: CmsHeroSlide[] = [
   {
@@ -49,11 +48,68 @@ export const INITIAL_HERO_SLIDES: CmsHeroSlide[] = [
   },
 ];
 
-export const INITIAL_CATEGORIES: CmsCategory[] = CATEGORIES.map((c, i) => ({
-  ...c,
-  enabled: true,
-  order: i + 1,
-}));
+export const INITIAL_CATEGORIES: CmsCategory[] = [
+  {
+    id: 'tees',
+    title: 'Oversized Tees',
+    subtitle: '280+ GSM Combed Heavy Cotton',
+    count: '16+ Styles',
+    image: 'https://res.cloudinary.com/bu4oxldy/image/upload/v1795179474/cherry-blossom-waffle/z7imwkvphxo70j57gi7y.jpg',
+    slug: 'tees',
+    enabled: true,
+    order: 1,
+  },
+  {
+    id: 'hoodies',
+    title: 'Heavyweight Hoodies',
+    subtitle: '400+ GSM French Terry Fleece',
+    count: '24+ Drops',
+    image: 'https://res.cloudinary.com/bu4oxldy/image/upload/v1795179472/berserk-hoodie/oycsjwff2wkzukvqhjom.jpg',
+    slug: 'hoodies',
+    enabled: true,
+    order: 2,
+  },
+  {
+    id: 'acid-wash',
+    title: 'Acid Wash Heavy Tees',
+    subtitle: 'Mineral Wash Vintage Feel',
+    count: '12+ Styles',
+    image: 'https://res.cloudinary.com/bu4oxldy/image/upload/v1795179478/valhalla-bomber/u6cun32wgk3hbfiqv3ww.jpg',
+    slug: 'acid-wash',
+    enabled: true,
+    order: 3,
+  },
+  {
+    id: 'jackets',
+    title: 'Bombers & Jacquards',
+    subtitle: '120K+ Stitch Embroidery',
+    count: '8+ Jackets',
+    image: 'https://res.cloudinary.com/bu4oxldy/image/upload/v1795179476/ryujin-jacket/sjuq3kyz9ofyhu6g0k9r.jpg',
+    slug: 'jackets',
+    enabled: true,
+    order: 4,
+  },
+  {
+    id: 'cargo',
+    title: 'Utility Bottoms',
+    subtitle: 'Heavy Cord & Barrel Fit',
+    count: '10+ Pants',
+    image: 'https://res.cloudinary.com/bu4oxldy/image/upload/v1795179477/sukuna-jacket/yjwhc1wk3tqlce77975i.jpg',
+    slug: 'cargo',
+    enabled: true,
+    order: 5,
+  },
+  {
+    id: 'accessories',
+    title: 'Street Accessories',
+    subtitle: 'Crossbody Slings & Pendants',
+    count: '20+ Styles',
+    image: 'https://res.cloudinary.com/bu4oxldy/image/upload/v1795179479/zoro-crossbody/ikbras4fhohlznvmbsnk.jpg',
+    slug: 'accessories',
+    enabled: true,
+    order: 6,
+  },
+];
 
 export const INITIAL_BANNERS: CmsBanner[] = [
   {

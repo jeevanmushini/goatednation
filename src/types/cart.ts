@@ -19,3 +19,21 @@ export interface CouponDiscount {
   discountPercentage: number;
   description: string;
 }
+
+export const DEFAULT_COUPONS: CouponDiscount[] = [
+  {
+    code: 'DIWALI10',
+    discountPercentage: 10,
+    description: '10% off applied at checkout',
+  },
+  {
+    code: 'WELCOME10',
+    discountPercentage: 10,
+    description: '10% off on your first order',
+  },
+  {
+    code: 'CULT15',
+    discountPercentage: 15,
+    description: '15% off for syndicate community members',
+  },
+];
