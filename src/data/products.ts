@@ -5313,7 +5313,7 @@ export const CATEGORIES = [
     title: 'Oversized Tees',
     subtitle: '280+ GSM Combed Heavy Cotton',
     count: '16+ Styles',
-    image: '/images/hero/cherry-blossom-waffle.jpg',
+    image: 'https://res.cloudinary.com/bu4oxldy/image/upload/v1795179474/cherry-blossom-waffle/z7imwkvphxo70j57gi7y.jpg',
     slug: 'tees',
   },
   {
@@ -5321,7 +5321,7 @@ export const CATEGORIES = [
     title: 'Heavy Hoodies',
     subtitle: '420 GSM Double French Terry',
     count: '12+ Styles',
-    image: '/images/hero/berserk-hoodie.jpg',
+    image: 'https://res.cloudinary.com/bu4oxldy/image/upload/v1795179472/berserk-hoodie/oycsjwff2wkzukvqhjom.jpg',
     slug: 'hoodies',
   },
   {
@@ -5329,7 +5329,7 @@ export const CATEGORIES = [
     title: 'Bombers & Techwear',
     subtitle: 'Embroidered Windbreakers & Shells',
     count: '10+ Styles',
-    image: '/images/hero/ryujin-jacket.jpg',
+    image: 'https://res.cloudinary.com/bu4oxldy/image/upload/v1795179476/ryujin-jacket/sjuq3kyz9ofyhu6g0k9r.jpg',
     slug: 'jackets',
   },
   {
@@ -5337,7 +5337,7 @@ export const CATEGORIES = [
     title: 'Tactical Bottoms',
     subtitle: 'Barrel Sweatpants & Rope Cargo',
     count: '15+ Styles',
-    image: '/images/hero/tactical-vest.jpg',
+    image: 'https://res.cloudinary.com/bu4oxldy/image/upload/v1795179477/tactical-vest/d1qbbxrdj2ckkcxif6il.jpg',
     slug: 'cargo',
   },
   {
@@ -5345,7 +5345,7 @@ export const CATEGORIES = [
     title: 'Street Accessories',
     subtitle: 'Crossbody Slings & Pendants',
     count: '20+ Styles',
-    image: '/images/hero/zoro-crossbody.jpg',
+    image: 'https://res.cloudinary.com/bu4oxldy/image/upload/v1795179479/zoro-crossbody/ikbras4fhohlznvmbsnk.jpg',
     slug: 'accessories',
   },
 ];

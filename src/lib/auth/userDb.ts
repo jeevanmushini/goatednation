@@ -89,15 +89,12 @@ export function toPublicUser(record: UserRecord): User {
 }
 
 /**
- * Finds a user by email. Checks memory/local cache first, then falls back to Neon Postgres.
+ * Finds a user by email. Checks authoritative Neon Postgres first, then in-memory/local cache.
  */
 export async function findUserByEmail(email: string): Promise<UserRecord | null> {
   const normalized = email.toLowerCase().trim();
-  const localList = loadUsersFromLocal();
-  const cached = localList.find((u) => u.email.toLowerCase().trim() === normalized);
-  if (cached) return cached;
 
-  // Authoritative Neon cloud query on cache miss
+  // 1. Authoritative Neon cloud query first
   try {
     const neonUser = await getSingleUserByEmailFromNeon<UserRecord>(normalized);
     if (neonUser) {
@@ -108,20 +105,22 @@ export async function findUserByEmail(email: string): Promise<UserRecord | null>
       return neonUser;
     }
   } catch (err) {
-    console.warn('[UserDb] Failed to fetch user from Neon by email:', err);
+    console.warn('[UserDb] Direct Neon user fetch by email bypassed:', err);
   }
+
+  // 2. Fallback to memory / local cache
+  const localList = loadUsersFromLocal();
+  const cached = localList.find((u) => u.email.toLowerCase().trim() === normalized);
+  if (cached) return cached;
 
   return null;
 }
 
 /**
- * Finds a user by ID. Checks memory/local cache first, then all Neon records.
+ * Finds a user by ID. Checks authoritative Neon Postgres first, then in-memory/local cache.
  */
 export async function findUserById(id: string): Promise<UserRecord | null> {
-  const localList = loadUsersFromLocal();
-  const cached = localList.find((u) => u.id === id);
-  if (cached) return cached;
-
+  // 1. Authoritative Neon cloud query first
   try {
     const neonUsers = await getUsersFromNeon<UserRecord>();
     if (neonUsers && neonUsers.length > 0) {
@@ -130,8 +129,13 @@ export async function findUserById(id: string): Promise<UserRecord | null> {
       if (found) return found;
     }
   } catch (err) {
-    console.warn('[UserDb] Failed to fetch users from Neon by ID:', err);
+    console.warn('[UserDb] Direct Neon user fetch by ID bypassed:', err);
   }
+
+  // 2. Fallback to memory / local cache
+  const localList = loadUsersFromLocal();
+  const cached = localList.find((u) => u.id === id);
+  if (cached) return cached;
 
   return null;
 }

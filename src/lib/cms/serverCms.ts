@@ -17,7 +17,7 @@ import {
 } from './initialCmsData';
 import { PRODUCTS } from '../../data/products';
 import { Product } from '../../types/product';
-import { getCmsDataFromNeon, saveCmsDataToNeon, deleteProductInNeon, upsertProductInNeon, getProductBySlugFromNeon } from '../db/neon';
+import { getCmsDataFromNeon, saveCmsDataToNeon, deleteProductInNeon, upsertProductInNeon, getProductBySlugFromNeon, getProductsFromNeon } from '../db/neon';
 
 export interface PublishedCmsData {
   heroSlides: typeof INITIAL_HERO_SLIDES;
@@ -158,6 +158,14 @@ export async function getPublishedCmsData(): Promise<{ data: PublishedCmsData; s
   try {
     const neonData = await getCmsDataFromNeon<PublishedCmsData>();
     if (neonData && typeof neonData === 'object' && Object.keys(neonData).length > 0) {
+      try {
+        const neonProducts = await getProductsFromNeon();
+        if (neonProducts && neonProducts.length > 0) {
+          neonData.products = neonProducts;
+        }
+      } catch (err) {
+        console.warn('[CMS Server] Failed to query relational products from Neon:', err);
+      }
       const sanitized = sanitizePublishedCmsData({ ...DEFAULT_STATE, ...neonData });
       globalForCms.__SERVER_PUBLISHED_CMS__ = sanitized;
       return { data: sanitized, source: 'neon' };

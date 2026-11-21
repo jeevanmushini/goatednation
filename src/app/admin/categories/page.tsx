@@ -16,7 +16,7 @@ export default function AdminCategoriesPage() {
   const [title, setTitle] = useState('');
   const [subtitle, setSubtitle] = useState('');
   const [count, setCount] = useState('10+ Styles');
-  const [image, setImage] = useState('/images/placeholder-product.svg');
+  const [image, setImage] = useState('');
   const [slug, setSlug] = useState('');
 
   const openAddModal = () => {
@@ -24,7 +24,7 @@ export default function AdminCategoriesPage() {
     setTitle('');
     setSubtitle('280+ GSM Combed Heavy Cotton');
     setCount('12+ Styles');
-    setImage('/images/placeholder-product.svg');
+    setImage('');
     setSlug('');
     setIsModalOpen(true);
   };

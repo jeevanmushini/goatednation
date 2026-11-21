@@ -40,8 +40,8 @@ export default function AdminProductsPage() {
   const [discountPercent, setDiscountPercent] = useState('40');
   const [badge, setBadge] = useState('NEW DROP');
   const [isNewDrop, setIsNewDrop] = useState(true);
-  const [image1, setImage1] = useState('/images/placeholder-product.svg');
-  const [image2, setImage2] = useState('/images/placeholder-product.svg');
+  const [image1, setImage1] = useState('');
+  const [image2, setImage2] = useState('');
   const [description, setDescription] = useState(
     'Custom-milled 280 GSM heavyweight French terry cotton with relaxed drop-shoulder cut.'
   );
@@ -67,8 +67,8 @@ export default function AdminProductsPage() {
     setDiscountPercent('40');
     setBadge('NEW DROP');
     setIsNewDrop(true);
-    setImage1('/images/placeholder-product.svg');
-    setImage2('/images/placeholder-product.svg');
+    setImage1('');
+    setImage2('');
     setDescription('Custom-milled 280 GSM heavyweight French terry cotton.');
     setStockCount('15');
     setIsModalOpen(true);
