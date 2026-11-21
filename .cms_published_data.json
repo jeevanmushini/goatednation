@@ -5627,11 +5627,10 @@
     "highlightText": "EXTRA 15% OFF ON PREPAID ORDERS"
   },
   "deletedProductIds": [
-    "as-test-delete-123",
-    "zn-01",
-    "as-test-del-1795179176753",
-    "as-test-del-1795179616874",
-    "as-test-del-1795264444741"
+    "as-reflect-1795265123807",
+    "test-prod-1795265625208",
+    "as-test-del-1795265668627",
+    "zn-01"
   ],
-  "lastPublishedAt": "2026-11-21T12:34:04.745Z"
+  "lastPublishedAt": "2026-11-21T12:54:28.633Z"
 }

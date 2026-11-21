@@ -558,6 +558,9 @@
   .table {
     display: table;
   }
+  .table\! {
+    display: table !important;
+  }
   .aspect-\[3\/4\] {
     aspect-ratio: 3/4;
   }

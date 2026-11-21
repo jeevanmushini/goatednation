@@ -67,8 +67,8 @@ export default function AdminProductsPage() {
     setDiscountPercent('40');
     setBadge('NEW DROP');
     setIsNewDrop(true);
-    setImage1('');
-    setImage2('');
+    setImage1('https://res.cloudinary.com/bu4oxldy/image/upload/v1795179472/berserk-hoodie/oycsjwff2wkzukvqhjom.jpg');
+    setImage2('https://res.cloudinary.com/bu4oxldy/image/upload/v1795179477/sukuna-jacket/yjwhc1wk3tqlce77975i.jpg');
     setDescription('Custom-milled 280 GSM heavyweight French terry cotton.');
     setStockCount('15');
     setIsModalOpen(true);
@@ -98,9 +98,17 @@ export default function AdminProductsPage() {
     setIsSaving(true);
     setSaveError(null);
 
+    const rawSlug = (title || 'streetwear-drop').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'streetwear-drop';
+    const finalSlug = editingId ? rawSlug : `${rawSlug}-${Date.now().toString(36)}`;
+
+    const finalImages = [image1, image2].filter(Boolean);
+    if (finalImages.length === 0) {
+      finalImages.push('https://res.cloudinary.com/bu4oxldy/image/upload/v1795179472/berserk-hoodie/oycsjwff2wkzukvqhjom.jpg');
+    }
+
     const productPayload: Product = {
       id: editingId || `as-${Date.now()}`,
-      slug: (title || 'streetwear-drop').toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      slug: finalSlug,
       title,
       anime,
       category,
@@ -111,7 +119,7 @@ export default function AdminProductsPage() {
       reviewCount: 42,
       badge: badge || (isNewDrop ? 'NEW DROP' : undefined),
       isNewDrop,
-      images: [image1, image2].filter(Boolean),
+      images: finalImages,
       description,
       details: {
         gsm,

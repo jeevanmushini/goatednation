@@ -161,7 +161,23 @@ export async function getPublishedCmsData(): Promise<{ data: PublishedCmsData; s
       try {
         const neonProducts = await getProductsFromNeon();
         if (neonProducts && neonProducts.length > 0) {
-          neonData.products = neonProducts;
+          const deletedSet = new Set(neonData.deletedProductIds || []);
+          // Merge relational products with cms state so no custom drops are wiped out,
+          // while strictly excluding any deleted products
+          const pMap = new Map<string, Product>();
+          for (const p of neonProducts) {
+            if (!deletedSet.has(p.id)) {
+              pMap.set(p.id, p);
+            }
+          }
+          if (Array.isArray(neonData.products)) {
+            for (const p of neonData.products) {
+              if (!deletedSet.has(p.id) && !pMap.has(p.id)) {
+                pMap.set(p.id, p);
+              }
+            }
+          }
+          neonData.products = Array.from(pMap.values());
         }
       } catch (err) {
         console.warn('[CMS Server] Failed to query relational products from Neon:', err);
@@ -252,19 +268,27 @@ export async function savePublishedCmsData(data: Partial<PublishedCmsData>): Pro
     savedToNeon = await saveCmsDataToNeon(payload);
     // Sync individual products to dedicated app_products table in Neon
     if (Array.isArray(payload.products)) {
-      for (const p of payload.products) {
-        upsertProductInNeon(p).catch((err) => {
-          console.warn(`[CMS Server] Failed to upsert product ${p.id} in Neon:`, err);
-        });
-      }
+      await Promise.all(
+        payload.products.map(async (p) => {
+          try {
+            await upsertProductInNeon(p);
+          } catch (err) {
+            console.warn(`[CMS Server] Failed to upsert product ${p.id} in Neon:`, err);
+          }
+        })
+      );
     }
     // Delete explicitly removed products from app_products in Neon
-    if (Array.isArray(payload.deletedProductIds)) {
-      for (const id of payload.deletedProductIds) {
-        deleteProductInNeon(id).catch((err) => {
-          console.warn(`[CMS Server] Failed to delete product ${id} in Neon:`, err);
-        });
-      }
+    if (Array.isArray(payload.deletedProductIds) && payload.deletedProductIds.length > 0) {
+      await Promise.all(
+        payload.deletedProductIds.map(async (id) => {
+          try {
+            await deleteProductInNeon(id);
+          } catch (err) {
+            console.warn(`[CMS Server] Failed to delete product ${id} in Neon:`, err);
+          }
+        })
+      );
     }
   } catch (err) {
     console.warn('[CMS Server] Neon Postgres save failed:', err);

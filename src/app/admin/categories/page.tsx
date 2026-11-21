@@ -24,7 +24,7 @@ export default function AdminCategoriesPage() {
     setTitle('');
     setSubtitle('280+ GSM Combed Heavy Cotton');
     setCount('12+ Styles');
-    setImage('');
+    setImage('https://res.cloudinary.com/bu4oxldy/image/upload/v1795179474/cherry-blossom-waffle/z7imwkvphxo70j57gi7y.jpg');
     setSlug('');
     setIsModalOpen(true);
   };
