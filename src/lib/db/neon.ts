@@ -2,6 +2,7 @@ import { neon, neonConfig, NeonQueryFunction } from '@neondatabase/serverless';
 import crypto from 'crypto';
 import { UserRole } from '../../types/auth';
 import { Product } from '../../types/product';
+import { Ticket, TicketMessage, TicketMetrics } from '../../types/ticket';
 
 // Enable connection caching for optimal latency and reuse across serverless requests (NEO-04)
 neonConfig.fetchConnectionCache = true;
@@ -165,6 +166,55 @@ export async function initDatabaseSchema(): Promise<boolean> {
     `;
 
     await sql`CREATE INDEX IF NOT EXISTS idx_pwd_resets_email ON app_password_resets(email);`;
+
+    // 9. Customer Support Tickets Table
+    await sql`
+      CREATE TABLE IF NOT EXISTS app_tickets (
+        id TEXT PRIMARY KEY,
+        ticket_number TEXT UNIQUE NOT NULL,
+        customer_name TEXT NOT NULL,
+        customer_email TEXT NOT NULL,
+        customer_phone TEXT,
+        order_id TEXT,
+        category TEXT NOT NULL,
+        priority TEXT NOT NULL DEFAULT 'MEDIUM',
+        status TEXT NOT NULL DEFAULT 'OPEN',
+        subject TEXT NOT NULL,
+        initial_message TEXT NOT NULL,
+        attachments JSONB DEFAULT '[]'::jsonb,
+        telemetry JSONB DEFAULT '{}'::jsonb,
+        exchange_details JSONB DEFAULT '{}'::jsonb,
+        payment_details JSONB DEFAULT '{}'::jsonb,
+        shiprocket_awb TEXT,
+        resolution_notes TEXT,
+        customer_rating INTEGER,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        resolved_at TIMESTAMP WITH TIME ZONE
+      );
+    `;
+
+    await sql`CREATE INDEX IF NOT EXISTS idx_tickets_email ON app_tickets(customer_email);`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_tickets_status ON app_tickets(status);`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_tickets_priority ON app_tickets(priority);`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_tickets_order_id ON app_tickets(order_id);`;
+
+    // 10. Threaded Ticket Messages Table
+    await sql`
+      CREATE TABLE IF NOT EXISTS app_ticket_messages (
+        id TEXT PRIMARY KEY,
+        ticket_id TEXT NOT NULL REFERENCES app_tickets(id) ON DELETE CASCADE,
+        sender_type TEXT NOT NULL,
+        sender_name TEXT NOT NULL,
+        sender_email TEXT,
+        message TEXT NOT NULL,
+        attachments JSONB DEFAULT '[]'::jsonb,
+        is_internal BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+    `;
+
+    await sql`CREATE INDEX IF NOT EXISTS idx_ticket_messages_ticket_id ON app_ticket_messages(ticket_id);`;
 
     schemaInitialized = true;
     return true;
@@ -924,5 +974,459 @@ export async function getOrderByIdFromNeon(
   } catch (error) {
     console.error(`[Neon Postgres] Error reading order ${orderIdOrAwb}:`, error);
     return null;
+  }
+}
+
+// ─── TICKETING & SUPPORT DATA HELPERS ─────────────────────────────────────────
+
+function mapTicketRow(r: Record<string, unknown>): Ticket {
+  return {
+    id: String(r.id),
+    ticketNumber: String(r.ticket_number),
+    customerName: String(r.customer_name),
+    customerEmail: String(r.customer_email),
+    customerPhone: r.customer_phone ? String(r.customer_phone) : undefined,
+    orderId: r.order_id ? String(r.order_id) : undefined,
+    category: r.category as Ticket['category'],
+    priority: r.priority as Ticket['priority'],
+    status: r.status as Ticket['status'],
+    subject: String(r.subject),
+    initialMessage: String(r.initial_message),
+    attachments: Array.isArray(r.attachments) ? (r.attachments as string[]) : [],
+    telemetry: (r.telemetry && typeof r.telemetry === 'object') ? (r.telemetry as Ticket['telemetry']) : {},
+    exchangeDetails: (r.exchange_details && typeof r.exchange_details === 'object') ? (r.exchange_details as Ticket['exchangeDetails']) : {},
+    paymentDetails: (r.payment_details && typeof r.payment_details === 'object') ? (r.payment_details as Ticket['paymentDetails']) : {},
+    shiprocketAwb: r.shiprocket_awb ? String(r.shiprocket_awb) : undefined,
+    resolutionNotes: r.resolution_notes ? String(r.resolution_notes) : undefined,
+    customerRating: r.customer_rating != null ? Number(r.customer_rating) : undefined,
+    createdAt: r.created_at ? new Date(r.created_at as string).toISOString() : new Date().toISOString(),
+    updatedAt: r.updated_at ? new Date(r.updated_at as string).toISOString() : new Date().toISOString(),
+    resolvedAt: r.resolved_at ? new Date(r.resolved_at as string).toISOString() : undefined,
+  };
+}
+
+function mapMessageRow(r: Record<string, unknown>): TicketMessage {
+  return {
+    id: String(r.id),
+    ticketId: String(r.ticket_id),
+    senderType: r.sender_type as TicketMessage['senderType'],
+    senderName: String(r.sender_name),
+    senderEmail: r.sender_email ? String(r.sender_email) : undefined,
+    message: String(r.message),
+    attachments: Array.isArray(r.attachments) ? (r.attachments as string[]) : [],
+    isInternal: Boolean(r.is_internal),
+    createdAt: r.created_at ? new Date(r.created_at as string).toISOString() : new Date().toISOString(),
+  };
+}
+
+/**
+ * Creates a new support ticket and its initial customer message.
+ */
+export async function createTicketInNeon(ticket: Ticket): Promise<boolean> {
+  const sql = getDb();
+  if (!sql) return false;
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+
+    await sql`
+      INSERT INTO app_tickets (
+        id, ticket_number, customer_name, customer_email, customer_phone,
+        order_id, category, priority, status, subject, initial_message,
+        attachments, telemetry, exchange_details, payment_details,
+        shiprocket_awb, resolution_notes, created_at, updated_at
+      ) VALUES (
+        ${ticket.id},
+        ${ticket.ticketNumber},
+        ${ticket.customerName},
+        ${ticket.customerEmail.toLowerCase().trim()},
+        ${ticket.customerPhone || null},
+        ${ticket.orderId || null},
+        ${ticket.category},
+        ${ticket.priority || 'MEDIUM'},
+        ${ticket.status || 'OPEN'},
+        ${ticket.subject},
+        ${ticket.initialMessage},
+        ${JSON.stringify(ticket.attachments || [])}::jsonb,
+        ${JSON.stringify(ticket.telemetry || {})}::jsonb,
+        ${JSON.stringify(ticket.exchangeDetails || {})}::jsonb,
+        ${JSON.stringify(ticket.paymentDetails || {})}::jsonb,
+        ${ticket.shiprocketAwb || null},
+        ${ticket.resolutionNotes || null},
+        CURRENT_TIMESTAMP,
+        CURRENT_TIMESTAMP
+      );
+    `;
+
+    // Also persist initial customer message in thread
+    const msgId = `msg_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`;
+    await sql`
+      INSERT INTO app_ticket_messages (
+        id, ticket_id, sender_type, sender_name, sender_email,
+        message, attachments, is_internal, created_at
+      ) VALUES (
+        ${msgId},
+        ${ticket.id},
+        'CUSTOMER',
+        ${ticket.customerName},
+        ${ticket.customerEmail.toLowerCase().trim()},
+        ${ticket.initialMessage},
+        ${JSON.stringify(ticket.attachments || [])}::jsonb,
+        FALSE,
+        CURRENT_TIMESTAMP
+      );
+    `;
+
+    return true;
+  } catch (error) {
+    console.error('[Neon Postgres] Error creating ticket:', error);
+    return false;
+  }
+}
+
+/**
+ * Fetches a single ticket by its internal ID or public ticket number.
+ */
+export async function getTicketByIdFromNeon(ticketIdOrNumber: string): Promise<Ticket | null> {
+  const sql = getDb();
+  if (!sql) return null;
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+    const rows = await sql`
+      SELECT *
+      FROM app_tickets
+      WHERE id = ${ticketIdOrNumber} OR ticket_number = ${ticketIdOrNumber}
+      LIMIT 1;
+    `;
+
+    if (rows && rows.length > 0) {
+      return mapTicketRow(rows[0] as Record<string, unknown>);
+    }
+    return null;
+  } catch (error) {
+    console.error(`[Neon Postgres] Error reading ticket ${ticketIdOrNumber}:`, error);
+    return null;
+  }
+}
+
+/**
+ * Fetches all tickets belonging to a specific customer email.
+ */
+export async function getTicketsForUserFromNeon(email: string): Promise<Ticket[]> {
+  const sql = getDb();
+  if (!sql) return [];
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+    const rows = await sql`
+      SELECT *
+      FROM app_tickets
+      WHERE LOWER(customer_email) = ${email.toLowerCase().trim()}
+      ORDER BY created_at DESC;
+    `;
+
+    return (rows || []).map((r) => mapTicketRow(r as Record<string, unknown>));
+  } catch (error) {
+    console.error(`[Neon Postgres] Error reading tickets for ${email}:`, error);
+    return [];
+  }
+}
+
+/**
+ * Fetches filtered tickets for the admin support queue.
+ */
+export async function getAdminTicketsFromNeon(options?: {
+  status?: string;
+  category?: string;
+  priority?: string;
+  search?: string;
+  limit?: number;
+  offset?: number;
+}): Promise<{ tickets: Ticket[]; total: number }> {
+  const sql = getDb();
+  if (!sql) return { tickets: [], total: 0 };
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+
+    const limit = options?.limit || 50;
+    const offset = options?.offset || 0;
+    const search = options?.search ? `%${options.search.toLowerCase().trim()}%` : null;
+
+    let rows: Record<string, unknown>[];
+
+    if (search) {
+      rows = (await sql`
+        SELECT *
+        FROM app_tickets
+        WHERE (
+          LOWER(ticket_number) LIKE ${search} OR
+          LOWER(customer_name) LIKE ${search} OR
+          LOWER(customer_email) LIKE ${search} OR
+          LOWER(COALESCE(order_id, '')) LIKE ${search} OR
+          LOWER(COALESCE(shiprocket_awb, '')) LIKE ${search}
+        )
+        ${options?.status && options.status !== 'ALL' ? sql`AND status = ${options.status}` : sql``}
+        ${options?.category && options.category !== 'ALL' ? sql`AND category = ${options.category}` : sql``}
+        ${options?.priority && options.priority !== 'ALL' ? sql`AND priority = ${options.priority}` : sql``}
+        ORDER BY
+          CASE WHEN priority = 'URGENT' THEN 1 WHEN priority = 'HIGH' THEN 2 WHEN priority = 'MEDIUM' THEN 3 ELSE 4 END,
+          created_at DESC
+        LIMIT ${limit} OFFSET ${offset};
+      `) as Record<string, unknown>[];
+    } else {
+      rows = (await sql`
+        SELECT *
+        FROM app_tickets
+        WHERE TRUE
+        ${options?.status && options.status !== 'ALL' ? sql`AND status = ${options.status}` : sql``}
+        ${options?.category && options.category !== 'ALL' ? sql`AND category = ${options.category}` : sql``}
+        ${options?.priority && options.priority !== 'ALL' ? sql`AND priority = ${options.priority}` : sql``}
+        ORDER BY
+          CASE WHEN priority = 'URGENT' THEN 1 WHEN priority = 'HIGH' THEN 2 WHEN priority = 'MEDIUM' THEN 3 ELSE 4 END,
+          created_at DESC
+        LIMIT ${limit} OFFSET ${offset};
+      `) as Record<string, unknown>[];
+    }
+
+    const countRows = await sql`SELECT COUNT(*)::int as count FROM app_tickets;`;
+    const total = countRows && countRows.length > 0 ? Number(countRows[0].count) : rows.length;
+
+    return {
+      tickets: rows.map((r) => mapTicketRow(r)),
+      total,
+    };
+  } catch (error) {
+    console.error('[Neon Postgres] Error querying admin tickets:', error);
+    return { tickets: [], total: 0 };
+  }
+}
+
+/**
+ * Updates a ticket's status, priority, resolution notes, rating, etc.
+ */
+export async function updateTicketInNeon(
+  id: string,
+  updates: Partial<Ticket>
+): Promise<boolean> {
+  const sql = getDb();
+  if (!sql) return false;
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+
+    const current = await getTicketByIdFromNeon(id);
+    if (!current) return false;
+
+    const newStatus = updates.status || current.status;
+    const newPriority = updates.priority || current.priority;
+    const newAwb = updates.shiprocketAwb !== undefined ? updates.shiprocketAwb : current.shiprocketAwb;
+    const newNotes = updates.resolutionNotes !== undefined ? updates.resolutionNotes : current.resolutionNotes;
+    const newRating = updates.customerRating !== undefined ? updates.customerRating : current.customerRating;
+    const resolvedAt = newStatus === 'RESOLVED' ? (current.resolvedAt || new Date().toISOString()) : (newStatus === 'OPEN' ? null : current.resolvedAt);
+
+    await sql`
+      UPDATE app_tickets
+      SET
+        status = ${newStatus},
+        priority = ${newPriority},
+        shiprocket_awb = ${newAwb || null},
+        resolution_notes = ${newNotes || null},
+        customer_rating = ${newRating != null ? newRating : null},
+        resolved_at = ${resolvedAt ? new Date(resolvedAt).toISOString() : null},
+        updated_at = CURRENT_TIMESTAMP
+      WHERE id = ${id} OR ticket_number = ${id};
+    `;
+
+    return true;
+  } catch (error) {
+    console.error(`[Neon Postgres] Error updating ticket ${id}:`, error);
+    return false;
+  }
+}
+
+/**
+ * Adds a new message to a ticket thread.
+ */
+export async function addTicketMessageInNeon(msg: TicketMessage): Promise<boolean> {
+  const sql = getDb();
+  if (!sql) return false;
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+
+    await sql`
+      INSERT INTO app_ticket_messages (
+        id, ticket_id, sender_type, sender_name, sender_email,
+        message, attachments, is_internal, created_at
+      ) VALUES (
+        ${msg.id},
+        ${msg.ticketId},
+        ${msg.senderType},
+        ${msg.senderName},
+        ${msg.senderEmail || null},
+        ${msg.message},
+        ${JSON.stringify(msg.attachments || [])}::jsonb,
+        ${Boolean(msg.isInternal)},
+        CURRENT_TIMESTAMP
+      );
+    `;
+
+    // Also update ticket updated_at
+    await sql`
+      UPDATE app_tickets
+      SET updated_at = CURRENT_TIMESTAMP
+      WHERE id = ${msg.ticketId};
+    `;
+
+    return true;
+  } catch (error) {
+    console.error(`[Neon Postgres] Error adding message to ticket ${msg.ticketId}:`, error);
+    return false;
+  }
+}
+
+/**
+ * Retrieves all messages for a ticket thread.
+ * When includeInternal is false, hides yellow staff-only notes.
+ */
+export async function getTicketMessagesFromNeon(
+  ticketId: string,
+  includeInternal = false
+): Promise<TicketMessage[]> {
+  const sql = getDb();
+  if (!sql) return [];
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+
+    let rows: Record<string, unknown>[];
+    if (includeInternal) {
+      rows = (await sql`
+        SELECT *
+        FROM app_ticket_messages
+        WHERE ticket_id = ${ticketId}
+        ORDER BY created_at ASC;
+      `) as Record<string, unknown>[];
+    } else {
+      rows = (await sql`
+        SELECT *
+        FROM app_ticket_messages
+        WHERE ticket_id = ${ticketId} AND is_internal = FALSE
+        ORDER BY created_at ASC;
+      `) as Record<string, unknown>[];
+    }
+
+    return (rows || []).map((r) => mapMessageRow(r));
+  } catch (error) {
+    console.error(`[Neon Postgres] Error reading messages for ticket ${ticketId}:`, error);
+    return [];
+  }
+}
+
+/**
+ * Computes live KPI metrics for admin tickets dashboard.
+ */
+export async function getAdminTicketMetricsFromNeon(): Promise<TicketMetrics> {
+  const sql = getDb();
+  if (!sql) {
+    return {
+      totalOpen: 0,
+      urgentSla: 0,
+      inProgress: 0,
+      resolvedToday: 0,
+      averageCsat: 5.0,
+    };
+  }
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+
+    const metricsRow = await sql`
+      SELECT
+        COUNT(CASE WHEN status IN ('OPEN', 'WAITING_CUSTOMER') THEN 1 END)::int as "totalOpen",
+        COUNT(CASE WHEN status IN ('OPEN', 'IN_PROGRESS', 'WAITING_CUSTOMER') AND priority = 'URGENT' THEN 1 END)::int as "urgentSla",
+        COUNT(CASE WHEN status = 'IN_PROGRESS' THEN 1 END)::int as "inProgress",
+        COUNT(CASE WHEN status = 'RESOLVED' AND resolved_at >= CURRENT_DATE THEN 1 END)::int as "resolvedToday",
+        ROUND(AVG(customer_rating), 1)::float as "averageCsat"
+      FROM app_tickets;
+    `;
+
+    if (metricsRow && metricsRow.length > 0) {
+      const row = metricsRow[0];
+      return {
+        totalOpen: Number(row.totalOpen || 0),
+        urgentSla: Number(row.urgentSla || 0),
+        inProgress: Number(row.inProgress || 0),
+        resolvedToday: Number(row.resolvedToday || 0),
+        averageCsat: Number(row.averageCsat || 4.9),
+      };
+    }
+
+    return { totalOpen: 0, urgentSla: 0, inProgress: 0, resolvedToday: 0, averageCsat: 5.0 };
+  } catch (error) {
+    console.error('[Neon Postgres] Error computing ticket metrics:', error);
+    return { totalOpen: 0, urgentSla: 0, inProgress: 0, resolvedToday: 0, averageCsat: 5.0 };
+  }
+}
+
+/**
+ * Retrieves all previous orders for a customer by their email address.
+ */
+export async function getUserOrdersFromNeon(email: string): Promise<Array<{
+  id: string;
+  userEmail: string;
+  razorpayOrderId?: string;
+  razorpayPaymentId?: string;
+  shiprocketOrderId?: string;
+  awbCode?: string;
+  status: string;
+  items: unknown[];
+  shippingAddress: Record<string, unknown>;
+  totalAmount: number;
+  createdAt: string;
+}>> {
+  const sql = getDb();
+  if (!sql) return [];
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+    const normalized = email.toLowerCase().trim();
+
+    const rows = await sql`
+      SELECT
+        id,
+        user_email as "userEmail",
+        razorpay_order_id as "razorpayOrderId",
+        razorpay_payment_id as "razorpayPaymentId",
+        shiprocket_order_id as "shiprocketOrderId",
+        awb_code as "awbCode",
+        status,
+        items,
+        shipping_address as "shippingAddress",
+        total_amount as "totalAmount",
+        created_at as "createdAt"
+      FROM app_orders
+      WHERE LOWER(user_email) = ${normalized}
+      ORDER BY created_at DESC;
+    `;
+
+    return (rows || []).map((r) => ({
+      id: String(r.id),
+      userEmail: String(r.userEmail || ''),
+      razorpayOrderId: r.razorpayOrderId ? String(r.razorpayOrderId) : undefined,
+      razorpayPaymentId: r.razorpayPaymentId ? String(r.razorpayPaymentId) : undefined,
+      shiprocketOrderId: r.shiprocketOrderId ? String(r.shiprocketOrderId) : undefined,
+      awbCode: r.awbCode ? String(r.awbCode) : undefined,
+      status: String(r.status || 'CONFIRMED'),
+      items: Array.isArray(r.items) ? r.items : [],
+      shippingAddress: (r.shippingAddress && typeof r.shippingAddress === 'object') ? (r.shippingAddress as Record<string, unknown>) : {},
+      totalAmount: Number(r.totalAmount || 0),
+      createdAt: r.createdAt ? new Date(r.createdAt as string).toISOString() : new Date().toISOString(),
+    }));
+  } catch (error) {
+    console.error(`[Neon Postgres] Error reading user orders for ${email}:`, error);
+    return [];
   }
 }

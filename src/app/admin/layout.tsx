@@ -24,6 +24,7 @@ import {
   Menu,
   X,
   AlertTriangle,
+  LifeBuoy,
 } from 'lucide-react';
 import { useCmsStore } from '../../lib/cms/cmsStore';
 import { useAuthStore } from '../../stores/authStore';
@@ -58,6 +59,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { label: 'Media Library', href: '/admin/media', icon: ImageIcon },
     { label: 'Navigation & Links', href: '/admin/navigation', icon: Compass },
     { label: 'Shiprocket Logistics', href: '/admin/shipping', icon: Truck },
+    { label: 'Support Tickets', href: '/admin/tickets', icon: LifeBuoy },
     { label: 'Store Settings', href: '/admin/settings', icon: Settings },
   ];
 

@@ -5,3 +5,6 @@ export * from './passwordChangedTemplate';
 export * from './orderConfirmationTemplate';
 export * from './shippingUpdateTemplate';
 export * from './newDropTemplate';
+export * from './ticketCreatedTemplate';
+export * from './ticketUpdateTemplate';
+export * from './ticketResolvedTemplate';

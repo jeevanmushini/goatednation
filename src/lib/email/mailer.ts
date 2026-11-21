@@ -6,10 +6,17 @@ import {
   getOrderConfirmationEmailHtml,
   getShippingUpdateEmailHtml,
   getNewDropEmailHtml,
+  getTicketCreatedEmailHtml,
+  getTicketUpdateEmailHtml,
+  getTicketResolvedEmailHtml,
   OrderConfirmationParams,
   ShippingUpdateParams,
   NewDropEmailParams,
+  TicketCreatedEmailParams,
+  TicketUpdateEmailParams,
+  TicketResolvedEmailParams,
 } from './templates';
+import { Ticket } from '../../types/ticket';
 
 let cachedResend: Resend | null = null;
 
@@ -201,6 +208,46 @@ export async function sendNewDropEmail(
   return sendEmail({
     to: params.to,
     subject: `NEW DROP: ${params.dropTitle} // GOATED NATION`,
+    html,
+  });
+}
+
+/**
+ * Dispatches Support Ticket Logged Confirmation.
+ */
+export async function sendTicketCreatedEmail(ticket: Ticket): Promise<MailerResult> {
+  const html = getTicketCreatedEmailHtml({ ticket });
+  return sendEmail({
+    to: ticket.customerEmail,
+    subject: `TICKET ${ticket.ticketNumber} LOGGED // GOATED NATION SUPPORT`,
+    html,
+  });
+}
+
+/**
+ * Dispatches Support Ticket Progress / Admin Message Update.
+ */
+export async function sendTicketUpdateEmail(
+  params: TicketUpdateEmailParams
+): Promise<MailerResult> {
+  const html = getTicketUpdateEmailHtml(params);
+  return sendEmail({
+    to: params.ticket.customerEmail,
+    subject: `UPDATE: Ticket ${params.ticket.ticketNumber} // GOATED NATION SUPPORT`,
+    html,
+  });
+}
+
+/**
+ * Dispatches Support Ticket Resolution & CSAT Feedback Notice.
+ */
+export async function sendTicketResolvedEmail(
+  params: TicketResolvedEmailParams
+): Promise<MailerResult> {
+  const html = getTicketResolvedEmailHtml(params);
+  return sendEmail({
+    to: params.ticket.customerEmail,
+    subject: `RESOLVED: Ticket ${params.ticket.ticketNumber} // GOATED NATION SUPPORT`,
     html,
   });
 }
