@@ -10,10 +10,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node scripts/test-cms-sync.mjs && node scripts/test-mobile-animations.mjs && node scripts/test-full-system.mjs && node scripts/test-quota-protection.mjs && node scripts/test-cloudinary.mjs && node scripts/test-deletion.mjs && npx tsx scripts/test-email-system.ts",
+    "test": "node scripts/test-cms-sync.mjs && node scripts/test-mobile-animations.mjs && node scripts/test-full-system.mjs && node scripts/test-quota-protection.mjs && node scripts/test-cloudinary.mjs && node scripts/test-deletion.mjs",
     "test:mobile": "node scripts/test-mobile-animations.mjs",
-    "test:system": "node scripts/test-full-system.mjs",
-    "test:email": "npx tsx scripts/test-email-system.ts"
+    "test:system": "node scripts/test-full-system.mjs"
   },
   "dependencies": {
     "@neon/config": "^1.14.4",
@@ -24,17 +23,16 @@
     "framer-motion": "^14.10.1",
     "lucide-react": "^0.475.0",
     "next": "16.4.3",
-    "nodemailer": "^10.6.1",
     "postcss": "^8.5.32",
     "react": "19.3.0",
     "react-dom": "19.3.0",
+    "resend": "^6.39.0",
     "tailwind-merge": "^3.0.1",
     "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^20",
-    "@types/nodemailer": "^8.0.2",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",

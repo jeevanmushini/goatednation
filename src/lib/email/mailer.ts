@@ -1,4 +1,4 @@
-import nodemailer, { Transporter } from 'nodemailer';
+import { Resend } from 'resend';
 import {
   getWelcomeEmailHtml,
   getOtpEmailHtml,
@@ -11,36 +11,33 @@ import {
   NewDropEmailParams,
 } from './templates';
 
-let cachedTransporter: Transporter | null = null;
+let cachedResend: Resend | null = null;
 
 /**
- * Returns a singleton Nodemailer transporter configured for Gmail SMTP.
+ * Returns a singleton Resend client configured with RESEND_API_KEY.
  */
-export function getEmailTransporter(): Transporter | null {
-  const user = process.env.EMAIL_USER;
-  const rawPass = process.env.EMAIL_APP_PASSWORD;
+export function getResendClient(): Resend | null {
+  const apiKey = process.env.RESEND_API_KEY;
 
-  if (!user || !rawPass) {
+  if (!apiKey) {
     return null;
   }
 
-  const pass = rawPass.trim().replace(/\s+/g, '');
-  if (pass.startsWith('xxxx') || pass === 'your_app_password') {
-    // Unconfigured or placeholder App Password
+  const cleanKey = apiKey.trim();
+  if (
+    cleanKey.startsWith('xxxx') ||
+    cleanKey === 'your_resend_api_key' ||
+    cleanKey === 're_placeholder'
+  ) {
+    // Unconfigured or placeholder key
     return null;
   }
 
-  if (!cachedTransporter) {
-    cachedTransporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: user.trim(),
-        pass,
-      },
-    });
+  if (!cachedResend) {
+    cachedResend = new Resend(cleanKey);
   }
 
-  return cachedTransporter;
+  return cachedResend;
 }
 
 export interface SendEmailOptions {
@@ -58,8 +55,8 @@ export interface MailerResult {
 }
 
 /**
- * Central Resilient Email Dispatcher.
- * Guarantees that failures in SMTP transport never block core business logic.
+ * Central Resilient Email Dispatcher powered by Resend.
+ * Guarantees that failures in email transport never block core business logic.
  */
 export async function sendEmail({
   to,
@@ -67,13 +64,19 @@ export async function sendEmail({
   html,
   text,
 }: SendEmailOptions): Promise<MailerResult> {
-  const recipient = Array.isArray(to) ? to.join(', ') : to;
-  const from = process.env.EMAIL_FROM || `GOATED NATION <${process.env.EMAIL_USER || 'goatednation@gmail.com'}>`;
+  const recipient = Array.isArray(to) ? to : [to];
+  const recipientStr = Array.isArray(to) ? to.join(', ') : to;
 
-  const transporter = getEmailTransporter();
-  if (!transporter) {
+  // Default to verified sender or Resend sandbox address (onboarding@resend.dev)
+  const from =
+    process.env.RESEND_FROM ||
+    process.env.EMAIL_FROM ||
+    'GOATED NATION <onboarding@resend.dev>';
+
+  const resend = getResendClient();
+  if (!resend) {
     console.warn(
-      `[Mailer] SMTP not fully configured in environment (EMAIL_USER / EMAIL_APP_PASSWORD). Simulated send to [${recipient}] with subject: "${subject}"`
+      `[Mailer: Resend] RESEND_API_KEY not configured in environment. Simulated dispatch to [${recipientStr}] with subject: "${subject}"`
     );
     return {
       success: true,
@@ -82,7 +85,7 @@ export async function sendEmail({
   }
 
   try {
-    const info = await transporter.sendMail({
+    const { data, error } = await resend.emails.send({
       from,
       to: recipient,
       subject,
@@ -90,14 +93,22 @@ export async function sendEmail({
       text: text || subject,
     });
 
-    console.log(`[Mailer] Email dispatched successfully to [${recipient}]:`, info.messageId);
+    if (error) {
+      console.error(`[Mailer: Resend] Error dispatching email to [${recipientStr}]:`, error.message);
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+
+    console.log(`[Mailer: Resend] Email dispatched successfully to [${recipientStr}]:`, data?.id);
     return {
       success: true,
-      messageId: info.messageId,
+      messageId: data?.id,
     };
   } catch (error: unknown) {
     const errorMsg = error instanceof Error ? error.message : String(error);
-    console.error(`[Mailer] Error dispatching email to [${recipient}]:`, errorMsg);
+    console.error(`[Mailer: Resend] Unexpected error dispatching to [${recipientStr}]:`, errorMsg);
     return {
       success: false,
       error: errorMsg,
