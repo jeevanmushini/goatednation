@@ -1,5 +1,6 @@
 import { createRequire } from 'module';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -25,7 +26,8 @@ async function runTests() {
 
   const jiti = require('jiti')(__filename);
   const { useCmsStore } = jiti('../src/lib/cms/cmsStore.ts');
-  const { sanitizePublishedCmsData, savePublishedCmsData, getPublishedProductBySlug } = jiti('../src/lib/cms/serverCms.ts');
+  const { sanitizePublishedCmsData, savePublishedCmsData, getPublishedProductBySlug, CMS_STORAGE_FILE } = jiti('../src/lib/cms/serverCms.ts');
+  const originalBackup = fs.existsSync(CMS_STORAGE_FILE) ? fs.readFileSync(CMS_STORAGE_FILE, 'utf-8') : null;
 
   let passed = 0;
   let failed = 0;
@@ -137,6 +139,11 @@ async function runTests() {
   const syncedProducts = useCmsStore.getState().products;
   assert(!syncedProducts.some((p) => p.id === customId), 'syncFromServer does not resurrect deleted custom product');
   assert(!syncedProducts.some((p) => p.id === defaultId), 'syncFromServer does not resurrect deleted baseline product');
+
+  // Restore original storage file if backed up
+  if (originalBackup && fs.existsSync(CMS_STORAGE_FILE)) {
+    fs.writeFileSync(CMS_STORAGE_FILE, originalBackup, 'utf-8');
+  }
 
   console.log(`\n=== SUMMARY: Passed: ${passed} | Failed: ${failed} ===`);
   if (failed > 0) {
