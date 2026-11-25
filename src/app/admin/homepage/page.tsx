@@ -60,7 +60,7 @@ export default function AdminHomepageCmsPage() {
   const [savedNotice, setSavedNotice] = useState(false);
 
   useEffect(() => {
-    useCmsStore.getState().syncFromServer();
+    useCmsStore.getState().syncFromServer(true);
   }, []);
 
   const currentHero = heroSlides[0] || {};

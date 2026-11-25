@@ -486,13 +486,13 @@ const createCmsStore = () =>
       syncFromServer: async (force = false) => {
         if (typeof window === 'undefined' || !window.location?.origin) return;
         if (!force && hasClientSyncedFromServer) return;
-        hasClientSyncedFromServer = true;
 
         try {
           const res = await fetch('/api/cms', { cache: 'no-store' });
           if (res.ok) {
             const json = await res.json();
             if (json.success && json.data) {
+              hasClientSyncedFromServer = true;
               const serverData = json.data;
               const current = get();
 
