@@ -1,19 +1,24 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Plus, Trash2, ArrowUp, ArrowDown, X, Compass } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Plus, Trash2, ArrowUp, ArrowDown, X, Compass, Check } from 'lucide-react';
 import { useCmsStore } from '../../../lib/cms/cmsStore';
 import { CmsNavigationItem } from '../../../types/cms';
 
 export default function AdminNavigationPage() {
-  const { navigation, updateNavigation } = useCmsStore();
+  const { navigation, updateNavigation, publishChanges } = useCmsStore();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [label, setLabel] = useState('');
   const [href, setHref] = useState('');
   const [badge, setBadge] = useState('');
+  const [savedNotice, setSavedNotice] = useState(false);
 
-  const handleMove = (index: number, direction: 'up' | 'down') => {
+  useEffect(() => {
+    useCmsStore.getState().syncFromServer(true);
+  }, []);
+
+  const handleMove = async (index: number, direction: 'up' | 'down') => {
     const newIndex = direction === 'up' ? index - 1 : index + 1;
     if (newIndex < 0 || newIndex >= navigation.length) return;
 
@@ -24,20 +29,25 @@ export default function AdminNavigationPage() {
 
     const reordered = updated.map((item, idx) => ({ ...item, order: idx + 1 }));
     updateNavigation(reordered);
+    await publishChanges();
+    setSavedNotice(true);
+    setTimeout(() => setSavedNotice(false), 2500);
   };
 
-  const handleToggle = (id: string) => {
+  const handleToggle = async (id: string) => {
     const updated = navigation.map((item) =>
       item.id === id ? { ...item, enabled: !item.enabled } : item
     );
     updateNavigation(updated);
+    await publishChanges();
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     updateNavigation(navigation.filter((item) => item.id !== id));
+    await publishChanges();
   };
 
-  const handleAdd = (e: React.FormEvent) => {
+  const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!label || !href) return;
 
@@ -51,10 +61,13 @@ export default function AdminNavigationPage() {
     };
 
     updateNavigation([...navigation, newItem]);
+    await publishChanges();
     setLabel('');
     setHref('');
     setBadge('');
     setIsModalOpen(false);
+    setSavedNotice(true);
+    setTimeout(() => setSavedNotice(false), 2500);
   };
 
   return (
@@ -81,6 +94,13 @@ export default function AdminNavigationPage() {
           <span>Add Menu Item</span>
         </button>
       </div>
+
+      {savedNotice && (
+        <div className="p-4 rounded-lg bg-white border border-[#16A34A] text-[#16A34A] text-xs font-mono flex items-center space-x-2 shadow-sm">
+          <Check className="w-4 h-4" />
+          <span>Navigation changes saved and published to the live storefront!</span>
+        </div>
+      )}
 
       {/* Nav List */}
       <div className="space-y-3">

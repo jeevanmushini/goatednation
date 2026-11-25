@@ -259,18 +259,18 @@ export async function getPublishedCmsData(): Promise<{ data: PublishedCmsData; s
  * Persists published CMS data across Neon Postgres, memory, disk, and cloud KV.
  */
 export async function savePublishedCmsData(data: Partial<PublishedCmsData>): Promise<{ savedToNeon: boolean; savedToKv: boolean; savedToFile: boolean }> {
-  // Read authoritative published data first so partial updates don't clobber other sections
+  // Read authoritative published data first from Database so partial updates don't clobber other sections or use stale cross-lambda memory
   let existingData: Partial<PublishedCmsData> = {};
-  if (globalForCms.__SERVER_PUBLISHED_CMS__) {
-    existingData = { ...globalForCms.__SERVER_PUBLISHED_CMS__ };
-  } else {
-    try {
-      const current = await getPublishedCmsData();
-      if (current?.data) {
-        existingData = current.data;
-      }
-    } catch {
-      // ignore
+  try {
+    const fromDb = await getCmsDataFromNeon<PublishedCmsData>();
+    if (fromDb && typeof fromDb === 'object') {
+      existingData = fromDb;
+    } else if (globalForCms.__SERVER_PUBLISHED_CMS__) {
+      existingData = { ...globalForCms.__SERVER_PUBLISHED_CMS__ };
+    }
+  } catch {
+    if (globalForCms.__SERVER_PUBLISHED_CMS__) {
+      existingData = { ...globalForCms.__SERVER_PUBLISHED_CMS__ };
     }
   }
 

@@ -1,14 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { Plus, Edit2, Trash2, X, Layers } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, Layers, Check } from 'lucide-react';
 import { useCmsStore } from '../../../lib/cms/cmsStore';
 import { CmsCategory } from '../../../types/cms';
 import ImageInputWithUpload from '../../../components/admin/ImageInputWithUpload';
 
 export default function AdminCategoriesPage() {
-  const { categories, addCategory, updateCategory, deleteCategory } = useCmsStore();
+  const { categories, addCategory, updateCategory, deleteCategory, publishChanges } = useCmsStore();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -18,6 +18,11 @@ export default function AdminCategoriesPage() {
   const [count, setCount] = useState('10+ Styles');
   const [image, setImage] = useState('');
   const [slug, setSlug] = useState('');
+  const [savedNotice, setSavedNotice] = useState(false);
+
+  useEffect(() => {
+    useCmsStore.getState().syncFromServer(true);
+  }, []);
 
   const openAddModal = () => {
     setEditingId(null);
@@ -39,7 +44,7 @@ export default function AdminCategoriesPage() {
     setIsModalOpen(true);
   };
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     const finalSlug = slug || title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
@@ -57,6 +62,9 @@ export default function AdminCategoriesPage() {
       });
     }
 
+    await publishChanges();
+    setSavedNotice(true);
+    setTimeout(() => setSavedNotice(false), 3000);
     setIsModalOpen(false);
   };
 
@@ -85,6 +93,13 @@ export default function AdminCategoriesPage() {
         </button>
       </div>
 
+      {savedNotice && (
+        <div className="p-4 rounded-lg bg-white border border-[#16A34A] text-[#16A34A] text-xs font-mono flex items-center space-x-2 shadow-sm">
+          <Check className="w-4 h-4" />
+          <span>Category changes saved and published to the live storefront!</span>
+        </div>
+      )}
+
       {/* Categories Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {categories.map((c) => (
@@ -104,8 +119,11 @@ export default function AdminCategoriesPage() {
                     <Edit2 className="w-3.5 h-3.5" />
                   </button>
                   <button
-                    onClick={() => {
-                      if (confirm(`Delete category "${c.title}"?`)) deleteCategory(c.id);
+                    onClick={async () => {
+                      if (confirm(`Delete category "${c.title}"?`)) {
+                        deleteCategory(c.id);
+                        await publishChanges();
+                      }
                     }}
                     className="p-1.5 rounded-lg bg-black/80 hover:bg-[#DC2626] text-white transition-colors shadow-sm"
                     title="Delete Category"

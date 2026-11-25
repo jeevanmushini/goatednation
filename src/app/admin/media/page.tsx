@@ -43,7 +43,11 @@ const MAX_SIZE_MB = 10;
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function AdminMediaPage() {
-  const { media, addMedia, deleteMedia } = useCmsStore();
+  const { media, addMedia, deleteMedia, publishChanges } = useCmsStore();
+
+  React.useEffect(() => {
+    useCmsStore.getState().syncFromServer(true);
+  }, []);
 
   // ── Filter state ──
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -211,6 +215,7 @@ export default function AdminMediaPage() {
         category: uploadCategory,
         size: sizeLabel,
       });
+      publishChanges().catch(() => null);
 
       setFileQueue((prev) =>
         prev.map((f) =>
@@ -252,11 +257,12 @@ export default function AdminMediaPage() {
 
   // ─── URL Import ────────────────────────────────────────────────────────────
 
-  const handleAddUrl = (e: React.FormEvent) => {
+  const handleAddUrl = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!urlName || !urlValue) return;
     setIsAddingUrl(true);
     addMedia({ name: urlName, url: urlValue, category: urlCategory, size: 'External' });
+    await publishChanges().catch(() => null);
     setUrlName('');
     setUrlValue('');
     setTimeout(() => setIsAddingUrl(false), 600);
@@ -619,8 +625,11 @@ export default function AdminMediaPage() {
                 </button>
 
                 <button
-                  onClick={() => {
-                    if (confirm(`Delete media asset "${m.name}"?`)) deleteMedia(m.id);
+                  onClick={async () => {
+                    if (confirm(`Delete media asset "${m.name}"?`)) {
+                      deleteMedia(m.id);
+                      await publishChanges().catch(() => null);
+                    }
                   }}
                   className="p-1 rounded text-[#888888] hover:text-[#DC2626] transition-colors"
                   title="Delete Asset"

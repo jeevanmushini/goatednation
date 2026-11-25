@@ -214,7 +214,7 @@ const createCmsStore = () =>
           heroBottoms: updated,
           isDraft: true,
         });
-        triggerServerSync({ ...get(), heroBottoms: updated });
+        triggerServerSync({ ...get(), heroBottoms: updated }, true);
       },
 
       addHeroBottom: (item) => {
@@ -224,7 +224,7 @@ const createCmsStore = () =>
         };
         const updated = [...get().heroBottoms, newItem];
         set({ heroBottoms: updated, isDraft: true });
-        triggerServerSync({ ...get(), heroBottoms: updated });
+        triggerServerSync({ ...get(), heroBottoms: updated }, true);
       },
 
       deleteHeroBottom: (id) => {
@@ -233,7 +233,7 @@ const createCmsStore = () =>
           heroBottoms: updated,
           isDraft: true,
         });
-        triggerServerSync({ ...get(), heroBottoms: updated });
+        triggerServerSync({ ...get(), heroBottoms: updated }, true);
       },
 
       // Zenin 3D Stack Cards Implementations
@@ -243,7 +243,7 @@ const createCmsStore = () =>
           stackCards: updated,
           isDraft: true,
         });
-        triggerServerSync({ ...get(), stackCards: updated });
+        triggerServerSync({ ...get(), stackCards: updated }, true);
       },
 
       addStackCard: (card) => {
@@ -253,7 +253,7 @@ const createCmsStore = () =>
         };
         const updated = [...get().stackCards, newCard];
         set({ stackCards: updated, isDraft: true });
-        triggerServerSync({ ...get(), stackCards: updated });
+        triggerServerSync({ ...get(), stackCards: updated }, true);
       },
 
       deleteStackCard: (id) => {
@@ -262,7 +262,7 @@ const createCmsStore = () =>
           stackCards: updated,
           isDraft: true,
         });
-        triggerServerSync({ ...get(), stackCards: updated });
+        triggerServerSync({ ...get(), stackCards: updated }, true);
       },
 
       // Editorial Banner & Announcement Implementations
@@ -272,7 +272,7 @@ const createCmsStore = () =>
           editorialBanner: updated,
           isDraft: true,
         });
-        triggerServerSync({ ...get(), editorialBanner: updated });
+        triggerServerSync({ ...get(), editorialBanner: updated }, true);
       },
 
       updateAnnouncement: (announcement) => {
@@ -281,13 +281,13 @@ const createCmsStore = () =>
           announcement: updated,
           isDraft: true,
         });
-        triggerServerSync({ ...get(), announcement: updated });
+        triggerServerSync({ ...get(), announcement: updated }, true);
       },
 
       updateHeroSlide: (id, slide) => {
         const updated = get().heroSlides.map((s) => (s.id === id ? { ...s, ...slide } : s));
         set({ heroSlides: updated, isDraft: true });
-        triggerServerSync({ ...get(), heroSlides: updated });
+        triggerServerSync({ ...get(), heroSlides: updated }, true);
       },
 
       addHeroSlide: (slide) => {
@@ -298,19 +298,19 @@ const createCmsStore = () =>
         };
         const updated = [...get().heroSlides, newSlide];
         set({ heroSlides: updated, isDraft: true });
-        triggerServerSync({ ...get(), heroSlides: updated });
+        triggerServerSync({ ...get(), heroSlides: updated }, true);
       },
 
       deleteHeroSlide: (id) => {
         const updated = get().heroSlides.filter((s) => s.id !== id);
         set({ heroSlides: updated, isDraft: true });
-        triggerServerSync({ ...get(), heroSlides: updated });
+        triggerServerSync({ ...get(), heroSlides: updated }, true);
       },
 
       updateCategory: (id, cat) => {
         const updated = get().categories.map((c) => (c.id === id ? { ...c, ...cat } : c));
         set({ categories: updated, isDraft: true });
-        triggerServerSync({ ...get(), categories: updated });
+        triggerServerSync({ ...get(), categories: updated }, true);
       },
 
       addCategory: (cat) => {
@@ -321,13 +321,13 @@ const createCmsStore = () =>
         };
         const updated = [...get().categories, newCat];
         set({ categories: updated, isDraft: true });
-        triggerServerSync({ ...get(), categories: updated });
+        triggerServerSync({ ...get(), categories: updated }, true);
       },
 
       deleteCategory: (id) => {
         const updated = get().categories.filter((c) => c.id !== id);
         set({ categories: updated, isDraft: true });
-        triggerServerSync({ ...get(), categories: updated });
+        triggerServerSync({ ...get(), categories: updated }, true);
       },
 
       reorderCategories: (orderedIds) => {
@@ -339,32 +339,32 @@ const createCmsStore = () =>
           })
           .filter(Boolean) as CmsCategory[];
         set({ categories: reordered, isDraft: true });
-        triggerServerSync({ ...get(), categories: reordered });
+        triggerServerSync({ ...get(), categories: reordered }, true);
       },
 
       addProduct: (product) => {
         const updated = [product, ...get().products];
         set({ products: updated, isDraft: true });
-        triggerServerSync({ ...get(), products: updated });
+        triggerServerSync({ ...get(), products: updated }, true);
       },
 
       updateProduct: (id, product) => {
         const updated = get().products.map((p) => (p.id === id ? { ...p, ...product } : p));
         set({ products: updated, isDraft: true });
-        triggerServerSync({ ...get(), products: updated });
+        triggerServerSync({ ...get(), products: updated }, true);
       },
 
       deleteProduct: (id) => {
         const updated = get().products.filter((p) => p.id !== id);
         const updatedDeleted = Array.from(new Set([...(get().deletedProductIds || []), id]));
         set({ products: updated, deletedProductIds: updatedDeleted, isDraft: true });
-        triggerServerSync({ ...get(), products: updated, deletedProductIds: updatedDeleted });
+        triggerServerSync({ ...get(), products: updated, deletedProductIds: updatedDeleted }, true);
       },
 
       updateBanner: (id, banner) => {
         const updated = get().banners.map((b) => (b.id === id ? { ...b, ...banner } : b));
         set({ banners: updated, isDraft: true });
-        triggerServerSync({ ...get(), banners: updated });
+        triggerServerSync({ ...get(), banners: updated }, true);
       },
 
       addBanner: (banner) => {
@@ -375,53 +375,53 @@ const createCmsStore = () =>
         };
         const updated = [...get().banners, newBanner];
         set({ banners: updated, isDraft: true });
-        triggerServerSync({ ...get(), banners: updated });
+        triggerServerSync({ ...get(), banners: updated }, true);
       },
 
       deleteBanner: (id) => {
         const updated = get().banners.filter((b) => b.id !== id);
         set({ banners: updated, isDraft: true });
-        triggerServerSync({ ...get(), banners: updated });
+        triggerServerSync({ ...get(), banners: updated }, true);
       },
 
       updateBrandStory: (story) => {
         const updated = { ...get().brandStory, ...story };
         set({ brandStory: updated, isDraft: true });
-        triggerServerSync({ ...get(), brandStory: updated });
+        triggerServerSync({ ...get(), brandStory: updated }, true);
       },
 
       updateNewsletter: (newsletter) => {
         const updated = { ...get().newsletter, ...newsletter };
         set({ newsletter: updated, isDraft: true });
-        triggerServerSync({ ...get(), newsletter: updated });
+        triggerServerSync({ ...get(), newsletter: updated }, true);
       },
 
       updateSection: (id, sec) => {
         const updated = get().sections.map((s) => (s.id === id ? { ...s, ...sec } : s));
         set({ sections: updated, isDraft: true });
-        triggerServerSync({ ...get(), sections: updated });
+        triggerServerSync({ ...get(), sections: updated }, true);
       },
 
       toggleSection: (id) => {
         const updated = get().sections.map((s) => (s.id === id ? { ...s, enabled: !s.enabled } : s));
         set({ sections: updated, isDraft: true });
-        triggerServerSync({ ...get(), sections: updated });
+        triggerServerSync({ ...get(), sections: updated }, true);
       },
 
       reorderSections: (newSections) => {
         set({ sections: newSections, isDraft: true });
-        triggerServerSync({ ...get(), sections: newSections });
+        triggerServerSync({ ...get(), sections: newSections }, true);
       },
 
       updateSettings: (settings) => {
         const updated = { ...get().settings, ...settings };
         set({ settings: updated, isDraft: true });
-        triggerServerSync({ ...get(), settings: updated });
+        triggerServerSync({ ...get(), settings: updated }, true);
       },
 
       updateNavigation: (nav) => {
         set({ navigation: nav, isDraft: true });
-        triggerServerSync({ ...get(), navigation: nav });
+        triggerServerSync({ ...get(), navigation: nav }, true);
       },
 
       addMedia: (media) => {
@@ -437,10 +437,13 @@ const createCmsStore = () =>
         // Keep media gallery bounded to 30 items so it doesn't exhaust localStorage quota
         const updatedMedia = [newMedia, ...get().media].slice(0, 30);
         set({ media: updatedMedia, isDraft: true });
+        triggerServerSync({ ...get(), media: updatedMedia }, true);
       },
 
       deleteMedia: (id) => {
-        set({ media: get().media.filter((m) => m.id !== id), isDraft: true });
+        const updatedMedia = get().media.filter((m) => m.id !== id);
+        set({ media: updatedMedia, isDraft: true });
+        triggerServerSync({ ...get(), media: updatedMedia }, true);
       },
 
       publishChanges: async () => {
@@ -488,7 +491,7 @@ const createCmsStore = () =>
         if (!force && hasClientSyncedFromServer) return;
 
         try {
-          const res = await fetch('/api/cms?t=' + Date.now(), { cache: 'no-store' });
+          const res = await fetch('/api/cms?t=' + Date.now(), { credentials: 'include', cache: 'no-store' });
           if (res.ok) {
             const json = await res.json();
             if (json.success && json.data) {

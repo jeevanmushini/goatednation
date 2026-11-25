@@ -14,6 +14,14 @@ export default function AdminSettingsPage() {
   const [formData, setFormData] = useState<CmsSiteSettings>({ ...currentSettings });
   const [saveSuccess, setSaveSuccess] = useState(false);
 
+  useEffect(() => {
+    useCmsStore.getState().syncFromServer(true);
+  }, []);
+
+  useEffect(() => {
+    setFormData({ ...currentSettings });
+  }, [currentSettings]);
+
   // Google OAuth Settings State
   const [oauthData, setOauthData] = useState({
     googleClientId: '',
@@ -81,10 +89,10 @@ export default function AdminSettingsPage() {
     }
   };
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     updateSettings(formData);
-    publishChanges();
+    await publishChanges();
     setSaveSuccess(true);
     setTimeout(() => setSaveSuccess(false), 3000);
   };

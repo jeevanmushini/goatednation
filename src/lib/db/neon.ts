@@ -295,10 +295,10 @@ export async function saveCmsDataToNeon(data: unknown): Promise<boolean> {
 
   try {
     if (!schemaInitialized) await initDatabaseSchema();
-    const jsonString = JSON.stringify(data);
+    const payloadObject = typeof data === 'string' ? JSON.parse(data) : data;
     await sql`
       INSERT INTO app_cms_state (key, data, updated_at)
-      VALUES ('published_cms', ${jsonString}::jsonb, CURRENT_TIMESTAMP)
+      VALUES ('published_cms', ${sql.json(payloadObject as object)}, CURRENT_TIMESTAMP)
       ON CONFLICT (key)
       DO UPDATE SET data = EXCLUDED.data, updated_at = CURRENT_TIMESTAMP;
     `;

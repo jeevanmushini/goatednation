@@ -158,15 +158,15 @@ export async function getCachedProductBySlug(slug: string): Promise<Product | nu
   // 2. Upstash Redis / Vercel KV
   const redisProduct = await redisGet<Product>(cacheKey);
   if (redisProduct) {
-    setMemoryCache(cacheKey, redisProduct, 86400);
+    setMemoryCache(cacheKey, redisProduct, 5);
     return redisProduct;
   }
 
   // 3. Fallback to live Neon Postgres DB
   const neonProduct = await getProductBySlugFromNeon(slug);
   if (neonProduct) {
-    setMemoryCache(cacheKey, neonProduct, 86400);
-    redisSet(cacheKey, neonProduct, 86400).catch(() => null);
+    setMemoryCache(cacheKey, neonProduct, 5);
+    redisSet(cacheKey, neonProduct, 60).catch(() => null);
     return neonProduct;
   }
 
@@ -208,6 +208,7 @@ export async function invalidateProductCache(slug?: string): Promise<void> {
   }
 
   // 1. Purge memory cache
+  delMemoryCache('gn:product:');
   for (const k of keysToPurge) {
     delMemoryCache(k);
   }
