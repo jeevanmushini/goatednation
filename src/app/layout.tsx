@@ -60,6 +60,9 @@ export const metadata: Metadata = {
     description: "Wear the culture. Premium heavyweight oversized anime streetwear.",
     images: ["/og-image.png"],
   },
+  verification: {
+    google: "O-eA1509EZO1wsiXRdjijrhXFbLCkkw3YakrZOOL7Wk",
+  },
 };
 
 const jsonLd = {
@@ -87,6 +90,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth" data-scroll-behavior="smooth">
       <head>
+        <meta
+          name="google-site-verification"
+          content="O-eA1509EZO1wsiXRdjijrhXFbLCkkw3YakrZOOL7Wk"
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
