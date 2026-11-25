@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, MoveHorizontal, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useCmsStore } from '../../lib/cms/cmsStore';
 import { INITIAL_HERO_BOTTOMS } from '../../lib/cms/initialCmsData';
 import { CmsHeroBottomItem } from '../../types/cms';
@@ -259,15 +259,11 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
         isDragging ? 'cursor-grabbing' : 'cursor-grab'
       }`}
     >
-      {/* 1. Centered Clean Top Label & Swipe Gesture Hint */}
-      <div className="relative z-20 text-center pt-2 sm:pt-4 flex flex-col items-center space-y-1">
-        <span className="text-[10px] sm:text-[11px] font-mono tracking-[0.35em] text-[#777777] uppercase select-none">
-          FEATURED SILHOUETTES // 3D LOOKBOOK
+      {/* 1. Centered Slide Gesture Hint (Text Only) */}
+      <div className="relative z-20 text-center pt-2 sm:pt-4">
+        <span className="text-[10px] sm:text-[11px] font-mono tracking-widest text-[#888888] uppercase select-none">
+          SLIDE HORIZONTALLY TO EXPLORE
         </span>
-        <div className="flex items-center space-x-1.5 text-[9px] font-mono tracking-widest text-[#AAAAAA] uppercase">
-          <MoveHorizontal className="w-3 h-3 text-[#999999]" />
-          <span>SLIDE HORIZONTALLY TO EXPLORE</span>
-        </div>
       </div>
 
       {/* 2. Panoramic Arc of Sliding Floating Stage */}

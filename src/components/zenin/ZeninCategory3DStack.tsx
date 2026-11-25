@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ChevronLeft, ChevronRight, MoveHorizontal } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useCmsStore } from '../../lib/cms/cmsStore';
 import { CmsStackCardItem } from '../../types/cms';
 
@@ -180,15 +180,11 @@ export const ZeninCategory3DStack: React.FC<ZeninCategory3DStackProps> = ({ init
   return (
     <section className="bg-[#FFFFFF] py-14 sm:py-20 px-4 sm:px-6 lg:px-8 border-b border-[#EAEAEA] overflow-hidden select-none">
       <div className="max-w-6xl mx-auto flex flex-col items-center">
-        {/* Top Centered Category Title & Swipe Hint */}
-        <div className="text-center mb-6 sm:mb-8 flex flex-col items-center space-y-1">
-          <span className="text-xs font-mono tracking-[0.25em] text-[#666666] uppercase">
-            {current.category}
+        {/* Top Centered Swipe Hint (Text Only) */}
+        <div className="text-center mb-6 sm:mb-8">
+          <span className="text-[10px] sm:text-[11px] font-mono tracking-widest text-[#888888] uppercase select-none">
+            SWIPE TO BROWSE CATEGORIES
           </span>
-          <div className="flex items-center space-x-1.5 text-[9px] font-mono tracking-widest text-[#AAAAAA] uppercase">
-            <MoveHorizontal className="w-3 h-3 text-[#999999]" />
-            <span>SWIPE TO BROWSE CATEGORIES</span>
-          </div>
         </div>
 
         {/* 3D Stack Stage */}
