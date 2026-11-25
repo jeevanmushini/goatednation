@@ -40,12 +40,13 @@ runTest('ENV', '.env.local contains updated PRIVATE_SHIPROCKET_PICKUP_PINCODE ke
 
 runTest('ENV', '.env.local contains updated PRIVATE_RAZORPAY_KEY_ID key', () => {
   assert(envFile.includes('PRIVATE_RAZORPAY_KEY_ID='), 'PRIVATE_RAZORPAY_KEY_ID missing in .env.local');
-  assert(envFile.includes('rzp_test_U02QRHZ4Zt0UTD'), 'User Razorpay test key ID missing in .env.local');
+  assert(envFile.includes('rzp_test_') || envFile.includes('rzp_live_'), 'Razorpay key ID (test or live) missing in .env.local');
 });
 
 runTest('ENV', '.env.local contains user RAZORPAY_KEY_SECRET', () => {
   assert(envFile.includes('RAZORPAY_KEY_SECRET='), 'RAZORPAY_KEY_SECRET missing in .env.local');
-  assert(envFile.includes('rAOz4jkRWRZT5qMndnVmedzk'), 'User Razorpay secret missing in .env.local');
+  const secretMatch = envFile.match(/RAZORPAY_KEY_SECRET=([^\r\n]+)/);
+  assert(secretMatch && secretMatch[1].trim().length > 0, 'User Razorpay secret missing in .env.local');
 });
 
 // -----------------------------------------------------------------

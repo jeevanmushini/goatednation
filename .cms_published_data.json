@@ -5643,16 +5643,6 @@
   ],
   "heroBottoms": [
     {
-      "id": "b-7",
-      "link": "/collections/jacket",
-      "name": "Black",
-      "badge": "HEAVY EMBROIDERY",
-      "color": "Vintage Black",
-      "image": "/images/hero/black-hoodie.webp",
-      "kanji": "神 // SATIN INTERIOR",
-      "price": "Rs. 2,799"
-    },
-    {
       "id": "b-1795084968803",
       "link": "/collections",
       "name": "grey",

@@ -262,6 +262,19 @@ export async function initDatabaseSchema(): Promise<boolean> {
   }
 }
 
+export function parseJsonField<T>(field: unknown, defaultValue: T): T {
+  if (field === null || field === undefined) return defaultValue;
+  if (typeof field === 'string') {
+    try {
+      const parsed = JSON.parse(field);
+      return (typeof parsed === 'string' ? JSON.parse(parsed) : parsed) as T;
+    } catch {
+      return defaultValue;
+    }
+  }
+  return field as T;
+}
+
 /**
  * Fetches published CMS state directly from Neon Postgres.
  */
@@ -275,7 +288,7 @@ export async function getCmsDataFromNeon<T = Record<string, unknown>>(): Promise
       SELECT data FROM app_cms_state WHERE key = 'published_cms' LIMIT 1;
     `;
     if (rows && rows.length > 0 && rows[0].data) {
-      return rows[0].data as T;
+      return parseJsonField<T>(rows[0].data, {} as T);
     }
     return null;
   } catch (error) {
@@ -675,6 +688,10 @@ export async function getProductsFromNeon(): Promise<Product[]> {
     `;
     return rows.map((r: any) => ({
       ...r,
+      images: parseJsonField<string[]>(r.images, []),
+      details: parseJsonField<any>(r.details, {}),
+      sizes: parseJsonField<any[]>(r.sizes, []),
+      colors: parseJsonField<any[]>(r.colors, []),
       price: Number(r.price),
       originalPrice: Number(r.originalPrice),
       rating: Number(r.rating),
@@ -724,6 +741,10 @@ export async function getProductBySlugFromNeon(slugOrId: string): Promise<Produc
       const r = rows[0];
       return {
         ...r,
+        images: parseJsonField<string[]>(r.images, []),
+        details: parseJsonField<any>(r.details, {}),
+        sizes: parseJsonField<any[]>(r.sizes, []),
+        colors: parseJsonField<any[]>(r.colors, []),
         price: Number(r.price),
         originalPrice: Number(r.originalPrice),
         rating: Number(r.rating),
@@ -1062,10 +1083,10 @@ function mapTicketRow(r: Record<string, unknown>): Ticket {
     status: r.status as Ticket['status'],
     subject: String(r.subject),
     initialMessage: String(r.initial_message),
-    attachments: Array.isArray(r.attachments) ? (r.attachments as string[]) : [],
-    telemetry: (r.telemetry && typeof r.telemetry === 'object') ? (r.telemetry as Ticket['telemetry']) : {},
-    exchangeDetails: (r.exchange_details && typeof r.exchange_details === 'object') ? (r.exchange_details as Ticket['exchangeDetails']) : {},
-    paymentDetails: (r.payment_details && typeof r.payment_details === 'object') ? (r.payment_details as Ticket['paymentDetails']) : {},
+    attachments: parseJsonField<string[]>(r.attachments, []),
+    telemetry: parseJsonField<Ticket['telemetry']>(r.telemetry, {}),
+    exchangeDetails: parseJsonField<Ticket['exchangeDetails']>(r.exchange_details, {}),
+    paymentDetails: parseJsonField<Ticket['paymentDetails']>(r.payment_details, {}),
     shiprocketAwb: r.shiprocket_awb ? String(r.shiprocket_awb) : undefined,
     resolutionNotes: r.resolution_notes ? String(r.resolution_notes) : undefined,
     customerRating: r.customer_rating != null ? Number(r.customer_rating) : undefined,
@@ -1083,7 +1104,7 @@ function mapMessageRow(r: Record<string, unknown>): TicketMessage {
     senderName: String(r.sender_name),
     senderEmail: r.sender_email ? String(r.sender_email) : undefined,
     message: String(r.message),
-    attachments: Array.isArray(r.attachments) ? (r.attachments as string[]) : [],
+    attachments: parseJsonField<string[]>(r.attachments, []),
     isInternal: Boolean(r.is_internal),
     createdAt: r.created_at ? new Date(r.created_at as string).toISOString() : new Date().toISOString(),
   };
@@ -1490,8 +1511,8 @@ export async function getUserOrdersFromNeon(email: string): Promise<Array<{
       shiprocketOrderId: r.shiprocketOrderId ? String(r.shiprocketOrderId) : undefined,
       awbCode: r.awbCode ? String(r.awbCode) : undefined,
       status: String(r.status || 'CONFIRMED'),
-      items: Array.isArray(r.items) ? r.items : [],
-      shippingAddress: (r.shippingAddress && typeof r.shippingAddress === 'object') ? (r.shippingAddress as Record<string, unknown>) : {},
+      items: parseJsonField<unknown[]>(r.items, []),
+      shippingAddress: parseJsonField<Record<string, unknown>>(r.shippingAddress, {}),
       totalAmount: Number(r.totalAmount || 0),
       createdAt: r.createdAt ? new Date(r.createdAt as string).toISOString() : new Date().toISOString(),
     }));
