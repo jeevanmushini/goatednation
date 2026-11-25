@@ -143,8 +143,15 @@ export function sanitizePublishedCmsData(data: PublishedCmsData): PublishedCmsDa
  * Retrieves the published CMS data for Server-Side Rendering (SSR) and API routes.
  * Guarantees sub-3ms reads via Cache-Aside strategy (Memory -> Redis -> Neon DB).
  */
-export async function getPublishedCmsData(): Promise<{ data: PublishedCmsData; source: 'neon' | 'kv' | 'file' | 'memory' | 'default' }> {
-  // 1. Try Neon Postgres + Redis Cache Layer
+export async function getPublishedCmsData(): Promise<{ data: PublishedCmsData; source: 'aiven' | 'neon' | 'postgres' | 'kv' | 'file' | 'memory' | 'default' }> {
+  const dbUrl = process.env.AIVEN_DATABASE_URL || process.env.DATABASE_URL || '';
+  const dbSource: 'aiven' | 'neon' | 'postgres' = dbUrl.includes('aivencloud.com')
+    ? 'aiven'
+    : dbUrl.includes('neon.tech')
+    ? 'neon'
+    : 'postgres';
+
+  // 1. Try Neon/Aiven Postgres + Redis Cache Layer
   try {
     const cachedCms = await getCachedCmsData<PublishedCmsData>();
     const cachedProducts = await getCachedProducts();
@@ -172,13 +179,13 @@ export async function getPublishedCmsData(): Promise<{ data: PublishedCmsData; s
       cachedCms.products = Array.from(pMap.values());
       const sanitized = sanitizePublishedCmsData({ ...DEFAULT_STATE, ...cachedCms });
       globalForCms.__SERVER_PUBLISHED_CMS__ = sanitized;
-      return { data: sanitized, source: 'neon' };
+      return { data: sanitized, source: dbSource };
     }
   } catch (err) {
-    console.warn('[CMS Server] Cache / Neon fetch failed:', err);
+    console.warn('[CMS Server] Cache / DB fetch failed:', err);
   }
 
-  // 2. Fallback to direct Neon query if cache missed or empty
+  // 2. Fallback to direct DB query if cache missed or empty
   try {
     const neonData = await getCmsDataFromNeon<PublishedCmsData>();
     if (neonData && typeof neonData === 'object' && Object.keys(neonData).length > 0) {
@@ -202,11 +209,11 @@ export async function getPublishedCmsData(): Promise<{ data: PublishedCmsData; s
           neonData.products = Array.from(pMap.values());
         }
       } catch (err) {
-        console.warn('[CMS Server] Failed to query relational products from Neon:', err);
+        console.warn('[CMS Server] Failed to query relational products from DB:', err);
       }
       const sanitized = sanitizePublishedCmsData({ ...DEFAULT_STATE, ...neonData });
       globalForCms.__SERVER_PUBLISHED_CMS__ = sanitized;
-      return { data: sanitized, source: 'neon' };
+      return { data: sanitized, source: dbSource };
     }
   } catch (err) {
     console.warn('[CMS Server] Direct Neon Postgres fetch failed:', err);

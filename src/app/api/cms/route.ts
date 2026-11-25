@@ -60,10 +60,13 @@ export async function POST(req: NextRequest) {
       // Revalidation warning ignored in test/isolated environments
     }
 
+    const dbUrl = process.env.AIVEN_DATABASE_URL || process.env.DATABASE_URL || '';
+    const dbName = dbUrl.includes('aivencloud.com') ? 'aiven-postgres' : 'neon-postgres';
+
     return NextResponse.json({
       success: true,
       message: 'CMS data successfully published across devices!',
-      storageTarget: savedToNeon ? 'neon-postgres' : savedToKv ? 'vercel-kv' : savedToFile ? 'local-file' : 'server-memory',
+      storageTarget: savedToNeon ? dbName : savedToKv ? 'vercel-kv' : savedToFile ? 'local-file' : 'server-memory',
     });
   } catch (error) {
     console.error('[CMS API] Error publishing CMS data:', error);
