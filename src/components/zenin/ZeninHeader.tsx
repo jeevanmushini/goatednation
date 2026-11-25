@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, User, ShoppingBag, ChevronDown, Menu, X, Shield, LogOut, Truck } from 'lucide-react';
+import { Search, User, ShoppingBag, ChevronDown, Menu, X, Shield, LogOut, Truck, Settings, LifeBuoy } from 'lucide-react';
 import { useCartStore } from '../../stores/cartStore';
 import { useAuthStore } from '../../stores/authStore';
 import { useCmsStore } from '../../lib/cms/cmsStore';
@@ -291,6 +291,24 @@ export const ZeninHeader: React.FC = () => {
                       >
                         <Truck className="w-3.5 h-3.5" />
                         <span>Order Tracking</span>
+                      </Link>
+
+                      <Link
+                        href="/settings"
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className="flex items-center space-x-2.5 px-4 py-2 text-xs font-mono text-[#333333] hover:bg-[#F5F5F5] hover:text-black transition-colors"
+                      >
+                        <Settings className="w-3.5 h-3.5" />
+                        <span>Settings & Orders</span>
+                      </Link>
+
+                      <Link
+                        href="/support"
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className="flex items-center space-x-2.5 px-4 py-2 text-xs font-mono text-[#333333] hover:bg-[#F5F5F5] hover:text-black transition-colors"
+                      >
+                        <LifeBuoy className="w-3.5 h-3.5" />
+                        <span>Support Desk</span>
                       </Link>
                     </div>
 

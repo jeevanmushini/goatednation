@@ -89,6 +89,35 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
     }
   }, [pincode]);
 
+  // Capture abandoned checkout intent when customer enters email (COMMERCE_AUTOMATIONS_AND_REFUNDS_PLAN 4.3)
+  useEffect(() => {
+    if (!isOpen || !email || !email.includes('@') || items.length === 0) return;
+
+    const timer = setTimeout(() => {
+      fetch('/api/cart/abandoned', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          name: name || undefined,
+          phone: phone || undefined,
+          items: items.map((i) => ({
+            id: i.productId,
+            title: i.title,
+            price: i.price,
+            quantity: i.quantity,
+            size: i.size,
+            color: i.color,
+            image: i.image || '',
+          })),
+          totalAmount: getTotal(),
+        }),
+      }).catch(() => {});
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [isOpen, email, name, phone, items, getTotal]);
+
   if (!isOpen) return null;
 
   const handleDetailsSubmit = (e: React.FormEvent) => {

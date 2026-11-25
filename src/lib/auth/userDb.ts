@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { User, UserRecord, UserRole, AuthProvider } from '../../types/auth';
 import { generateSalt, hashPassword, verifyPassword } from './jwt';
-import { getUsersFromNeon, getSingleUserByEmailFromNeon, upsertUserInNeon } from '../db/neon';
+import { getUsersFromNeon, getSingleUserByEmailFromNeon, upsertUserInNeon, updateUserPassword, updateUserRoleInNeon } from '../db/neon';
 
 const USERS_FILE = path.join(process.cwd(), '.users_data.json');
 
@@ -256,4 +256,142 @@ export async function findOrCreateOAuthUser(params: {
   });
 
   return toPublicUser(newUser);
+}
+
+/**
+ * Resets a user's password with a fresh cryptographic salt and hash.
+ * Synchronizes both the local cached/file representation and Neon Postgres.
+ */
+export async function resetUserPassword(email: string, newPassword: string): Promise<boolean> {
+  const normalized = email.toLowerCase().trim();
+  const salt = generateSalt();
+  const passwordHash = hashPassword(newPassword, salt);
+
+  // Update memory / local cache
+  const localList = loadUsersFromLocal();
+  const found = localList.find((u) => u.email.toLowerCase().trim() === normalized);
+  if (found) {
+    found.salt = salt;
+    found.passwordHash = passwordHash;
+    saveLocalUsersBackup(localList);
+  }
+
+  // Update in Neon database
+  const success = await updateUserPassword(normalized, passwordHash, salt);
+  return success || !!found;
+}
+
+export interface AdminUserListItem extends User {
+  isPrimaryAdmin: boolean;
+}
+
+export interface AdminTeamMetrics {
+  totalUsers: number;
+  totalAdmins: number;
+  totalCustomers: number;
+  googleOauthUsers: number;
+}
+
+/**
+ * Updates a user's role in local cache and Neon Postgres.
+ */
+export async function updateUserRole(email: string, targetRole: UserRole): Promise<User | null> {
+  const normalized = email.toLowerCase().trim();
+
+  // Update memory / local cache
+  const localList = loadUsersFromLocal();
+  const found = localList.find((u) => u.email.toLowerCase().trim() === normalized);
+  if (found) {
+    found.role = targetRole;
+    saveLocalUsersBackup(localList);
+  }
+
+  // Update in Neon database
+  await updateUserRoleInNeon(normalized, targetRole);
+
+  const updatedRecord = await findUserByEmail(normalized);
+  return updatedRecord ? toPublicUser(updatedRecord) : (found ? toPublicUser(found) : null);
+}
+
+/**
+ * Retrieves all users formatted for the admin team console with aggregated metrics.
+ */
+export async function getAllUsersForAdmin(options?: {
+  search?: string;
+  role?: string;
+  limit?: number;
+  offset?: number;
+}): Promise<{
+  metrics: AdminTeamMetrics;
+  users: AdminUserListItem[];
+  total: number;
+}> {
+  // 1. Authoritative Neon cloud query first, fallback to local
+  let records: UserRecord[] = [];
+  try {
+    const neonUsers = await getUsersFromNeon<UserRecord>();
+    if (neonUsers && neonUsers.length > 0) {
+      records = neonUsers;
+      cachedUsers = neonUsers;
+    }
+  } catch (err) {
+    console.warn('[UserDb] Direct Neon fetch in getAllUsersForAdmin bypassed:', err);
+  }
+
+  if (records.length === 0) {
+    records = loadUsersFromLocal();
+  }
+
+  // 2. Compute metrics across all registered accounts
+  const totalUsers = records.length;
+  const totalAdmins = records.filter((u) => u.role === 'ADMIN').length;
+  const totalCustomers = records.filter((u) => u.role === 'CUSTOMER').length;
+  const googleOauthUsers = records.filter((u) => u.provider === 'google').length;
+
+  const metrics: AdminTeamMetrics = {
+    totalUsers,
+    totalAdmins,
+    totalCustomers,
+    googleOauthUsers,
+  };
+
+  // 3. Filter by search & role
+  let filtered = [...records];
+  if (options?.search) {
+    const query = options.search.toLowerCase().trim();
+    filtered = filtered.filter(
+      (u) =>
+        (u.name && u.name.toLowerCase().includes(query)) ||
+        (u.email && u.email.toLowerCase().includes(query))
+    );
+  }
+
+  if (options?.role && options.role !== 'ALL') {
+    filtered = filtered.filter((u) => u.role === options.role);
+  }
+
+  const total = filtered.length;
+  const offset = options?.offset || 0;
+  const limit = options?.limit || 50;
+  const paged = filtered.slice(offset, offset + limit);
+
+  const mappedUsers: AdminUserListItem[] = paged.map((r) => {
+    const isPrimaryAdmin = r.email.toLowerCase().trim() === 'admin@goatednation.com';
+    return {
+      id: r.id,
+      name: r.name,
+      email: r.email,
+      role: r.role,
+      avatar: r.avatar || '',
+      provider: r.provider,
+      createdAt: r.createdAt,
+      isPrimaryAdmin,
+    };
+  });
+
+  return {
+    metrics,
+    users: mappedUsers,
+    total,
+  };
 }

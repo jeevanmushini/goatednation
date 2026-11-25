@@ -104,6 +104,10 @@ export const ZeninFooter: React.FC = () => {
             <Link href="/about" className="hover:text-white transition-colors">
               Contact information
             </Link>
+            <span>&bull;</span>
+            <Link href="/support" className="hover:text-white transition-colors text-white font-bold">
+              Support Desk
+            </Link>
           </div>
         </div>
       </div>

@@ -25,15 +25,14 @@ export async function GET(req: NextRequest) {
   }
 
   // Parse state data (cryptographically validated structure)
-  let role: UserRole = 'CUSTOMER';
+  // All public social logins default strictly to CUSTOMER role for new accounts.
+  // Existing users retain their database-assigned role via findOrCreateOAuthUser.
+  const role: UserRole = 'CUSTOMER';
   let redirectTo = '/';
 
   if (state) {
     try {
       const parsed = JSON.parse(Buffer.from(state, 'base64url').toString('utf8'));
-      if (parsed.role === 'ADMIN' || parsed.role === 'CUSTOMER') {
-        role = parsed.role;
-      }
       if (parsed.redirect && typeof parsed.redirect === 'string') {
         // Enforce safe relative redirect to prevent open-redirect vulnerabilities
         if (parsed.redirect.startsWith('/') && !parsed.redirect.startsWith('//')) {

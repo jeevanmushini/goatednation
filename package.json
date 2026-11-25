@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build:css": "node scripts/build-css.js",
+    "create-admin": "tsx scripts/create-admin.ts",
     "predev": "node scripts/build-css.js",
     "prebuild": "node scripts/build-css.js",
     "dev": "next dev",
@@ -26,6 +27,7 @@
     "postcss": "^8.5.32",
     "react": "19.3.0",
     "react-dom": "19.3.0",
+    "resend": "^6.39.0",
     "tailwind-merge": "^3.0.1",
     "zustand": "^5.0.3"
   },

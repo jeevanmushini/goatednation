@@ -7,8 +7,8 @@ export async function GET(
 ) {
   const { provider } = await context.params;
   const searchParams = req.nextUrl.searchParams;
-  const targetRole = (searchParams.get('role') as UserRole) || 'CUSTOMER';
-  const redirectTo = searchParams.get('redirect') || (targetRole === 'ADMIN' ? '/admin' : '/');
+  const redirectTo = searchParams.get('redirect') || '/';
+  const targetRole: UserRole = 'CUSTOMER'; // Strict default: all OAuth sign-ins default to CUSTOMER
   const siteUrl =
     process.env.SITE_URL ||
     process.env.NEXT_PUBLIC_SITE_URL ||
