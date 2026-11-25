@@ -80,11 +80,11 @@ export async function sendEmail({
   const recipient = Array.isArray(to) ? to : [to];
   const recipientStr = Array.isArray(to) ? to.join(', ') : to;
 
-  // Default to verified sender or Resend sandbox address (onboarding@resend.dev)
+  // Default to verified sender
   const from =
-    process.env.RESEND_FROM ||
+    (process.env.RESEND_FROM ||
     process.env.EMAIL_FROM ||
-    'GOATED NATION <onboarding@resend.dev>';
+    'GOATED NATION <orders@goatednation.com>').trim().replace(/^["']|["']$/g, '');
 
   const resend = getResendClient();
   if (!resend) {

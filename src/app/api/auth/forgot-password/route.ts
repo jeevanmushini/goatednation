@@ -55,10 +55,12 @@ export async function POST(req: NextRequest) {
       console.warn('[Forgot Password] Failed to store OTP in Neon, proceeding with in-memory or fallback flow');
     }
 
-    // Dispatch Tokyo Streetwear OTP email asynchronously (non-blocking)
-    sendOtpEmail(normalizedEmail, otp, user.name, 10).catch((err) => {
+    // Dispatch Tokyo Streetwear OTP email
+    try {
+      await sendOtpEmail(normalizedEmail, otp, user.name, 10);
+    } catch (err) {
       console.error('[Forgot Password] Email dispatch error:', err);
-    });
+    }
 
     return NextResponse.json({
       success: true,

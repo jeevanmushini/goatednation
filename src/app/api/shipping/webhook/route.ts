@@ -90,34 +90,35 @@ export async function POST(req: NextRequest) {
         (event.courier_name as string) || (event.courier as string) || 'Shiprocket Express';
 
       if (directEmail) {
-        sendShippingUpdateEmail({
-          to: directEmail,
-          orderId: orderId || awbCode,
-          customerName: (event.customer_name as string) || 'Collector',
-          awbCode,
-          courierName,
-          status: currentStatus,
-        }).catch((err) => {
+        try {
+          await sendShippingUpdateEmail({
+            to: directEmail,
+            orderId: orderId || awbCode,
+            customerName: (event.customer_name as string) || 'Collector',
+            awbCode,
+            courierName,
+            status: currentStatus,
+          });
+        } catch (err) {
           console.warn('[Shiprocket Webhook] Shipping email dispatch notice:', err);
-        });
+        }
       } else if (orderId || awbCode) {
-        getOrderByIdFromNeon(orderId || awbCode)
-          .then((order) => {
-            if (order && order.userEmail) {
-              sendShippingUpdateEmail({
-                to: order.userEmail,
-                orderId: order.id,
-                customerName:
-                  (order.shippingAddress as Record<string, string>)?.customerName || 'Collector',
-                awbCode: awbCode || order.awbCode,
-                courierName,
-                status: currentStatus,
-              }).catch((err) => {
-                console.warn('[Shiprocket Webhook] Shipping email dispatch notice:', err);
-              });
-            }
-          })
-          .catch(() => {});
+        try {
+          const order = await getOrderByIdFromNeon(orderId || awbCode);
+          if (order && order.userEmail) {
+            await sendShippingUpdateEmail({
+              to: order.userEmail,
+              orderId: order.id,
+              customerName:
+                (order.shippingAddress as Record<string, string>)?.customerName || 'Collector',
+              awbCode: awbCode || order.awbCode,
+              courierName,
+              status: currentStatus,
+            });
+          }
+        } catch (err) {
+          console.warn('[Shiprocket Webhook] Shipping email lookup/dispatch notice:', err);
+        }
       }
     }
 

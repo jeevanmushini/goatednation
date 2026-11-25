@@ -78,15 +78,17 @@ export async function POST(
 
     // Only dispatch email to customer if it is a public message (NOT internal staff note)
     if (!isInternal) {
-      const refreshedTicket = (await getTicketByIdFromNeon(ticket.id)) || ticket;
-      sendTicketUpdateEmail({
-        ticket: refreshedTicket,
-        messageText: message.trim(),
-        senderName: adminUser.name || 'GOATED SUPPORT // ADMIN',
-        newStatus: statusToUpdate,
-      }).catch((err) => {
+      try {
+        const refreshedTicket = (await getTicketByIdFromNeon(ticket.id)) || ticket;
+        await sendTicketUpdateEmail({
+          ticket: refreshedTicket,
+          messageText: message.trim(),
+          senderName: adminUser.name || 'GOATED SUPPORT // ADMIN',
+          newStatus: statusToUpdate,
+        });
+      } catch (err) {
         console.warn('[Admin Reply API] Email dispatch notice:', err);
-      });
+      }
     }
 
     return NextResponse.json({

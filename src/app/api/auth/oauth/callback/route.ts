@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { findOrCreateOAuthUser } from '../../../../../lib/auth/userDb';
+import { findOrCreateOAuthUser, findUserByEmail } from '../../../../../lib/auth/userDb';
 import { signJwt } from '../../../../../lib/auth/jwt';
 import { UserRole } from '../../../../../types/auth';
+import { sendWelcomeEmail } from '../../../../../lib/email/mailer';
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
@@ -90,6 +91,7 @@ export async function GET(req: NextRequest) {
     }
 
     // 3. Find or create user in user database
+    const existingUser = await findUserByEmail(email);
     const user = await findOrCreateOAuthUser({
       email,
       name,
@@ -97,6 +99,14 @@ export async function GET(req: NextRequest) {
       provider: 'google',
       defaultRole: role,
     });
+
+    if (!existingUser) {
+      try {
+        await sendWelcomeEmail(user.email, user.name);
+      } catch (err) {
+        console.error('[Google OAuth] Welcome email error:', err);
+      }
+    }
 
     // 4. Generate signed JWT token
     const token = signJwt({

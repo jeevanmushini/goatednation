@@ -78,10 +78,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Asynchronously dispatch Ticket Created notification email (non-blocking)
-    sendTicketCreatedEmail(newTicket).catch((err) => {
+    // Dispatch Ticket Created notification email
+    try {
+      await sendTicketCreatedEmail(newTicket);
+    } catch (err) {
       console.warn('[Tickets API] Email dispatch notice:', err);
-    });
+    }
 
     const accessToken = generateTicketAccessToken(newTicket.id, newTicket.customerEmail);
 

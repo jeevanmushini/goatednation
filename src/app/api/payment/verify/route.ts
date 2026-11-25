@@ -29,33 +29,31 @@ export async function POST(req: NextRequest) {
         console.warn('[Payment Verify] Failed to update order in Neon:', err);
       });
 
-      // Dispatch Order Confirmation Email if customer email is on record (non-blocking)
-      getOrderByIdFromNeon(body.razorpay_order_id)
-        .then((order) => {
-          if (order && order.userEmail) {
-            // Mark any abandoned checkouts for this customer as recovered
-            markCheckoutRecovered(order.userEmail).catch(() => {});
+      // Dispatch Order Confirmation Email
+      try {
+        const order = await getOrderByIdFromNeon(body.razorpay_order_id);
+        if (order && order.userEmail) {
+          markCheckoutRecovered(order.userEmail).catch(() => {});
 
-            sendOrderConfirmationEmail({
-              to: order.userEmail,
-              orderId: order.id,
-              customerName: (order.shippingAddress as Record<string, string>)?.customerName || 'Collector',
-              items: ((order.items as Array<Record<string, unknown>>) || []).map((i) => ({
-                title: String(i.title || i.name || 'Syndicate Garment'),
-                price: Number(i.price || i.selling_price || 0),
-                quantity: Number(i.quantity || i.units || 1),
-                size: (i.size as string) || undefined,
-                color: (i.color as string) || undefined,
-              })),
-              subtotal: order.totalAmount || 0,
-              totalAmount: order.totalAmount || 0,
-              shippingAddress: order.shippingAddress as Record<string, string>,
-            }).catch((err) => {
-              console.warn('[Payment Verify] Confirmation email notice:', err);
-            });
-          }
-        })
-        .catch(() => {});
+          await sendOrderConfirmationEmail({
+            to: order.userEmail,
+            orderId: order.id,
+            customerName: (order.shippingAddress as Record<string, string>)?.customerName || 'Collector',
+            items: ((order.items as Array<Record<string, unknown>>) || []).map((i) => ({
+              title: String(i.title || i.name || 'Syndicate Garment'),
+              price: Number(i.price || i.selling_price || 0),
+              quantity: Number(i.quantity || i.units || 1),
+              size: (i.size as string) || undefined,
+              color: (i.color as string) || undefined,
+            })),
+            subtotal: order.totalAmount || 0,
+            totalAmount: order.totalAmount || 0,
+            shippingAddress: order.shippingAddress as Record<string, string>,
+          });
+        }
+      } catch (err) {
+        console.warn('[Payment Verify] Confirmation email notice:', err);
+      }
 
       return NextResponse.json({
         success: true,

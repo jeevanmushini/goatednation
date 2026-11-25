@@ -58,10 +58,12 @@ export async function POST(req: NextRequest) {
       provider: 'credentials',
     });
 
-    // Asynchronously dispatch Syndicate Welcome Email with 10% discount coupon (non-blocking)
-    sendWelcomeEmail(user.email, user.name).catch((err) => {
+    // Dispatch Syndicate Welcome Email with 10% discount coupon
+    try {
+      await sendWelcomeEmail(user.email, user.name);
+    } catch (err) {
       console.error('[Auth Register] Welcome email dispatch error:', err);
-    });
+    }
 
     const token = signJwt({
       id: user.id,

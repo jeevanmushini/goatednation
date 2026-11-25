@@ -55,16 +55,18 @@ export async function POST(req: NextRequest) {
     // Hash and persist new password credentials
     await resetUserPassword(normalizedEmail, newPassword);
 
-    // Asynchronously dispatch Security Alert email (non-blocking)
+    // Dispatch Security Alert email
     const userAgent = req.headers.get('user-agent') || 'Web Browser';
-    sendPasswordChangedEmail(
-      normalizedEmail,
-      user.name,
-      new Date().toUTCString(),
-      userAgent
-    ).catch((err) => {
+    try {
+      await sendPasswordChangedEmail(
+        normalizedEmail,
+        user.name,
+        new Date().toUTCString(),
+        userAgent
+      );
+    } catch (err) {
       console.error('[Reset Password] Security alert email dispatch error:', err);
-    });
+    }
 
     return NextResponse.json({
       success: true,
