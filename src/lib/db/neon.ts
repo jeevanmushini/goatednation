@@ -1430,3 +1430,28 @@ export async function getUserOrdersFromNeon(email: string): Promise<Array<{
     return [];
   }
 }
+
+/**
+ * Updates a user's role in Neon Postgres.
+ */
+export async function updateUserRoleInNeon(
+  email: string,
+  targetRole: UserRole
+): Promise<boolean> {
+  const sql = getDb();
+  if (!sql) return false;
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+    const normalizedEmail = email.toLowerCase().trim();
+    await sql`
+      UPDATE app_users
+      SET role = ${targetRole}
+      WHERE LOWER(email) = ${normalizedEmail};
+    `;
+    return true;
+  } catch (error) {
+    console.error('[Neon Postgres] Error updating user role:', error);
+    return false;
+  }
+}
