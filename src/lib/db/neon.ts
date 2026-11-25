@@ -6,7 +6,7 @@ import { Ticket, TicketMessage, TicketMetrics } from '../../types/ticket';
 
 // Authoritative Aiven Managed PostgreSQL SQL Client
 let cachedSql: any = null;
-let schemaInitialized = false;
+let schemaInitialized = true;
 
 /**
  * Returns a configured SQL client for Aiven Managed PostgreSQL.
@@ -27,9 +27,10 @@ export function getDb(): any {
   if (!cachedSql) {
     cachedSql = postgres(dbUrl, {
       ssl: 'require',
-      max: 10,
-      idle_timeout: 20,
-      connect_timeout: 10,
+      max: 3,
+      idle_timeout: 10,
+      connect_timeout: 5,
+      prepare: false,
     });
   }
   return cachedSql;

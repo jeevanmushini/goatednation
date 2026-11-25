@@ -151,6 +151,11 @@ export async function getPublishedCmsData(): Promise<{ data: PublishedCmsData; s
     ? 'neon'
     : 'postgres';
 
+  // 0. Instant In-Memory Cache (< 0.1ms)
+  if (globalForCms.__SERVER_PUBLISHED_CMS__) {
+    return { data: globalForCms.__SERVER_PUBLISHED_CMS__, source: 'memory' };
+  }
+
   // 1. Try Neon/Aiven Postgres + Redis Cache Layer
   try {
     const cachedCms = await getCachedCmsData<PublishedCmsData>();

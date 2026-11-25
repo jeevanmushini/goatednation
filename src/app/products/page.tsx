@@ -1,5 +1,5 @@
 import CollectionsPage from '../collections/page';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export default CollectionsPage;

@@ -8,7 +8,7 @@ import { ZeninEditorialBanner } from '../components/zenin/ZeninEditorialBanner';
 import { ZeninFooter } from '../components/zenin/ZeninFooter';
 import { CartDrawer } from '../components/layout/CartDrawer';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export default async function Home() {
   const { data: cmsData } = await getPublishedCmsData();

@@ -6,7 +6,14 @@ import { verifyJwt } from '../../../lib/auth/jwt';
 export async function GET() {
   try {
     const { data, source } = await getPublishedCmsData();
-    return NextResponse.json({ success: true, data, source });
+    return NextResponse.json(
+      { success: true, data, source },
+      {
+        headers: {
+          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+        },
+      }
+    );
   } catch (error) {
     console.error('[CMS API] Error loading CMS data:', error);
     return NextResponse.json(
