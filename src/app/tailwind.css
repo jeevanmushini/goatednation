@@ -70,6 +70,7 @@
     --color-white: #fff;
     --spacing: 0.25rem;
     --container-xs: 20rem;
+    --container-sm: 24rem;
     --container-md: 28rem;
     --container-lg: 32rem;
     --container-xl: 36rem;
@@ -517,6 +518,9 @@
   .mt-20 {
     margin-top: calc(var(--spacing) * 20);
   }
+  .mt-auto {
+    margin-top: auto;
+  }
   .mr-1 {
     margin-right: var(--spacing);
   }
@@ -886,6 +890,9 @@
   .max-w-none {
     max-width: none;
   }
+  .max-w-sm {
+    max-width: var(--container-sm);
+  }
   .max-w-xl {
     max-width: var(--container-xl);
   }
@@ -1178,6 +1185,9 @@
   .gap-y-1 {
     row-gap: var(--spacing);
   }
+  .gap-y-1\.5 {
+    row-gap: calc(var(--spacing) * 1.5);
+  }
   .gap-y-8 {
     row-gap: calc(var(--spacing) * 8);
   }
@@ -1250,6 +1260,14 @@
   .rounded-xl {
     border-radius: var(--radius-xl);
   }
+  .rounded-l-md {
+    border-top-left-radius: var(--radius-md);
+    border-bottom-left-radius: var(--radius-md);
+  }
+  .rounded-r-md {
+    border-top-right-radius: var(--radius-md);
+    border-bottom-right-radius: var(--radius-md);
+  }
   .rounded-b-xl {
     border-bottom-right-radius: var(--radius-xl);
     border-bottom-left-radius: var(--radius-xl);
@@ -1293,6 +1311,9 @@
   .border-\[\#000000\] {
     border-color: #000000;
   }
+  .border-\[\#1A1A1A\] {
+    border-color: #1A1A1A;
+  }
   .border-\[\#1C1C1C\] {
     border-color: #1C1C1C;
   }
@@ -1313,6 +1334,9 @@
   }
   .border-\[\#16A34A\]\/40 {
     border-color: color-mix(in oklab, #16A34A 40%, transparent);
+  }
+  .border-\[\#22C55E\]\/20 {
+    border-color: color-mix(in oklab, #22C55E 20%, transparent);
   }
   .border-\[\#22C55E\]\/30 {
     border-color: color-mix(in oklab, #22C55E 30%, transparent);
@@ -1382,6 +1406,9 @@
   }
   .border-\[\#FF4D00\] {
     border-color: #FF4D00;
+  }
+  .border-\[\#FF4D00\]\/20 {
+    border-color: color-mix(in oklab, #FF4D00 20%, transparent);
   }
   .border-amber-200 {
     border-color: var(--color-amber-200);
@@ -1820,9 +1847,6 @@
   .fill-current {
     fill: currentcolor;
   }
-  .stroke-\[1\.5\] {
-    stroke-width: 1.5;
-  }
   .stroke-\[2\] {
     stroke-width: 2;
   }
@@ -1970,9 +1994,6 @@
   .pt-6 {
     padding-top: calc(var(--spacing) * 6);
   }
-  .pt-8 {
-    padding-top: calc(var(--spacing) * 8);
-  }
   .pt-12 {
     padding-top: calc(var(--spacing) * 12);
   }
@@ -2017,9 +2038,6 @@
   }
   .pb-8 {
     padding-bottom: calc(var(--spacing) * 8);
-  }
-  .pb-14 {
-    padding-bottom: calc(var(--spacing) * 14);
   }
   .pb-16 {
     padding-bottom: calc(var(--spacing) * 16);
@@ -2272,9 +2290,6 @@
   .text-\[\#E0E0E0\] {
     color: #E0E0E0;
   }
-  .text-\[\#E5E5E5\] {
-    color: #E5E5E5;
-  }
   .text-\[\#EA580C\] {
     color: #EA580C;
   }
@@ -2325,6 +2340,9 @@
   }
   .text-blue-800 {
     color: var(--color-blue-800);
+  }
+  .text-emerald-500 {
+    color: var(--color-emerald-500);
   }
   .text-emerald-600 {
     color: var(--color-emerald-600);
@@ -2402,11 +2420,11 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+  .placeholder-\[\#555555\]::placeholder {
+    color: #555555;
+  }
   .placeholder-\[\#666666\]::placeholder {
     color: #666666;
-  }
-  .placeholder-\[\#777777\]::placeholder {
-    color: #777777;
   }
   .placeholder-\[\#888888\]::placeholder {
     color: #888888;
@@ -2881,8 +2899,8 @@
   .focus\:border-black:focus {
     border-color: var(--color-black);
   }
-  .focus\:border-white:focus {
-    border-color: var(--color-white);
+  .focus\:bg-black:focus {
+    background-color: var(--color-black);
   }
   .focus\:bg-white:focus {
     background-color: var(--color-white);
@@ -3111,6 +3129,9 @@
     .sm\:px-8 {
       padding-inline: calc(var(--spacing) * 8);
     }
+    .sm\:py-10 {
+      padding-block: calc(var(--spacing) * 10);
+    }
     .sm\:py-12 {
       padding-block: calc(var(--spacing) * 12);
     }
@@ -3128,9 +3149,6 @@
     }
     .sm\:pb-8 {
       padding-bottom: calc(var(--spacing) * 8);
-    }
-    .sm\:text-left {
-      text-align: left;
     }
     .sm\:text-right {
       text-align: right;
@@ -3195,6 +3213,9 @@
     .md\:col-span-4 {
       grid-column: span 4 / span 4;
     }
+    .md\:col-span-5 {
+      grid-column: span 5 / span 5;
+    }
     .md\:col-span-8 {
       grid-column: span 8 / span 8;
     }
@@ -3242,6 +3263,12 @@
     }
     .md\:items-start {
       align-items: flex-start;
+    }
+    .md\:justify-end {
+      justify-content: flex-end;
+    }
+    .md\:gap-8 {
+      gap: calc(var(--spacing) * 8);
     }
     :where(.md\:space-x-0 > :not(:last-child)) {
       --tw-space-x-reverse: 0;
