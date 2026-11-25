@@ -21,6 +21,7 @@ function RegisterForm() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [agreedToPolicies, setAgreedToPolicies] = useState(false);
 
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -47,6 +48,12 @@ function RegisterForm() {
     setError(null);
     setSuccess(null);
 
+    // 1. Mandatory Statutory DPDP Consent Enforcement
+    if (!agreedToPolicies) {
+      setError('You must accept the Terms of Service, Privacy Policy, and Refund Policy to create an account.');
+      return;
+    }
+
     if (password !== confirmPassword) {
       setError('Passwords do not match. Please verify.');
       return;
@@ -62,6 +69,7 @@ function RegisterForm() {
       name,
       email,
       password,
+      agreedToTerms: true,
     });
     setIsSubmitting(false);
 
@@ -134,6 +142,11 @@ function RegisterForm() {
                 </svg>
                 <span className="font-semibold text-[#222222]">Sign up with Google</span>
               </a>
+              <p className="text-[10px] font-mono text-[#888888] text-center mt-2 leading-tight">
+                By continuing with Google, you agree to GOATED NATION&apos;s{' '}
+                <Link href="/policies/terms-of-service" target="_blank" className="underline hover:text-black">Terms</Link> &{' '}
+                <Link href="/policies/privacy-policy" target="_blank" className="underline hover:text-black">Privacy Policy</Link>.
+              </p>
             </div>
 
             {/* Divider */}
@@ -237,10 +250,55 @@ function RegisterForm() {
                 </div>
               </div>
 
+              {/* Mandatory Statutory Policies Acceptance Checkbox (DPDP Act 2023 Compliant) */}
+              <div className="pt-1 pb-1">
+                <label className="flex items-start space-x-2.5 cursor-pointer group select-none">
+                  <div className="relative flex items-center justify-center mt-0.5">
+                    <input
+                      type="checkbox"
+                      required
+                      checked={agreedToPolicies}
+                      onChange={(e) => setAgreedToPolicies(e.target.checked)}
+                      className="w-4 h-4 rounded border-[#DCDCDC] text-black focus:ring-0 focus:ring-offset-0 accent-black cursor-pointer transition-all"
+                    />
+                  </div>
+                  <span className="text-[11px] font-mono text-[#555555] group-hover:text-black transition-colors leading-relaxed">
+                    I have read and agree to GOATED NATION&apos;s{' '}
+                    <Link
+                      href="/policies/terms-of-service"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-bold text-black underline underline-offset-2 hover:text-[#FF4D00] transition-colors"
+                    >
+                      Terms of Service
+                    </Link>
+                    ,{' '}
+                    <Link
+                      href="/policies/privacy-policy"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-bold text-black underline underline-offset-2 hover:text-[#FF4D00] transition-colors"
+                    >
+                      Privacy Policy
+                    </Link>
+                    , and{' '}
+                    <Link
+                      href="/policies/refund-and-exchange"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-bold text-black underline underline-offset-2 hover:text-[#FF4D00] transition-colors"
+                    >
+                      Refund Policy
+                    </Link>
+                    .
+                  </span>
+                </label>
+              </div>
+
               <button
                 type="submit"
-                disabled={isSubmitting}
-                className="w-full mt-3 py-3 px-4 rounded-lg bg-black hover:bg-[#222222] text-white text-xs font-mono uppercase tracking-widest font-bold flex items-center justify-center space-x-2 transition-all duration-200 hover:shadow-md disabled:opacity-50"
+                disabled={isSubmitting || !agreedToPolicies}
+                className="w-full mt-2 py-3 px-4 rounded-lg bg-black hover:bg-[#222222] text-white text-xs font-mono uppercase tracking-widest font-bold flex items-center justify-center space-x-2 transition-all duration-200 hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 <span>{isSubmitting ? 'CREATING ACCOUNT...' : 'REGISTER / 新規登録'}</span>
                 <ArrowRight className="w-4 h-4" />

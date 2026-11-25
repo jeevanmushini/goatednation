@@ -20,6 +20,7 @@ interface AuthState {
     password: string;
     role?: UserRole;
     adminKey?: string;
+    agreedToTerms?: boolean;
   }) => Promise<{ success: boolean; error?: string; user?: User }>;
   logout: () => Promise<void>;
   setUser: (user: User | null, token?: string | null) => void;

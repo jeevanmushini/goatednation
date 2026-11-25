@@ -47,6 +47,7 @@ async function runTestSuite() {
       password: 'ExploitPassword123!',
       role: 'ADMIN',
       adminKey: 'GOATED_ADMIN_2026',
+      agreedToTerms: true,
     }),
   });
 

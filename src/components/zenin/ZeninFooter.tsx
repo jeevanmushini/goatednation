@@ -12,100 +12,125 @@ export const ZeninFooter: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
+    if (!email.trim()) return;
     setSubscribed(true);
     setEmail('');
-    setTimeout(() => setSubscribed(false), 4000);
+    setTimeout(() => setSubscribed(false), 3000);
   };
 
   return (
-    <footer className="bg-[#0E0E0E] text-white border-t border-[#1C1C1C]">
-      {/* Newsletter & Socials Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 pb-14 border-b border-[#1C1C1C]">
-          {/* Left: Newsletter */}
-          <div className="max-w-md w-full">
-            <h3 className="text-sm sm:text-base font-mono uppercase tracking-widest text-[#E5E5E5] mb-4">
-              Subscribe to our emails
-            </h3>
+    <footer className="mt-auto w-full bg-[#080808] text-white border-t border-[#181818]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 sm:py-4">
+        {/* Tier 1: Brand & Compact Newsletter & Socials */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pb-2.5 border-b border-[#141414]">
+          {/* Brand & Kanji */}
+          <div className="flex items-center space-x-2.5">
+            <span className="text-[11px] font-mono font-bold tracking-[0.2em] uppercase text-white">
+              {settings?.brandName || 'GOATED NATION'}
+            </span>
+            <span className="text-[9px] font-mono text-[#FF4D00] bg-[#FF4D00]/10 border border-[#FF4D00]/20 px-1.5 py-0.2 rounded uppercase">
+              東京 // BLR
+            </span>
+          </div>
 
+          {/* Compact Newsletter */}
+          <div className="w-full sm:w-auto">
             {subscribed ? (
-              <div className="flex items-center space-x-2 text-xs font-mono text-[#22C55E]">
-                <Check className="w-4 h-4" />
-                <span>WELCOME TO THE INNER SYNDICATE • 10% CODE APPLIED</span>
+              <div className="flex items-center justify-center space-x-1.5 text-[10px] font-mono text-[#22C55E] bg-[#22C55E]/10 border border-[#22C55E]/20 px-2.5 py-1 rounded">
+                <Check className="w-3 h-3 shrink-0" />
+                <span>SUBSCRIBED • 10% VOUCHER DISPATCHED</span>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="relative flex items-center">
+              <form onSubmit={handleSubmit} className="flex items-center justify-center w-full">
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Email"
-                  className="w-full bg-transparent border border-[#2A2A2A] focus:border-white rounded-none px-4 py-3 text-xs text-white placeholder-[#777777] font-mono outline-none transition-colors"
+                  placeholder="Enter email for private drops..."
+                  className="bg-[#121212] border border-[#222222] focus:border-[#FF4D00] focus:bg-black rounded-l px-2.5 py-1 text-[11px] text-white placeholder-[#555555] font-mono outline-none transition-colors w-full sm:w-56 h-7"
                 />
                 <button
                   type="submit"
-                  className="absolute right-3 p-1.5 text-[#888888] hover:text-white transition-colors"
-                  aria-label="Submit Email"
+                  className="bg-white hover:bg-[#E5E5E5] text-black px-2.5 h-7 rounded-r text-[10px] font-mono uppercase font-bold flex items-center space-x-1 transition-colors shrink-0"
+                  title="Subscribe"
                 >
-                  <ArrowRight className="w-4 h-4" />
+                  <span>JOIN</span>
+                  <ArrowRight className="w-3 h-3" />
                 </button>
               </form>
             )}
           </div>
 
-          {/* Right: Social Media Icons */}
-          <div className="flex items-center space-x-4">
+          {/* Social Links */}
+          <div className="flex items-center space-x-3">
             <a
               href="https://facebook.com"
               target="_blank"
               rel="noreferrer"
-              className="p-2 text-[#888888] hover:text-white transition-colors"
+              className="text-[#777777] hover:text-white transition-colors p-1"
               aria-label="Facebook"
             >
-              <Facebook className="w-5 h-5 stroke-[1.5]" />
+              <Facebook className="w-3.5 h-3.5" />
             </a>
             <a
               href={settings?.instagramUrl || 'https://instagram.com/goatednation'}
               target="_blank"
               rel="noreferrer"
-              className="p-2 text-[#888888] hover:text-white transition-colors"
+              className="text-[#777777] hover:text-white transition-colors p-1"
               aria-label="Instagram"
             >
-              <Instagram className="w-5 h-5 stroke-[1.5]" />
+              <Instagram className="w-3.5 h-3.5" />
             </a>
           </div>
         </div>
 
-        {/* Bottom Legal & Copyright Bar (Exact match to Screenshot 5) */}
-        <div className="pt-8 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] font-mono text-[#666666] tracking-wider">
-          <p>
-            &copy; {new Date().getFullYear()}, {settings?.brandName || 'GOATED NATION'}. ALL RIGHTS RESERVED.
-          </p>
+        {/* Tier 2: Micro Copyright & Policy Links */}
+        <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-2 text-[10px] font-mono text-[#666666] tracking-wider">
+          <div>
+            &copy; {new Date().getFullYear()} {settings?.brandName || 'GOATED NATION'}. ALL RIGHTS RESERVED.
+          </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
-            <Link href="/about" className="hover:text-white transition-colors">
+          <div className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 text-[10px]">
+            <Link
+              href="/policies/refund-and-exchange"
+              className="text-[#888888] hover:text-white transition-colors"
+            >
               Refund policy
             </Link>
-            <span>&bull;</span>
-            <Link href="/about" className="hover:text-white transition-colors">
+            <span className="text-[#333333]">&bull;</span>
+            <Link
+              href="/policies/privacy-policy"
+              className="text-[#888888] hover:text-white transition-colors"
+            >
               Privacy policy
             </Link>
-            <span>&bull;</span>
-            <Link href="/about" className="hover:text-white transition-colors">
+            <span className="text-[#333333]">&bull;</span>
+            <Link
+              href="/policies/terms-of-service"
+              className="text-[#888888] hover:text-white transition-colors"
+            >
               Terms of service
             </Link>
-            <span>&bull;</span>
-            <Link href="/about" className="hover:text-white transition-colors">
+            <span className="text-[#333333]">&bull;</span>
+            <Link
+              href="/policies/shipping-and-delivery"
+              className="text-[#888888] hover:text-white transition-colors"
+            >
               Shipping policy
             </Link>
-            <span>&bull;</span>
-            <Link href="/about" className="hover:text-white transition-colors">
-              Contact information
+            <span className="text-[#333333]">&bull;</span>
+            <Link
+              href="/policies/grievance-redressal"
+              className="text-[#888888] hover:text-white transition-colors"
+            >
+              Grievance & Legal
             </Link>
-            <span>&bull;</span>
-            <Link href="/support" className="hover:text-white transition-colors text-white font-bold">
+            <span className="text-[#333333]">&bull;</span>
+            <Link
+              href="/support"
+              className="text-white font-bold hover:text-[#FF4D00] transition-colors"
+            >
               Support Desk
             </Link>
           </div>
@@ -114,4 +139,3 @@ export const ZeninFooter: React.FC = () => {
     </footer>
   );
 };
-
