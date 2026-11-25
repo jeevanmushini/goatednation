@@ -19,7 +19,6 @@
     --color-orange-50: oklch(98% 0.016 73.684);
     --color-orange-100: oklch(95.4% 0.038 75.164);
     --color-orange-200: oklch(90.1% 0.076 70.697);
-    --color-orange-300: oklch(83.7% 0.128 66.29);
     --color-orange-700: oklch(55.3% 0.195 38.402);
     --color-orange-800: oklch(47% 0.157 37.304);
     --color-amber-50: oklch(98.7% 0.022 95.277);
@@ -1381,9 +1380,6 @@
       border-color: color-mix(in oklab, var(--color-orange-200) 60%, transparent);
     }
   }
-  .border-orange-300 {
-    border-color: var(--color-orange-300);
-  }
   .border-red-200 {
     border-color: var(--color-red-200);
   }
@@ -2607,9 +2603,6 @@
     }
     .hover\:border-\[\#D5D5D5\]:hover {
       border-color: #D5D5D5;
-    }
-    .hover\:border-\[\#FF4D00\]:hover {
-      border-color: #FF4D00;
     }
     .hover\:border-black:hover {
       border-color: var(--color-black);

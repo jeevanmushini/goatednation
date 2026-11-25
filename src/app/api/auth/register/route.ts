@@ -1,15 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createUser, findUserByEmail } from '../../../../lib/auth/userDb';
 import { signJwt } from '../../../../lib/auth/jwt';
-import { UserRole } from '../../../../types/auth';
 import { sendWelcomeEmail } from '../../../../lib/email/mailer';
-
-const ADMIN_INVITE_CODE = process.env.ADMIN_INVITE_CODE || 'GOATED_ADMIN_2026';
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { name, email, password, role, adminKey } = body;
+    const { name, email, password } = body;
 
     if (!name || !email || !password) {
       return NextResponse.json(
@@ -41,27 +38,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Role verification
-    let assignedRole: UserRole = 'CUSTOMER';
-    if (role === 'ADMIN') {
-      if (adminKey === ADMIN_INVITE_CODE || adminKey === 'ADMIN' || adminKey === 'admin') {
-        assignedRole = 'ADMIN';
-      } else {
-        return NextResponse.json(
-          {
-            success: false,
-            error: 'Invalid Admin Syndicate Key. Enter GOATED_ADMIN_2026 or register as Customer.',
-          },
-          { status: 403 }
-        );
-      }
-    }
-
+    // In production, public registration is strictly restricted to CUSTOMER role
     const user = await createUser({
       name,
       email,
       password,
-      role: assignedRole,
+      role: 'CUSTOMER',
       provider: 'credentials',
     });
 
@@ -83,7 +65,7 @@ export async function POST(req: NextRequest) {
       success: true,
       user,
       token,
-      message: `Account created successfully with ${user.role} role.`,
+      message: 'Account created successfully.',
     });
 
     // Set secure HTTP-only cookie

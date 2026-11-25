@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build:css": "node scripts/build-css.js",
+    "create-admin": "tsx scripts/create-admin.ts",
     "predev": "node scripts/build-css.js",
     "prebuild": "node scripts/build-css.js",
     "dev": "next dev",
