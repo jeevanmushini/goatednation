@@ -4,32 +4,40 @@ import { getUserOrdersFromNeon } from '@/lib/db/neon';
 
 export async function GET(req: NextRequest) {
   try {
-    const { searchParams } = new URL(req.url);
-    const queryEmail = searchParams.get('email');
-
-    // Attempt to read JWT token
+    // 1. Read JWT from HttpOnly cookie or Authorization header
     const token =
       req.cookies.get('auth_token')?.value ||
+      req.cookies.get('gn_auth_token')?.value ||
       req.headers.get('authorization')?.replace(/^Bearer\s+/i, '');
 
-    let userEmail: string | null = null;
-    if (token) {
-      const payload = verifyJwt(token);
-      if (payload && payload.email) {
-        userEmail = payload.email;
-      }
-    }
-
-    // Fall back to query param email if provided
-    const targetEmail = userEmail || queryEmail;
-
-    if (!targetEmail) {
+    if (!token) {
       return NextResponse.json(
-        { success: false, error: 'Authentication or customer email required' },
+        { success: false, error: 'Authentication required to access order history.' },
         { status: 401 }
       );
     }
 
+    // 2. Verify JWT signature and claims
+    const payload = verifyJwt(token);
+    if (!payload || !payload.email) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid or expired session. Please sign in again.' },
+        { status: 401 }
+      );
+    }
+
+    // 3. Authorization check: Customers are restricted strictly to their own email
+    const { searchParams } = new URL(req.url);
+    const queryEmail = searchParams.get('email');
+
+    let targetEmail = payload.email.toLowerCase().trim();
+
+    // Only elevated administrators can view orders belonging to another email
+    if (payload.role === 'ADMIN' && queryEmail) {
+      targetEmail = queryEmail.toLowerCase().trim();
+    }
+
+    // 4. Retrieve orders
     const orders = await getUserOrdersFromNeon(targetEmail);
 
     return NextResponse.json({

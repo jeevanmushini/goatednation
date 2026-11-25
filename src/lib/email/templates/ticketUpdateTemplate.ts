@@ -1,5 +1,6 @@
 import { renderEmailLayout } from './baseTemplate';
 import { Ticket } from '../../../types/ticket';
+import { generateTicketAccessToken } from '../../ticketSecurity';
 
 export interface TicketUpdateEmailParams {
   ticket: Ticket;
@@ -21,7 +22,8 @@ export function getTicketUpdateEmailHtml({
 }: TicketUpdateEmailParams): string {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.SITE_URL || 'https://goatednation.com';
   const customerName = ticket.customerName.toUpperCase();
-  const ticketUrl = `${appUrl}/support/${ticket.id}`;
+  const token = generateTicketAccessToken(ticket.id, ticket.customerEmail);
+  const ticketUrl = `${appUrl}/support/${ticket.id}?token=${token}`;
   const displayStatus = (newStatus || ticket.status).replace(/_/g, ' ').toUpperCase();
 
   const content = `

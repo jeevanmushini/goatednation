@@ -1,5 +1,6 @@
 import { renderEmailLayout } from './baseTemplate';
 import { Ticket } from '../../../types/ticket';
+import { generateTicketAccessToken } from '../../ticketSecurity';
 
 export interface TicketResolvedEmailParams {
   ticket: Ticket;
@@ -15,7 +16,8 @@ export function getTicketResolvedEmailHtml({
 }: TicketResolvedEmailParams): string {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.SITE_URL || 'https://goatednation.com';
   const customerName = ticket.customerName.toUpperCase();
-  const ticketUrl = `${appUrl}/support/${ticket.id}`;
+  const token = generateTicketAccessToken(ticket.id, ticket.customerEmail);
+  const ticketUrl = `${appUrl}/support/${ticket.id}?token=${token}`;
   const finalNotes = resolutionNotes || ticket.resolutionNotes || 'All requested actions for this ticket have been finalized by our support staff.';
 
   const content = `
@@ -70,7 +72,7 @@ export function getTicketResolvedEmailHtml({
             <tr>
               ${[1, 2, 3, 4, 5].map((star) => `
                 <td style="padding: 0 6px;">
-                  <a href="${ticketUrl}?rate=${star}" target="_blank" style="display: block; width: 44px; height: 44px; line-height: 44px; text-align: center; background-color: #F8F8F8; border: 1px solid #D0D0D0; border-radius: 4px; text-decoration: none; font-size: 18px; color: #F59E0B;">
+                  <a href="${ticketUrl}&rate=${star}" target="_blank" style="display: block; width: 44px; height: 44px; line-height: 44px; text-align: center; background-color: #F8F8F8; border: 1px solid #D0D0D0; border-radius: 4px; text-decoration: none; font-size: 18px; color: #F59E0B;">
                     ★
                   </a>
                   <div style="text-align: center; font-family: 'Courier New', Courier, monospace; font-size: 9px; color: #999999; margin-top: 4px;">${star}</div>
@@ -89,7 +91,7 @@ export function getTicketResolvedEmailHtml({
           <div style="font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 11px; color: #888888; margin-bottom: 10px;">
             Is your issue still unresolved or do you need further adjustments?
           </div>
-          <a href="${ticketUrl}?action=reopen" target="_blank" style="display: inline-block; background-color: transparent; color: #000000; font-family: 'Courier New', Courier, monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: underline; padding: 6px 12px;">
+          <a href="${ticketUrl}&action=reopen" target="_blank" style="display: inline-block; background-color: transparent; color: #000000; font-family: 'Courier New', Courier, monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: underline; padding: 6px 12px;">
             [ REOPEN THIS TICKET IN 1-CLICK ]
           </a>
         </td>

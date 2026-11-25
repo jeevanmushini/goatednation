@@ -29,6 +29,7 @@ function TicketThreadContent({ ticketId }: { ticketId: string }) {
   const searchParams = useSearchParams();
   const queryRate = searchParams.get('rate');
   const queryAction = searchParams.get('action');
+  const queryToken = searchParams.get('token');
 
   const [ticket, setTicket] = useState<Ticket | null>(null);
   const [messages, setMessages] = useState<TicketMessage[]>([]);
@@ -51,7 +52,10 @@ function TicketThreadContent({ ticketId }: { ticketId: string }) {
 
   // Load ticket and messages
   const loadThread = () => {
-    fetch(`/api/tickets/${ticketId}`)
+    const url = `/api/tickets/${ticketId}${queryToken ? `?token=${encodeURIComponent(queryToken)}` : ''}`;
+    fetch(url, {
+      headers: queryToken ? { 'x-ticket-token': queryToken } : {},
+    })
       .then((res) => res.json())
       .then((data) => {
         setLoading(false);
@@ -89,9 +93,13 @@ function TicketThreadContent({ ticketId }: { ticketId: string }) {
   const handleRate = async (stars: number) => {
     setUserRating(stars);
     try {
-      const res = await fetch(`/api/tickets/${ticketId}`, {
+      const url = `/api/tickets/${ticketId}${queryToken ? `?token=${encodeURIComponent(queryToken)}` : ''}`;
+      const res = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(queryToken ? { 'x-ticket-token': queryToken } : {}),
+        },
         body: JSON.stringify({ rating: stars }),
       });
       const data = await res.json();
@@ -106,9 +114,13 @@ function TicketThreadContent({ ticketId }: { ticketId: string }) {
   // Reopen Ticket
   const handleReopen = async () => {
     try {
-      const res = await fetch(`/api/tickets/${ticketId}`, {
+      const url = `/api/tickets/${ticketId}${queryToken ? `?token=${encodeURIComponent(queryToken)}` : ''}`;
+      const res = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(queryToken ? { 'x-ticket-token': queryToken } : {}),
+        },
         body: JSON.stringify({ action: 'reopen' }),
       });
       const data = await res.json();
@@ -154,9 +166,13 @@ function TicketThreadContent({ ticketId }: { ticketId: string }) {
 
     setSubmitting(true);
     try {
-      const res = await fetch(`/api/tickets/${ticketId}`, {
+      const url = `/api/tickets/${ticketId}${queryToken ? `?token=${encodeURIComponent(queryToken)}` : ''}`;
+      const res = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(queryToken ? { 'x-ticket-token': queryToken } : {}),
+        },
         body: JSON.stringify({
           message: replyMessage.trim(),
           attachments: replyAttachments,

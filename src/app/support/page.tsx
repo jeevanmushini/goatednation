@@ -149,6 +149,7 @@ function SupportPortalContent() {
   const [createdTicket, setCreatedTicket] = useState<{
     id: string;
     ticketNumber: string;
+    token?: string;
   } | null>(null);
 
   // Auto-fill user credentials when loaded
@@ -293,6 +294,7 @@ function SupportPortalContent() {
         setCreatedTicket({
           id: data.ticket.id,
           ticketNumber: data.ticket.ticketNumber,
+          token: data.token,
         });
       } else {
         setErrorMsg(data.error || 'Failed to submit support ticket.');
@@ -342,7 +344,7 @@ function SupportPortalContent() {
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
-                href={`/support/${createdTicket.id}`}
+                href={`/support/${createdTicket.id}${createdTicket.token ? `?token=${createdTicket.token}` : ''}`}
                 className="px-6 py-3 bg-black text-white text-xs font-bold uppercase tracking-widest hover:bg-[#222222] transition-colors"
               >
                 VIEW LIVE TICKET THREAD &rarr;

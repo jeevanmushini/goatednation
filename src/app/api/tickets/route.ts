@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyJwt } from '@/lib/auth/jwt';
 import { createTicketInNeon, getTicketsForUserFromNeon } from '@/lib/db/neon';
 import { sendTicketCreatedEmail } from '@/lib/email/mailer';
+import { generateTicketAccessToken } from '@/lib/ticketSecurity';
 import { Ticket, TicketCategory, TicketPriority } from '@/types/ticket';
 
 export async function POST(req: NextRequest) {
@@ -82,9 +83,12 @@ export async function POST(req: NextRequest) {
       console.warn('[Tickets API] Email dispatch notice:', err);
     });
 
+    const accessToken = generateTicketAccessToken(newTicket.id, newTicket.customerEmail);
+
     return NextResponse.json({
       success: true,
       ticket: newTicket,
+      token: accessToken,
       message: `Support ticket ${newTicket.ticketNumber} created successfully.`,
     });
   } catch (error: unknown) {
