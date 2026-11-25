@@ -180,10 +180,10 @@ export const ZeninCategory3DStack: React.FC<ZeninCategory3DStackProps> = ({ init
   return (
     <section className="bg-[#FFFFFF] py-14 sm:py-20 px-4 sm:px-6 lg:px-8 border-b border-[#EAEAEA] overflow-hidden select-none">
       <div className="max-w-6xl mx-auto flex flex-col items-center">
-        {/* Top Centered Swipe Hint (Text Only) */}
-        <div className="text-center mb-6 sm:mb-8">
-          <span className="text-[10px] sm:text-[11px] font-mono tracking-widest text-[#888888] uppercase select-none">
-            SWIPE TO BROWSE CATEGORIES
+        {/* Top Centered Category Title */}
+        <div className="text-center mb-6 sm:mb-8 flex flex-col items-center">
+          <span className="text-xs font-mono tracking-[0.25em] text-[#666666] uppercase">
+            {current.category}
           </span>
         </div>
 

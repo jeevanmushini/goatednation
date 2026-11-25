@@ -259,10 +259,10 @@ export const ZeninHeroFloatingPants: React.FC<ZeninHeroFloatingPantsProps> = ({ 
         isDragging ? 'cursor-grabbing' : 'cursor-grab'
       }`}
     >
-      {/* 1. Centered Slide Gesture Hint (Text Only) */}
-      <div className="relative z-20 text-center pt-2 sm:pt-4">
-        <span className="text-[10px] sm:text-[11px] font-mono tracking-widest text-[#888888] uppercase select-none">
-          SLIDE HORIZONTALLY TO EXPLORE
+      {/* 1. Centered Clean Top Label */}
+      <div className="relative z-20 text-center pt-2 sm:pt-4 flex flex-col items-center">
+        <span className="text-[10px] sm:text-[11px] font-mono tracking-[0.35em] text-[#777777] uppercase select-none">
+          FEATURED SILHOUETTES // 3D LOOKBOOK
         </span>
       </div>
 
