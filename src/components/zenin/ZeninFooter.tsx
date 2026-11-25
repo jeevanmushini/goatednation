@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Instagram, Facebook, Check, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Instagram, Facebook, Check } from 'lucide-react';
 import { useCmsStore } from '../../lib/cms/cmsStore';
 
 export const ZeninFooter: React.FC = () => {
@@ -15,97 +15,83 @@ export const ZeninFooter: React.FC = () => {
     if (!email.trim()) return;
     setSubscribed(true);
     setEmail('');
-    setTimeout(() => setSubscribed(false), 4000);
+    setTimeout(() => setSubscribed(false), 3000);
   };
 
   return (
-    <footer className="mt-auto w-full bg-[#0A0A0A] text-white border-t border-[#1C1C1C] transition-all">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-        {/* Main Grid: Brand & Mission + Newsletter + Socials */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-center pb-8 border-b border-[#1A1A1A]">
-          {/* Col 1: Brand Identifier & Monogram (5 cols) */}
-          <div className="md:col-span-5 space-y-1.5">
-            <div className="flex items-center space-x-2.5">
-              <span className="text-xs font-mono font-bold tracking-[0.25em] uppercase text-white">
-                {settings?.brandName || 'GOATED NATION'}
-              </span>
-              <span className="text-[10px] font-mono tracking-widest text-[#FF4D00] bg-[#FF4D00]/10 border border-[#FF4D00]/20 px-1.5 py-0.5 rounded uppercase">
-                東京 // BLR
-              </span>
-            </div>
-            <p className="text-[11px] font-mono text-[#777777] leading-relaxed max-w-sm">
-              Heavyweight anime-inspired streetwear syndicate. Engineered in Bengaluru, India.
-            </p>
+    <footer className="mt-auto w-full bg-[#080808] text-white border-t border-[#181818]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 sm:py-4">
+        {/* Tier 1: Brand & Compact Newsletter & Socials */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pb-2.5 border-b border-[#141414]">
+          {/* Brand & Kanji */}
+          <div className="flex items-center space-x-2.5">
+            <span className="text-[11px] font-mono font-bold tracking-[0.2em] uppercase text-white">
+              {settings?.brandName || 'GOATED NATION'}
+            </span>
+            <span className="text-[9px] font-mono text-[#FF4D00] bg-[#FF4D00]/10 border border-[#FF4D00]/20 px-1.5 py-0.2 rounded uppercase">
+              東京 // BLR
+            </span>
           </div>
 
-          {/* Col 2: Compact Inline Newsletter (5 cols) */}
-          <div className="md:col-span-5">
+          {/* Compact Newsletter */}
+          <div className="w-full sm:w-auto">
             {subscribed ? (
-              <div className="flex items-center space-x-2 text-[11px] font-mono text-[#22C55E] bg-[#22C55E]/10 border border-[#22C55E]/20 px-3 py-2 rounded">
-                <Check className="w-3.5 h-3.5 shrink-0" />
-                <span>SUBSCRIBED • 10% VOUCHER DISPATCHED TO EMAIL</span>
+              <div className="flex items-center justify-center space-x-1.5 text-[10px] font-mono text-[#22C55E] bg-[#22C55E]/10 border border-[#22C55E]/20 px-2.5 py-1 rounded">
+                <Check className="w-3 h-3 shrink-0" />
+                <span>SUBSCRIBED • 10% VOUCHER DISPATCHED</span>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="flex items-center">
-                <div className="relative w-full">
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter email for private drops & drops..."
-                    className="w-full bg-[#121212] border border-[#262626] focus:border-[#FF4D00] focus:bg-black rounded-l-md px-3.5 py-2 text-xs text-white placeholder-[#555555] font-mono outline-none transition-colors"
-                  />
-                </div>
+              <form onSubmit={handleSubmit} className="flex items-center justify-center w-full">
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter email for private drops..."
+                  className="bg-[#121212] border border-[#222222] focus:border-[#FF4D00] focus:bg-black rounded-l px-2.5 py-1 text-[11px] text-white placeholder-[#555555] font-mono outline-none transition-colors w-full sm:w-56 h-7"
+                />
                 <button
                   type="submit"
-                  className="bg-white hover:bg-[#E5E5E5] text-black px-3.5 py-2 rounded-r-md text-xs font-mono uppercase font-bold flex items-center space-x-1 transition-colors shrink-0"
-                  title="Subscribe to Syndicate Drops"
+                  className="bg-white hover:bg-[#E5E5E5] text-black px-2.5 h-7 rounded-r text-[10px] font-mono uppercase font-bold flex items-center space-x-1 transition-colors shrink-0"
+                  title="Subscribe"
                 >
-                  <span className="hidden sm:inline text-[11px] tracking-wider">JOIN</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <span>JOIN</span>
+                  <ArrowRight className="w-3 h-3" />
                 </button>
               </form>
             )}
           </div>
 
-          {/* Col 3: Social Links & Compliance Pill (2 cols) */}
-          <div className="md:col-span-2 flex items-center md:justify-end space-x-3">
+          {/* Social Links */}
+          <div className="flex items-center space-x-3">
             <a
               href="https://facebook.com"
               target="_blank"
               rel="noreferrer"
-              className="w-8 h-8 rounded border border-[#222222] bg-[#121212] hover:bg-white hover:text-black hover:border-white text-[#888888] flex items-center justify-center transition-all"
+              className="text-[#777777] hover:text-white transition-colors p-1"
               aria-label="Facebook"
             >
-              <Facebook className="w-4 h-4" />
+              <Facebook className="w-3.5 h-3.5" />
             </a>
             <a
               href={settings?.instagramUrl || 'https://instagram.com/goatednation'}
               target="_blank"
               rel="noreferrer"
-              className="w-8 h-8 rounded border border-[#222222] bg-[#121212] hover:bg-white hover:text-black hover:border-white text-[#888888] flex items-center justify-center transition-all"
+              className="text-[#777777] hover:text-white transition-colors p-1"
               aria-label="Instagram"
             >
-              <Instagram className="w-4 h-4" />
+              <Instagram className="w-3.5 h-3.5" />
             </a>
           </div>
         </div>
 
-        {/* Bottom Legal & Statutory Policies Bar */}
-        <div className="pt-6 flex flex-col lg:flex-row items-center justify-between gap-4 text-[10px] font-mono text-[#666666] tracking-wider">
-          <div className="flex items-center space-x-2">
-            <span>
-              &copy; {new Date().getFullYear()} {settings?.brandName || 'GOATED NATION'}. ALL RIGHTS RESERVED.
-            </span>
-            <span className="text-[#333333] hidden sm:inline">&bull;</span>
-            <span className="text-[#555555] hidden sm:inline flex items-center space-x-1">
-              <ShieldCheck className="w-3 h-3 text-emerald-500 inline mr-1" />
-              <span>DPDP ACT 2023 COMPLIANT</span>
-            </span>
+        {/* Tier 2: Micro Copyright & Policy Links */}
+        <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-2 text-[10px] font-mono text-[#666666] tracking-wider">
+          <div>
+            &copy; {new Date().getFullYear()} {settings?.brandName || 'GOATED NATION'}. ALL RIGHTS RESERVED.
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-[11px]">
+          <div className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 text-[10px]">
             <Link
               href="/policies/refund-and-exchange"
               className="text-[#888888] hover:text-white transition-colors"
