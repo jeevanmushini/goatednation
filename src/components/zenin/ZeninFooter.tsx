@@ -85,24 +85,24 @@ export const ZeninFooter: React.FC = () => {
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
-            <Link href="/about" className="hover:text-white transition-colors">
+            <Link href="/policies/refund-and-exchange" className="hover:text-white transition-colors">
               Refund policy
             </Link>
             <span>&bull;</span>
-            <Link href="/about" className="hover:text-white transition-colors">
+            <Link href="/policies/privacy-policy" className="hover:text-white transition-colors">
               Privacy policy
             </Link>
             <span>&bull;</span>
-            <Link href="/about" className="hover:text-white transition-colors">
+            <Link href="/policies/terms-of-service" className="hover:text-white transition-colors">
               Terms of service
             </Link>
             <span>&bull;</span>
-            <Link href="/about" className="hover:text-white transition-colors">
+            <Link href="/policies/shipping-and-delivery" className="hover:text-white transition-colors">
               Shipping policy
             </Link>
             <span>&bull;</span>
-            <Link href="/about" className="hover:text-white transition-colors">
-              Contact information
+            <Link href="/policies/grievance-redressal" className="hover:text-white transition-colors">
+              Grievance & Legal
             </Link>
             <span>&bull;</span>
             <Link href="/support" className="hover:text-white transition-colors text-white font-bold">

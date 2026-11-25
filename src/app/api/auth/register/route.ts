@@ -6,7 +6,18 @@ import { sendWelcomeEmail } from '../../../../lib/email/mailer';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { name, email, password } = body;
+    const { name, email, password, agreedToTerms } = body;
+
+    // Enforce Affirmative Statutory Consent under DPDP Act 2023 & Indian Contract Act 1872
+    if (agreedToTerms !== true) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Affirmative acceptance of the Terms of Service and Privacy Policy is required under the DPDP Act 2023.',
+        },
+        { status: 400 }
+      );
+    }
 
     if (!name || !email || !password) {
       return NextResponse.json(
