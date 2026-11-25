@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyShiprocketWebhook } from '../../../../lib/shiprocket';
 import { recordShipmentEvent } from '../../../../lib/shippingLedger';
-import { getOrderByIdFromNeon } from '../../../../lib/db/neon';
+import { getOrderByIdFromNeon, markOrderDelivered } from '../../../../lib/db/neon';
 import { sendShippingUpdateEmail } from '../../../../lib/email/mailer';
 
 /**
@@ -79,6 +79,12 @@ export async function POST(req: NextRequest) {
       statusLower.includes('delivered');
 
     if (isLogisticsMilestone) {
+      if (statusLower.includes('delivered')) {
+        markOrderDelivered(orderId || awbCode).catch((err) => {
+          console.warn('[Shiprocket Webhook] Failed to mark order delivered:', err);
+        });
+      }
+
       const directEmail = (event.customer_email as string) || (event.email as string);
       const courierName =
         (event.courier_name as string) || (event.courier as string) || 'Shiprocket Express';

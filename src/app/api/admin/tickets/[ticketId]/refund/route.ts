@@ -6,7 +6,7 @@ import {
   addTicketMessageInNeon,
 } from '@/lib/db/neon';
 import { refundRazorpayPayment } from '@/lib/razorpay';
-import { sendTicketResolvedEmail } from '@/lib/email/mailer';
+import { sendTicketResolvedEmail, sendRefundConfirmationEmail } from '@/lib/email/mailer';
 import { TicketMessage } from '@/types/ticket';
 
 function checkAdminAuth(req: NextRequest): boolean {
@@ -91,6 +91,18 @@ export async function POST(
       ticket: refreshed,
       resolutionNotes,
     }).catch(() => {});
+
+    // Dispatch official Razorpay digital credit note & refund receipt
+    sendRefundConfirmationEmail({
+      to: ticket.customerEmail,
+      customerName: ticket.customerName,
+      orderId: ticket.orderId || ticket.ticketNumber,
+      refundId,
+      amount: amount || ticket.paymentDetails?.amount || 0,
+      reason,
+    }).catch((err) => {
+      console.warn('[Admin Refund API] Refund confirmation email dispatch notice:', err);
+    });
 
     return NextResponse.json({
       success: true,

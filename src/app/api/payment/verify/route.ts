@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyRazorpayPayment } from '../../../../lib/razorpay';
 import { PaymentVerificationRequest } from '../../../../types/payment';
-import { saveOrderToNeon, getOrderByIdFromNeon } from '../../../../lib/db/neon';
+import { saveOrderToNeon, getOrderByIdFromNeon, markCheckoutRecovered } from '../../../../lib/db/neon';
 import { sendOrderConfirmationEmail } from '../../../../lib/email/mailer';
 
 export async function POST(req: NextRequest) {
@@ -33,6 +33,9 @@ export async function POST(req: NextRequest) {
       getOrderByIdFromNeon(body.razorpay_order_id)
         .then((order) => {
           if (order && order.userEmail) {
+            // Mark any abandoned checkouts for this customer as recovered
+            markCheckoutRecovered(order.userEmail).catch(() => {});
+
             sendOrderConfirmationEmail({
               to: order.userEmail,
               orderId: order.id,

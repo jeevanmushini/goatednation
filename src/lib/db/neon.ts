@@ -216,6 +216,32 @@ export async function initDatabaseSchema(): Promise<boolean> {
 
     await sql`CREATE INDEX IF NOT EXISTS idx_ticket_messages_ticket_id ON app_ticket_messages(ticket_id);`;
 
+    // 11. Delivery & Review Tracking Columns on Orders
+    await sql`
+      ALTER TABLE app_orders 
+      ADD COLUMN IF NOT EXISTS delivered_at TIMESTAMP WITH TIME ZONE,
+      ADD COLUMN IF NOT EXISTS review_email_sent BOOLEAN DEFAULT FALSE;
+    `;
+
+    // 12. Abandoned Checkouts Table
+    await sql`
+      CREATE TABLE IF NOT EXISTS app_abandoned_checkouts (
+        id TEXT PRIMARY KEY,
+        email TEXT NOT NULL,
+        customer_name TEXT,
+        phone TEXT,
+        items JSONB NOT NULL,
+        total_amount NUMERIC NOT NULL,
+        recovery_email_sent BOOLEAN DEFAULT FALSE,
+        recovered BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+    `;
+
+    await sql`CREATE INDEX IF NOT EXISTS idx_abandoned_email ON app_abandoned_checkouts(email);`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_abandoned_sent ON app_abandoned_checkouts(recovery_email_sent);`;
+
     schemaInitialized = true;
     return true;
   } catch (error) {
@@ -363,6 +389,8 @@ export async function upsertUserInNeon(user: {
   }
 }
 
+const localOrders = new Map<string, any>();
+
 /**
  * Saves or updates an order in Neon Postgres (PROD-04).
  */
@@ -378,8 +406,22 @@ export async function saveOrderToNeon(order: {
   shippingAddress?: unknown;
   totalAmount?: number;
 }): Promise<boolean> {
+  localOrders.set(order.id, {
+    id: order.id,
+    userEmail: order.userEmail,
+    razorpayOrderId: order.razorpayOrderId,
+    razorpayPaymentId: order.razorpayPaymentId,
+    shiprocketOrderId: order.shiprocketOrderId,
+    awbCode: order.awbCode,
+    status: order.status || 'PENDING',
+    items: order.items || [],
+    shippingAddress: order.shippingAddress || {},
+    totalAmount: order.totalAmount || 0,
+    createdAt: new Date().toISOString(),
+  });
+
   const sql = getDb();
-  if (!sql) return false;
+  if (!sql) return true;
 
   try {
     if (!schemaInitialized) await initDatabaseSchema();
@@ -931,8 +973,14 @@ export async function getOrderByIdFromNeon(
   totalAmount?: number;
   createdAt?: string;
 } | null> {
+  const local =
+    localOrders.get(orderIdOrAwb) ||
+    Array.from(localOrders.values()).find(
+      (o) => o.razorpayOrderId === orderIdOrAwb || o.awbCode === orderIdOrAwb
+    );
+
   const sql = getDb();
-  if (!sql) return null;
+  if (!sql) return local || null;
 
   try {
     if (!schemaInitialized) await initDatabaseSchema();
@@ -970,10 +1018,20 @@ export async function getOrderByIdFromNeon(
         createdAt?: string;
       };
     }
-    return null;
+    const local =
+      localOrders.get(orderIdOrAwb) ||
+      Array.from(localOrders.values()).find(
+        (o) => o.razorpayOrderId === orderIdOrAwb || o.awbCode === orderIdOrAwb
+      );
+    return local || null;
   } catch (error) {
     console.error(`[Neon Postgres] Error reading order ${orderIdOrAwb}:`, error);
-    return null;
+    const local =
+      localOrders.get(orderIdOrAwb) ||
+      Array.from(localOrders.values()).find(
+        (o) => o.razorpayOrderId === orderIdOrAwb || o.awbCode === orderIdOrAwb
+      );
+    return local || null;
   }
 }
 
@@ -1453,5 +1511,377 @@ export async function updateUserRoleInNeon(
   } catch (error) {
     console.error('[Neon Postgres] Error updating user role:', error);
     return false;
+  }
+}
+
+// ─── COMMERCE AUTOMATIONS: REVIEW NUDGES & ABANDONED CARTS ───────────────────
+
+interface LocalAbandonedCartRecord {
+  id: string;
+  email: string;
+  customerName?: string;
+  phone?: string;
+  items: unknown[];
+  totalAmount: number;
+  recoveryEmailSent: boolean;
+  recovered: boolean;
+  createdAt: string;
+}
+
+const localAbandonedCarts = new Map<string, LocalAbandonedCartRecord>();
+
+/**
+ * Marks an order as delivered with a delivered_at timestamp.
+ */
+export async function markOrderDelivered(orderIdOrAwb: string): Promise<boolean> {
+  const local =
+    localOrders.get(orderIdOrAwb) ||
+    Array.from(localOrders.values()).find(
+      (o) => o.razorpayOrderId === orderIdOrAwb || o.awbCode === orderIdOrAwb
+    );
+  if (local) {
+    local.status = 'DELIVERED';
+    local.deliveredAt = new Date().toISOString();
+  }
+
+  const sql = getDb();
+  if (!sql) return true;
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+    await sql`
+      UPDATE app_orders
+      SET 
+        status = 'DELIVERED',
+        delivered_at = COALESCE(delivered_at, CURRENT_TIMESTAMP)
+      WHERE id = ${orderIdOrAwb} 
+         OR awb_code = ${orderIdOrAwb} 
+         OR razorpay_order_id = ${orderIdOrAwb};
+    `;
+    return true;
+  } catch (error) {
+    console.error(`[Neon Postgres] Error marking order delivered ${orderIdOrAwb}:`, error);
+    return false;
+  }
+}
+
+/**
+ * Retrieves orders delivered between 3 and 7 days ago that have not received a review nudge email.
+ */
+export async function getOrdersPendingReviewNudge(): Promise<
+  Array<{
+    id: string;
+    userEmail: string;
+    customerName?: string;
+    items: Array<{ id?: string; title?: string; name?: string; image?: string; slug?: string }>;
+    deliveredAt: string;
+  }>
+> {
+  const sql = getDb();
+  if (!sql) return [];
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+    const rows = (await sql`
+      SELECT 
+        id, 
+        user_email as "userEmail", 
+        shipping_address as "shippingAddress", 
+        items, 
+        delivered_at as "deliveredAt"
+      FROM app_orders
+      WHERE status = 'DELIVERED'
+        AND delivered_at <= NOW() - INTERVAL '3 days'
+        AND delivered_at >= NOW() - INTERVAL '14 days'
+        AND (review_email_sent IS FALSE OR review_email_sent IS NULL)
+        AND user_email IS NOT NULL
+      LIMIT 50;
+    `) as Record<string, unknown>[];
+
+    return (rows || []).map((r) => {
+      const addr = (r.shippingAddress && typeof r.shippingAddress === 'object') ? (r.shippingAddress as Record<string, string>) : {};
+      return {
+        id: String(r.id),
+        userEmail: String(r.userEmail),
+        customerName: addr.customerName || addr.name || undefined,
+        items: Array.isArray(r.items) ? (r.items as Array<{ id?: string; title?: string; name?: string; image?: string; slug?: string }>) : [],
+        deliveredAt: r.deliveredAt ? new Date(r.deliveredAt as string).toISOString() : new Date().toISOString(),
+      };
+    });
+  } catch (error) {
+    console.error('[Neon Postgres] Error fetching orders pending review nudge:', error);
+    return [];
+  }
+}
+
+/**
+ * Marks review_email_sent = TRUE on an order.
+ */
+export async function markReviewEmailSent(orderId: string): Promise<boolean> {
+  const local = localOrders.get(orderId);
+  if (local) {
+    local.reviewEmailSent = true;
+  }
+
+  const sql = getDb();
+  if (!sql) return true;
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+    await sql`
+      UPDATE app_orders
+      SET review_email_sent = TRUE
+      WHERE id = ${orderId};
+    `;
+    return true;
+  } catch (error) {
+    console.error(`[Neon Postgres] Error marking review email sent for order ${orderId}:`, error);
+    return false;
+  }
+}
+
+/**
+ * Captures or updates a shopper's checkout intent for abandoned cart recovery.
+ */
+export async function upsertAbandonedCheckout(checkout: {
+  id?: string;
+  email: string;
+  customerName?: string;
+  phone?: string;
+  items: unknown[];
+  totalAmount: number;
+}): Promise<string> {
+  const id = checkout.id || `cart_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+  const normalizedEmail = checkout.email.toLowerCase().trim();
+
+  // In-memory resilient cache
+  localAbandonedCarts.set(id, {
+    id,
+    email: normalizedEmail,
+    customerName: checkout.customerName,
+    phone: checkout.phone,
+    items: checkout.items || [],
+    totalAmount: checkout.totalAmount || 0,
+    recoveryEmailSent: false,
+    recovered: false,
+    createdAt: new Date().toISOString(),
+  });
+
+  const sql = getDb();
+  if (!sql) return id;
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+    await sql`
+      INSERT INTO app_abandoned_checkouts (
+        id, email, customer_name, phone, items, total_amount, recovery_email_sent, recovered, created_at, updated_at
+      ) VALUES (
+        ${id},
+        ${normalizedEmail},
+        ${checkout.customerName || null},
+        ${checkout.phone || null},
+        ${JSON.stringify(checkout.items || [])}::jsonb,
+        ${checkout.totalAmount || 0},
+        FALSE,
+        FALSE,
+        CURRENT_TIMESTAMP,
+        CURRENT_TIMESTAMP
+      )
+      ON CONFLICT (id) DO UPDATE SET
+        customer_name = COALESCE(EXCLUDED.customer_name, app_abandoned_checkouts.customer_name),
+        phone = COALESCE(EXCLUDED.phone, app_abandoned_checkouts.phone),
+        items = EXCLUDED.items,
+        total_amount = EXCLUDED.total_amount,
+        updated_at = CURRENT_TIMESTAMP;
+    `;
+    return id;
+  } catch (error) {
+    console.error('[Neon Postgres] Error upserting abandoned checkout:', error);
+    return id;
+  }
+}
+
+/**
+ * Marks all abandoned carts for an email as recovered once a payment succeeds.
+ */
+export async function markCheckoutRecovered(email: string): Promise<boolean> {
+  const normalizedEmail = email.toLowerCase().trim();
+
+  // Update in-memory cache
+  for (const cart of localAbandonedCarts.values()) {
+    if (cart.email.toLowerCase().trim() === normalizedEmail) {
+      cart.recovered = true;
+    }
+  }
+
+  const sql = getDb();
+  if (!sql) return true;
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+    await sql`
+      UPDATE app_abandoned_checkouts
+      SET recovered = TRUE, updated_at = CURRENT_TIMESTAMP
+      WHERE LOWER(email) = ${normalizedEmail};
+    `;
+    return true;
+  } catch (error) {
+    console.error(`[Neon Postgres] Error marking checkout recovered for ${email}:`, error);
+    return false;
+  }
+}
+
+/**
+ * Retrieves abandoned checkouts created between 2 and 24 hours ago that have not been recovered or pinged.
+ */
+export async function getPendingAbandonedCarts(): Promise<
+  Array<{
+    id: string;
+    email: string;
+    customerName?: string;
+    phone?: string;
+    items: Array<{ id?: string; title: string; price: number; quantity?: number; size?: string; color?: string; image?: string }>;
+    totalAmount: number;
+    createdAt: string;
+  }>
+> {
+  const sql = getDb();
+  if (!sql) return [];
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+    const rows = (await sql`
+      SELECT 
+        id, 
+        email, 
+        customer_name as "customerName", 
+        phone, 
+        items, 
+        total_amount as "totalAmount", 
+        created_at as "createdAt"
+      FROM app_abandoned_checkouts
+      WHERE created_at <= NOW() - INTERVAL '2 hours'
+        AND created_at >= NOW() - INTERVAL '48 hours'
+        AND recovery_email_sent IS FALSE
+        AND recovered IS FALSE
+      ORDER BY created_at DESC
+      LIMIT 50;
+    `) as Record<string, unknown>[];
+
+    return (rows || []).map((r) => ({
+      id: String(r.id),
+      email: String(r.email),
+      customerName: r.customerName ? String(r.customerName) : undefined,
+      phone: r.phone ? String(r.phone) : undefined,
+      items: Array.isArray(r.items) ? (r.items as Array<{ id?: string; title: string; price: number; quantity?: number; size?: string; color?: string; image?: string }>) : [],
+      totalAmount: Number(r.totalAmount || 0),
+      createdAt: r.createdAt ? new Date(r.createdAt as string).toISOString() : new Date().toISOString(),
+    }));
+  } catch (error) {
+    console.error('[Neon Postgres] Error fetching pending abandoned carts:', error);
+    return [];
+  }
+}
+
+/**
+ * Marks an abandoned cart as having received its recovery email.
+ */
+export async function markAbandonedCartEmailSent(id: string): Promise<boolean> {
+  const local = localAbandonedCarts.get(id);
+  if (local) {
+    local.recoveryEmailSent = true;
+  }
+
+  const sql = getDb();
+  if (!sql) return true;
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+    await sql`
+      UPDATE app_abandoned_checkouts
+      SET recovery_email_sent = TRUE, updated_at = CURRENT_TIMESTAMP
+      WHERE id = ${id};
+    `;
+    return true;
+  } catch (error) {
+    console.error(`[Neon Postgres] Error marking recovery email sent for cart ${id}:`, error);
+    return false;
+  }
+}
+
+/**
+ * Retrieves an abandoned checkout record by ID to restore cart in storefront.
+ */
+export async function getAbandonedCartById(id: string): Promise<{
+  id: string;
+  email: string;
+  customerName?: string;
+  phone?: string;
+  items: unknown[];
+  totalAmount: number;
+} | null> {
+  const local = localAbandonedCarts.get(id);
+
+  const sql = getDb();
+  if (!sql) {
+    return local
+      ? {
+          id: local.id,
+          email: local.email,
+          customerName: local.customerName,
+          phone: local.phone,
+          items: local.items,
+          totalAmount: local.totalAmount,
+        }
+      : null;
+  }
+
+  try {
+    if (!schemaInitialized) await initDatabaseSchema();
+    const rows = await sql`
+      SELECT 
+        id, 
+        email, 
+        customer_name as "customerName", 
+        phone, 
+        items, 
+        total_amount as "totalAmount"
+      FROM app_abandoned_checkouts
+      WHERE id = ${id}
+      LIMIT 1;
+    `;
+    if (rows && rows.length > 0) {
+      const r = rows[0];
+      return {
+        id: String(r.id),
+        email: String(r.email),
+        customerName: r.customerName ? String(r.customerName) : undefined,
+        phone: r.phone ? String(r.phone) : undefined,
+        items: Array.isArray(r.items) ? r.items : [],
+        totalAmount: Number(r.totalAmount || 0),
+      };
+    }
+    return local
+      ? {
+          id: local.id,
+          email: local.email,
+          customerName: local.customerName,
+          phone: local.phone,
+          items: local.items,
+          totalAmount: local.totalAmount,
+        }
+      : null;
+  } catch (error) {
+    console.error(`[Neon Postgres] Error fetching abandoned cart ${id}:`, error);
+    return local
+      ? {
+          id: local.id,
+          email: local.email,
+          customerName: local.customerName,
+          phone: local.phone,
+          items: local.items,
+          totalAmount: local.totalAmount,
+        }
+      : null;
   }
 }

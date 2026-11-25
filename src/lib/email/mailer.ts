@@ -9,12 +9,18 @@ import {
   getTicketCreatedEmailHtml,
   getTicketUpdateEmailHtml,
   getTicketResolvedEmailHtml,
+  getRefundConfirmationEmailHtml,
+  getReviewRequestEmailHtml,
+  getAbandonedCartEmailHtml,
   OrderConfirmationParams,
   ShippingUpdateParams,
   NewDropEmailParams,
   TicketCreatedEmailParams,
   TicketUpdateEmailParams,
   TicketResolvedEmailParams,
+  RefundConfirmationParams,
+  ReviewRequestParams,
+  AbandonedCartParams,
 } from './templates';
 import { Ticket } from '../../types/ticket';
 
@@ -248,6 +254,48 @@ export async function sendTicketResolvedEmail(
   return sendEmail({
     to: params.ticket.customerEmail,
     subject: `RESOLVED: Ticket ${params.ticket.ticketNumber} // GOATED NATION SUPPORT`,
+    html,
+  });
+}
+
+/**
+ * Dispatches Formal Digital Credit Note & Refund Receipt.
+ */
+export async function sendRefundConfirmationEmail(
+  params: RefundConfirmationParams & { to: string }
+): Promise<MailerResult> {
+  const html = getRefundConfirmationEmailHtml(params);
+  return sendEmail({
+    to: params.to,
+    subject: `CREDIT NOTE: Refund #${params.refundId} Processed // GOATED NATION`,
+    html,
+  });
+}
+
+/**
+ * Dispatches Post-Delivery Sizing & Fit Review Nudge.
+ */
+export async function sendReviewRequestEmail(
+  params: ReviewRequestParams & { to: string }
+): Promise<MailerResult> {
+  const html = getReviewRequestEmailHtml(params);
+  return sendEmail({
+    to: params.to,
+    subject: `HOW DOES IT FIT? Rate your ${params.productTitle} // GOATED NATION`,
+    html,
+  });
+}
+
+/**
+ * Dispatches Abandoned Cart & Dropped Checkout Recovery Notice.
+ */
+export async function sendAbandonedCartEmail(
+  params: AbandonedCartParams & { to: string }
+): Promise<MailerResult> {
+  const html = getAbandonedCartEmailHtml(params);
+  return sendEmail({
+    to: params.to,
+    subject: `YOUR BAG IS RESERVED // GOATED NATION`,
     html,
   });
 }

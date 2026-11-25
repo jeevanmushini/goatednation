@@ -8,3 +8,6 @@ export * from './newDropTemplate';
 export * from './ticketCreatedTemplate';
 export * from './ticketUpdateTemplate';
 export * from './ticketResolvedTemplate';
+export * from './refundConfirmationTemplate';
+export * from './reviewRequestTemplate';
+export * from './abandonedCartTemplate';
