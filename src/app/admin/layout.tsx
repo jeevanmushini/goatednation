@@ -160,9 +160,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="p-6 border-b border-[#EAEAEA] flex items-center justify-between">
           <div>
             <Link href="/admin" className="flex items-center space-x-2">
-              <span className="text-xl font-mono font-bold tracking-tight text-black">
-                GOATED NATION
-              </span>
+              <Image
+                src="/images/logo.png"
+                alt="GOATED NATION"
+                width={130}
+                height={26}
+                className="h-5 sm:h-6 w-auto object-contain"
+                priority
+              />
               <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#FF4D00] text-white font-bold">
                 ADMIN
               </span>

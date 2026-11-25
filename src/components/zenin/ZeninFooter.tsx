@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowRight, Instagram, Facebook, Check } from 'lucide-react';
 import { useCmsStore } from '../../lib/cms/cmsStore';
 
@@ -25,9 +26,13 @@ export const ZeninFooter: React.FC = () => {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pb-2.5 border-b border-[#141414]">
           {/* Brand & Kanji */}
           <div className="flex items-center space-x-2.5">
-            <span className="text-[11px] font-mono font-bold tracking-[0.2em] uppercase text-white">
-              {settings?.brandName || 'GOATED NATION'}
-            </span>
+            <Image
+              src="/images/logo-transparent.png"
+              alt={settings?.brandName || 'GOATED NATION'}
+              width={120}
+              height={24}
+              className="h-4.5 w-auto object-contain brightness-200 contrast-125"
+            />
             <span className="text-[9px] font-mono text-[#FF4D00] bg-[#FF4D00]/10 border border-[#FF4D00]/20 px-1.5 py-0.2 rounded uppercase">
               東京 // BLR
             </span>
