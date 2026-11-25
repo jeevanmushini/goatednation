@@ -10,7 +10,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://goatednation.com'),
+  metadataBase: new URL('https://www.goatednation.com'),
   title: "GOATED NATION | Premium Anime Streetwear",
   description:
     "Wear the culture. Premium heavyweight oversized anime streetwear, graphic tees, hoodies, and cargo pants inspired by modern Japanese aesthetics.",
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "GOATED NATION | Premium Anime Streetwear",
     description: "Wear the culture. Premium heavyweight oversized anime streetwear, graphic tees, hoodies, and cargo pants.",
-    url: "https://goatednation.com",
+    url: "https://www.goatednation.com",
     siteName: "GOATED NATION",
     images: [
       {
@@ -66,15 +66,15 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "OnlineStore",
   name: "GOATED NATION",
-  url: "https://goatednation.com",
-  logo: "https://goatednation.com/icon-512.png",
-  image: "https://goatednation.com/og-image.png",
+  url: "https://www.goatednation.com",
+  logo: "https://www.goatednation.com/icon-512.png",
+  image: "https://www.goatednation.com/og-image.png",
   description:
     "Wear the culture. Premium heavyweight oversized anime streetwear, graphic tees, hoodies, and cargo pants inspired by modern Japanese aesthetics.",
   brand: {
     "@type": "Brand",
     name: "GOATED NATION",
-    logo: "https://goatednation.com/icon-512.png",
+    logo: "https://www.goatednation.com/icon-512.png",
   },
   sameAs: ["https://instagram.com/goatednation"],
 };

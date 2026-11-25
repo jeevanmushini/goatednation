@@ -13,6 +13,6 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
       },
     ],
-    sitemap: 'https://goatednation.com/sitemap.xml',
+    sitemap: 'https://www.goatednation.com/sitemap.xml',
   };
 }
