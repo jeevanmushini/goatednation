@@ -129,15 +129,15 @@ export async function getCachedProducts(): Promise<Product[]> {
   // 2. Upstash Redis / Vercel KV
   const redisData = await redisGet<Product[]>(cacheKey);
   if (redisData && redisData.length > 0) {
-    setMemoryCache(cacheKey, redisData, 3600);
+    setMemoryCache(cacheKey, redisData, 5);
     return redisData;
   }
 
   // 3. Fallback to live Neon Postgres DB
   const neonProducts = await getProductsFromNeon();
   if (neonProducts && neonProducts.length > 0) {
-    setMemoryCache(cacheKey, neonProducts, 3600);
-    redisSet(cacheKey, neonProducts, 3600).catch(() => null);
+    setMemoryCache(cacheKey, neonProducts, 5);
+    redisSet(cacheKey, neonProducts, 300).catch(() => null);
     return neonProducts;
   }
 
@@ -175,27 +175,22 @@ export async function getCachedProductBySlug(slug: string): Promise<Product | nu
 
 /**
  * Reads published CMS state with Cache-Aside strategy:
- * Memory -> Redis (TTL: 1 hour) -> Neon Postgres.
+ * Redis (TTL: 5m) -> Aiven/Neon Postgres.
+ * In-memory process cache is bypassed for CMS state to prevent cross-lambda desynchronization.
  */
 export async function getCachedCmsData<T = unknown>(): Promise<T | null> {
   const cacheKey = 'gn:cms:published';
 
-  // 1. In-memory hot cache
-  const mem = getMemoryCache<T>(cacheKey);
-  if (mem) return mem;
-
-  // 2. Upstash Redis / Vercel KV
+  // 1. Upstash Redis / Vercel KV (shared across all lambdas)
   const redisCms = await redisGet<T>(cacheKey);
   if (redisCms) {
-    setMemoryCache(cacheKey, redisCms, 3600);
     return redisCms;
   }
 
-  // 3. Fallback to live Neon Postgres DB
+  // 2. Live Aiven PostgreSQL DB (authoritative source of truth)
   const neonCms = await getCmsDataFromNeon<T>();
   if (neonCms) {
-    setMemoryCache(cacheKey, neonCms, 3600);
-    redisSet(cacheKey, neonCms, 3600).catch(() => null);
+    redisSet(cacheKey, neonCms, 300).catch(() => null);
     return neonCms;
   }
 
