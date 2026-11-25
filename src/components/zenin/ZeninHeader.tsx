@@ -102,9 +102,9 @@ export const ZeninHeader: React.FC = () => {
           {/* Left / Brand Logo */}
           <div className="flex items-center space-x-8">
             <Link href="/" className="group flex items-center">
-              {settings?.brandName && settings.brandName !== 'GOATED NATION' ? (
-                <span className="text-xl sm:text-2xl font-black tracking-tighter text-black uppercase font-mono">
-                  {settings.brandName.includes(' ') ? (
+              <span className="text-xl sm:text-2xl font-black tracking-tighter text-black uppercase font-mono">
+                {settings?.brandName ? (
+                  settings.brandName.includes(' ') ? (
                     <>
                       {settings.brandName.split(' ')[0]}
                       <span className="text-[#FF4D00]">
@@ -113,18 +113,13 @@ export const ZeninHeader: React.FC = () => {
                     </>
                   ) : (
                     settings.brandName
-                  )}
-                </span>
-              ) : (
-                <Image
-                  src="/images/logo.png"
-                  alt={settings?.brandName || "GOATED NATION"}
-                  width={200}
-                  height={40}
-                  className="h-7 sm:h-8.5 w-auto object-contain"
-                  priority
-                />
-              )}
+                  )
+                ) : (
+                  <>
+                    GOATED<span className="text-[#FF4D00]">NATION</span>
+                  </>
+                )}
+              </span>
             </Link>
 
             {/* Desktop Navigation Links */}
