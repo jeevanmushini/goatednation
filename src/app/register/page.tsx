@@ -3,9 +3,8 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Shield, Lock, Mail, User as UserIcon, ArrowRight, Eye, EyeOff, AlertCircle, CheckCircle2, Key } from 'lucide-react';
+import { Lock, Mail, User as UserIcon, ArrowRight, Eye, EyeOff, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
-import { UserRole } from '../../types/auth';
 import { ZeninAnnouncementBar } from '../../components/zenin/ZeninAnnouncementBar';
 import { ZeninHeader } from '../../components/zenin/ZeninHeader';
 import { ZeninFooter } from '../../components/zenin/ZeninFooter';
@@ -22,8 +21,6 @@ function RegisterForm() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [role, setRole] = useState<UserRole>('CUSTOMER');
-  const [adminKey, setAdminKey] = useState('');
 
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -65,8 +62,6 @@ function RegisterForm() {
       name,
       email,
       password,
-      role,
-      adminKey: role === 'ADMIN' ? adminKey : undefined,
     });
     setIsSubmitting(false);
 
@@ -116,7 +111,7 @@ function RegisterForm() {
             {/* Google OAuth Quick Sign-Up */}
             <div className="mb-6">
               <a
-                href={`/api/auth/oauth/google?role=${role}${redirectPath ? `&redirect=${encodeURIComponent(redirectPath)}` : ''}`}
+                href={`/api/auth/oauth/google${redirectPath ? `?redirect=${encodeURIComponent(redirectPath)}` : ''}`}
                 className="w-full flex items-center justify-center space-x-3 px-4 py-3 rounded-lg border border-[#DCDCDC] hover:border-black bg-white hover:bg-[#F9F9F9] text-xs font-mono tracking-wider uppercase transition-all shadow-xs"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24">
@@ -200,60 +195,6 @@ function RegisterForm() {
                   />
                 </div>
               </div>
-
-              {/* Role Selection Switcher */}
-              <div>
-                <label className="block text-[11px] font-mono uppercase tracking-wider text-[#444444] mb-1.5 font-bold">
-                  Account Type (RBAC)
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setRole('CUSTOMER')}
-                    className={`py-2 px-3 rounded-lg border text-xs font-mono tracking-wider uppercase transition-all flex items-center justify-center space-x-1.5 ${
-                      role === 'CUSTOMER'
-                        ? 'border-black bg-black text-white font-bold shadow-xs'
-                        : 'border-[#E0E0E0] bg-[#FAFAFA] text-[#666666] hover:border-black'
-                    }`}
-                  >
-                    <span>Customer</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setRole('ADMIN')}
-                    className={`py-2 px-3 rounded-lg border text-xs font-mono tracking-wider uppercase transition-all flex items-center justify-center space-x-1.5 ${
-                      role === 'ADMIN'
-                        ? 'border-[#FF4D00] bg-[#FF4D00] text-white font-bold shadow-xs'
-                        : 'border-[#E0E0E0] bg-[#FAFAFA] text-[#666666] hover:border-[#FF4D00]'
-                    }`}
-                  >
-                    <Shield className="w-3.5 h-3.5" />
-                    <span>Administrator</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Admin Key (Only shown if Admin role selected) */}
-              {role === 'ADMIN' && (
-                <div className="p-3 bg-orange-50 border border-orange-200 rounded-lg space-y-1.5 animate-in fade-in slide-in-from-top-1">
-                  <div className="flex items-center justify-between">
-                    <label className="text-[10px] font-mono uppercase tracking-wider text-[#FF4D00] font-bold flex items-center space-x-1">
-                      <Key className="w-3 h-3" />
-                      <span>Admin Syndicate Clearance Key</span>
-                    </label>
-                    <span className="text-[9px] font-mono text-[#888888]">Key: GOATED_ADMIN_2026</span>
-                  </div>
-                  <input
-                    type="password"
-                    required
-                    value={adminKey}
-                    onChange={(e) => setAdminKey(e.target.value)}
-                    placeholder="Enter GOATED_ADMIN_2026"
-                    className="w-full px-3 py-2 bg-white border border-orange-300 focus:border-[#FF4D00] rounded text-xs font-mono outline-none"
-                  />
-                </div>
-              )}
 
               <div>
                 <label className="block text-[11px] font-mono uppercase tracking-wider text-[#444444] mb-1.5 font-bold">

@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
 import {
   Trash2,
   Plus,
@@ -13,6 +14,7 @@ import {
   Truck,
   Tag,
   ArrowLeft,
+  CheckCircle2,
 } from 'lucide-react';
 import { useCartStore } from '../../stores/cartStore';
 import { ZeninAnnouncementBar } from '../../components/zenin/ZeninAnnouncementBar';
@@ -20,9 +22,14 @@ import { ZeninHeader } from '../../components/zenin/ZeninHeader';
 import { ZeninFooter } from '../../components/zenin/ZeninFooter';
 import { CheckoutModal } from '../../components/layout/CheckoutModal';
 
-export default function CartPage() {
+function CartContent() {
+  const searchParams = useSearchParams();
+  const restoreId = searchParams.get('restore');
+  const [restoredNotice, setRestoredNotice] = useState(false);
+
   const {
     items,
+    addItem,
     updateQuantity,
     removeItem,
     appliedCoupon,
@@ -38,6 +45,34 @@ export default function CartPage() {
 
   const [couponInput, setCouponInput] = useState('');
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+
+  // 1-Click Abandoned Cart Restoration
+  useEffect(() => {
+    if (!restoreId) return;
+
+    fetch(`/api/cart/abandoned?id=${restoreId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.cart && Array.isArray(data.cart.items)) {
+          for (const item of data.cart.items) {
+            addItem({
+              productId: item.id || `drop_${Date.now()}`,
+              slug: item.slug || 'drop',
+              title: item.title,
+              anime: 'Tokyo Syndicate',
+              price: item.price,
+              originalPrice: item.price,
+              image: item.image || 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=150&auto=format&fit=crop&q=80',
+              quantity: item.quantity || 1,
+              size: (item.size as any) || 'L',
+              color: item.color || 'Onyx Black',
+            }, false);
+          }
+          setRestoredNotice(true);
+        }
+      })
+      .catch(() => {});
+  }, [restoreId, addItem]);
 
   const subtotal = getSubtotal();
   const shipping = getShipping();
@@ -55,6 +90,18 @@ export default function CartPage() {
       <ZeninHeader />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
+        {/* Restored notice banner */}
+        {restoredNotice && (
+          <div className="mb-6 p-4 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-between text-xs font-mono text-orange-800">
+            <div className="flex items-center space-x-2">
+              <CheckCircle2 className="w-4 h-4 text-[#FF4D00] shrink-0" />
+              <span><strong>BAG RESTORED:</strong> Your reserved capsule pieces have been restored to your bag.</span>
+            </div>
+            <button onClick={() => setRestoredNotice(false)} className="text-xs uppercase font-bold text-[#FF4D00]">
+              Dismiss
+            </button>
+          </div>
+        )}
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between pb-8 mb-8 border-b border-[#EAEAEA]">
           <div>
@@ -288,5 +335,13 @@ export default function CartPage() {
       <ZeninFooter />
       <CheckoutModal isOpen={isCheckoutOpen} onClose={() => setIsCheckoutOpen(false)} />
     </div>
+  );
+}
+
+export default function CartPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-white" />}>
+      <CartContent />
+    </Suspense>
   );
 }

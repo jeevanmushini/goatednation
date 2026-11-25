@@ -15,6 +15,7 @@ function LoginForm() {
   const redirectPath = searchParams.get('redirect') || searchParams.get('redirectTo') || '';
   const errorParam = searchParams.get('error');
   const detailsParam = searchParams.get('details');
+  const resetParam = searchParams.get('reset');
 
   const initialError = errorParam
     ? errorParam === 'GoogleCredentialsMissing'
@@ -34,7 +35,11 @@ function LoginForm() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(initialError);
-  const [success, setSuccess] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(
+    resetParam === 'success'
+      ? 'Password updated successfully. Please sign in with your new credentials.'
+      : null
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -94,13 +99,13 @@ function LoginForm() {
           {/* Top Kanji & Section Badge */}
           <div className="text-center mb-8">
             <span className="text-[10px] sm:text-[11px] font-mono tracking-[0.3em] uppercase text-[#777777] bg-white px-3.5 py-1 rounded-full border border-[#E5E5E5] shadow-xs">
-              ログイン // AUTHENTICATION GATEWAY
+              ログイン // MEMBER SIGN IN
             </span>
             <h1 className="text-xl sm:text-2xl font-mono font-bold tracking-tight uppercase text-black mt-3">
               SIGN IN TO GOATED NATION
             </h1>
             <p className="text-xs font-mono text-[#666666] mt-1 tracking-wide">
-              Access your syndicate orders, wishlist & admin clearance
+              Access your orders, wishlist & exclusive member drops
             </p>
           </div>
 
@@ -109,7 +114,7 @@ function LoginForm() {
             {/* Google OAuth Social Sign In */}
             <div className="mb-6">
               <a
-                href={`/api/auth/oauth/google?role=CUSTOMER${redirectPath ? `&redirect=${encodeURIComponent(redirectPath)}` : ''}`}
+                href={`/api/auth/oauth/google${redirectPath ? `?redirect=${encodeURIComponent(redirectPath)}` : ''}`}
                 className="w-full flex items-center justify-center space-x-3 px-4 py-3 rounded-lg border border-[#DCDCDC] hover:border-black bg-white hover:bg-[#F9F9F9] text-xs font-mono tracking-wider uppercase transition-all shadow-xs"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24">
@@ -202,9 +207,12 @@ function LoginForm() {
                   <label className="text-[11px] font-mono uppercase tracking-wider text-[#444444] font-bold">
                     Password
                   </label>
-                  <span className="text-[10px] font-mono text-[#888888] hover:text-black cursor-pointer transition-colors">
+                  <Link
+                    href="/forgot-password"
+                    className="text-[10px] font-mono text-[#888888] hover:text-black cursor-pointer transition-colors"
+                  >
                     Forgot password?
-                  </span>
+                  </Link>
                 </div>
                 <div className="relative">
                   <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#888888]" />
