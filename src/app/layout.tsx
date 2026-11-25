@@ -10,6 +10,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://goatednation.com'),
   title: "GOATED NATION | Premium Anime Streetwear",
   description:
     "Wear the culture. Premium heavyweight oversized anime streetwear, graphic tees, hoodies, and cargo pants inspired by modern Japanese aesthetics.",
@@ -26,7 +27,9 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: '/favicon.ico' },
-      { url: '/icon.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icon-48.png', sizes: '48x48', type: 'image/png' },
+      { url: '/icon-96.png', sizes: '96x96', type: 'image/png' },
+      { url: '/icon-144.png', sizes: '144x144', type: 'image/png' },
       { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
       { url: '/icon-512.png', sizes: '512x512', type: 'image/png' },
     ],
@@ -35,6 +38,45 @@ export const metadata: Metadata = {
       { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
     ],
   },
+  openGraph: {
+    title: "GOATED NATION | Premium Anime Streetwear",
+    description: "Wear the culture. Premium heavyweight oversized anime streetwear, graphic tees, hoodies, and cargo pants.",
+    url: "https://goatednation.com",
+    siteName: "GOATED NATION",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "GOATED NATION Logo",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "GOATED NATION | Premium Anime Streetwear",
+    description: "Wear the culture. Premium heavyweight oversized anime streetwear.",
+    images: ["/og-image.png"],
+  },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "OnlineStore",
+  name: "GOATED NATION",
+  url: "https://goatednation.com",
+  logo: "https://goatednation.com/icon-512.png",
+  image: "https://goatednation.com/og-image.png",
+  description:
+    "Wear the culture. Premium heavyweight oversized anime streetwear, graphic tees, hoodies, and cargo pants inspired by modern Japanese aesthetics.",
+  brand: {
+    "@type": "Brand",
+    name: "GOATED NATION",
+    logo: "https://goatednation.com/icon-512.png",
+  },
+  sameAs: ["https://instagram.com/goatednation"],
 };
 
 export default function RootLayout({
@@ -44,6 +86,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="scroll-smooth" data-scroll-behavior="smooth">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body className="min-h-screen bg-[#FFFFFF] text-black font-sans antialiased selection:bg-[#FF4D00] selection:text-white">
         <ErrorBoundary>
           {children}
