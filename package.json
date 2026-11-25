@@ -16,9 +16,6 @@
     "test:system": "node scripts/test-full-system.mjs"
   },
   "dependencies": {
-    "@neon/config": "^1.14.4",
-    "@neon/env": "^2.1.7",
-    "@neondatabase/serverless": "^1.2.1",
     "@tailwindcss/postcss": "^4.3.4",
     "clsx": "^2.1.1",
     "framer-motion": "^14.10.1",

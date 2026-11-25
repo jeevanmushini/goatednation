@@ -1,29 +1,21 @@
-import { neon, neonConfig, NeonQueryFunction } from '@neondatabase/serverless';
 import postgres from 'postgres';
 import crypto from 'crypto';
 import { UserRole } from '../../types/auth';
 import { Product } from '../../types/product';
 import { Ticket, TicketMessage, TicketMetrics } from '../../types/ticket';
 
-// Enable connection caching for optimal latency and reuse across serverless requests (NEO-04)
-neonConfig.fetchConnectionCache = true;
-
-// Universal SQL client supporting both Aiven Managed PostgreSQL and Neon Serverless
+// Authoritative Aiven Managed PostgreSQL SQL Client
 let cachedSql: any = null;
 let schemaInitialized = false;
 
 /**
- * Returns a configured SQL client (Aiven PostgreSQL or Neon).
+ * Returns a configured SQL client for Aiven Managed PostgreSQL.
  * Returns null if database URL is not set.
  */
 export function getDb(): any {
   let dbUrl =
     process.env.AIVEN_DATABASE_URL ||
-    process.env.DATABASE_URL ||
-    process.env.POSTGRES_URL ||
-    process.env.DATABASE_URL_UNPOOLED ||
-    process.env.POSTGRES_PRISMA_URL ||
-    process.env.NEON_DATABASE_URL;
+    process.env.DATABASE_URL;
 
   if (!dbUrl) {
     return null;
@@ -33,16 +25,12 @@ export function getDb(): any {
   dbUrl = dbUrl.trim().replace(/^["']|["']$/g, '');
 
   if (!cachedSql) {
-    if (dbUrl.includes('neon.tech')) {
-      cachedSql = neon(dbUrl);
-    } else {
-      cachedSql = postgres(dbUrl, {
-        ssl: 'require',
-        max: 10,
-        idle_timeout: 20,
-        connect_timeout: 10,
-      });
-    }
+    cachedSql = postgres(dbUrl, {
+      ssl: 'require',
+      max: 10,
+      idle_timeout: 20,
+      connect_timeout: 10,
+    });
   }
   return cachedSql;
 }
