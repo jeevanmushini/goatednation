@@ -1,4 +1,5 @@
 import { neon, neonConfig, NeonQueryFunction } from '@neondatabase/serverless';
+import postgres from 'postgres';
 import crypto from 'crypto';
 import { UserRole } from '../../types/auth';
 import { Product } from '../../types/product';
@@ -7,15 +8,17 @@ import { Ticket, TicketMessage, TicketMetrics } from '../../types/ticket';
 // Enable connection caching for optimal latency and reuse across serverless requests (NEO-04)
 neonConfig.fetchConnectionCache = true;
 
-let cachedSql: NeonQueryFunction<false, false> | null = null;
+// Universal SQL client supporting both Aiven Managed PostgreSQL and Neon Serverless
+let cachedSql: any = null;
 let schemaInitialized = false;
 
 /**
- * Returns a configured Neon SQL client if DATABASE_URL is available.
- * Returns null if DATABASE_URL is not set.
+ * Returns a configured SQL client (Aiven PostgreSQL or Neon).
+ * Returns null if database URL is not set.
  */
-export function getDb(): NeonQueryFunction<false, false> | null {
+export function getDb(): any {
   let dbUrl =
+    process.env.AIVEN_DATABASE_URL ||
     process.env.DATABASE_URL ||
     process.env.POSTGRES_URL ||
     process.env.DATABASE_URL_UNPOOLED ||
@@ -30,7 +33,16 @@ export function getDb(): NeonQueryFunction<false, false> | null {
   dbUrl = dbUrl.trim().replace(/^["']|["']$/g, '');
 
   if (!cachedSql) {
-    cachedSql = neon(dbUrl);
+    if (dbUrl.includes('neon.tech')) {
+      cachedSql = neon(dbUrl);
+    } else {
+      cachedSql = postgres(dbUrl, {
+        ssl: 'require',
+        max: 10,
+        idle_timeout: 20,
+        connect_timeout: 10,
+      });
+    }
   }
   return cachedSql;
 }
@@ -661,7 +673,7 @@ export async function getProductsFromNeon(): Promise<Product[]> {
       WHERE is_active = TRUE
       ORDER BY is_new_drop DESC, created_at DESC;
     `;
-    return rows.map((r) => ({
+    return rows.map((r: any) => ({
       ...r,
       price: Number(r.price),
       originalPrice: Number(r.originalPrice),
@@ -1184,7 +1196,7 @@ export async function getTicketsForUserFromNeon(email: string): Promise<Ticket[]
       ORDER BY created_at DESC;
     `;
 
-    return (rows || []).map((r) => mapTicketRow(r as Record<string, unknown>));
+    return (rows || []).map((r: any) => mapTicketRow(r as Record<string, unknown>));
   } catch (error) {
     console.error(`[Neon Postgres] Error reading tickets for ${email}:`, error);
     return [];
@@ -1470,7 +1482,7 @@ export async function getUserOrdersFromNeon(email: string): Promise<Array<{
       ORDER BY created_at DESC;
     `;
 
-    return (rows || []).map((r) => ({
+    return (rows || []).map((r: any) => ({
       id: String(r.id),
       userEmail: String(r.userEmail || ''),
       razorpayOrderId: r.razorpayOrderId ? String(r.razorpayOrderId) : undefined,
@@ -1768,7 +1780,7 @@ export async function getPendingAbandonedCarts(): Promise<
       LIMIT 50;
     `) as Record<string, unknown>[];
 
-    return (rows || []).map((r) => ({
+    return (rows || []).map((r: any) => ({
       id: String(r.id),
       email: String(r.email),
       customerName: r.customerName ? String(r.customerName) : undefined,

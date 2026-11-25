@@ -25,6 +25,7 @@
     "lucide-react": "^0.475.0",
     "next": "16.4.3",
     "postcss": "^8.5.32",
+    "postgres": "^4.1.1",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "resend": "^6.39.0",
