@@ -488,7 +488,7 @@ const createCmsStore = () =>
         if (!force && hasClientSyncedFromServer) return;
 
         try {
-          const res = await fetch('/api/cms', { cache: 'no-store' });
+          const res = await fetch('/api/cms?t=' + Date.now(), { cache: 'no-store' });
           if (res.ok) {
             const json = await res.json();
             if (json.success && json.data) {
